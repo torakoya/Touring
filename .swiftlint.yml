@@ -1,0 +1,4 @@
+# TODO: Prettify the code style
+excluded:
+  - TouringTests
+  - TouringUITests
