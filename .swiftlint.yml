@@ -2,3 +2,6 @@
 excluded:
   - TouringTests
   - TouringUITests
+
+identifier_name:
+  min_length: 1

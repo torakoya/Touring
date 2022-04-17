@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A3BCCB5280AAA190021A8BB /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3BCCB4280AAA190021A8BB /* Location.swift */; };
+		7A3BCCB7280AB4390021A8BB /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3BCCB6280AB4390021A8BB /* ContentViewModel.swift */; };
 		7A4350EA280A958500C42F62 /* TouringApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4350E9280A958500C42F62 /* TouringApp.swift */; };
 		7A4350EC280A958500C42F62 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4350EB280A958500C42F62 /* ContentView.swift */; };
 		7A4350EE280A958700C42F62 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4350ED280A958700C42F62 /* Assets.xcassets */; };
@@ -34,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A3BCCB4280AAA190021A8BB /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		7A3BCCB6280AB4390021A8BB /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		7A4350E6280A958500C42F62 /* Touring.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Touring.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4350E9280A958500C42F62 /* TouringApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouringApp.swift; sourceTree = "<group>"; };
 		7A4350EB280A958500C42F62 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,6 +100,8 @@
 			children = (
 				7A4350E9280A958500C42F62 /* TouringApp.swift */,
 				7A4350EB280A958500C42F62 /* ContentView.swift */,
+				7A3BCCB6280AB4390021A8BB /* ContentViewModel.swift */,
+				7A3BCCB4280AAA190021A8BB /* Location.swift */,
 				7A4350ED280A958700C42F62 /* Assets.xcassets */,
 				7A4350EF280A958700C42F62 /* Preview Content */,
 			);
@@ -278,7 +284,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A3BCCB7280AB4390021A8BB /* ContentViewModel.swift in Sources */,
 				7A4350EC280A958500C42F62 /* ContentView.swift in Sources */,
+				7A3BCCB5280AAA190021A8BB /* Location.swift in Sources */,
 				7A4350EA280A958500C42F62 /* TouringApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,6 +448,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Touring/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to know your position, speed and course. If you want this app to track your location even while it is in the background, allow it to always access.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to know your position, speed and course.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -468,6 +478,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Touring/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to know your position, speed and course. If you want this app to track your location even while it is in the background, allow it to always access.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to know your position, speed and course.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
