@@ -1,0 +1,2 @@
+NSLocationAlwaysAndWhenInUseUsageDescription = "位置情報をあなたの位置、速度、進行方向を知るために利用します。このアプリがバックグラウンドで動いているあいだも位置情報を記録してほしければ、常に位置情報を利用することを許可してください。";
+NSLocationWhenInUseUsageDescription = "位置情報をあなたの位置、速度、進行方向を知るために利用します。";

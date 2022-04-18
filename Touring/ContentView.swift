@@ -6,11 +6,11 @@ struct ContentView: View {
     var body: some View {
         Text("Hello, world!")
             .padding()
-            .alert("Location access is restricted", isPresented: $vm.alertingLocationAuthorizationRestricted) {
+            .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
             } message: {
-                Text("This app cannot use your location by some restrictions such as parental controls.")
+                Text("main.location_restricted.msg")
             }
-            .alert("Location access is denied", isPresented: $vm.alertingLocationAuthorizationDenied) {
+            .alert("main.location_denied.title", isPresented: $vm.alertingLocationAuthorizationDenied) {
                 Button("Settings") {
                     vm.openSettings()
                 }
@@ -18,9 +18,9 @@ struct ContentView: View {
                 }
                 .keyboardShortcut(.defaultAction)
             } message: {
-                Text("Allow this app to use your location or turn on Location Services for this device.")
+                Text("main.location_denied.msg")
             }
-            .alert("Location accuracy is reduced", isPresented: $vm.alertingLocationAccuracy) {
+            .alert("main.location_reduced.title", isPresented: $vm.alertingLocationAccuracy) {
                 Button("Settings") {
                     vm.openSettings()
                 }
@@ -28,7 +28,7 @@ struct ContentView: View {
                 }
                 .keyboardShortcut(.defaultAction)
             } message: {
-                Text("Allow this app to get your specific location.")
+                Text("main.location_reduced.msg")
             }
     }
 }

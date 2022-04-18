@@ -1,0 +1,12 @@
+/* Common */
+"Settings" = "設定";
+
+/* ContentView */
+"main.location_restricted.title" = "位置情報の利用が禁止されています";
+"main.location_restricted.msg" = "ペアレンタルコントロールなど何らかの制限がかけられています。";
+
+"main.location_denied.title" = "位置情報の利用が許可されていません";
+"main.location_denied.msg" = "このアプリの設定で、位置情報の利用が許可されていません。または、この端末の設定で、位置情報サービスがオフになっています。";
+
+"main.location_reduced.title" = "正確な位置情報が取得できません";
+"main.location_reduced.msg" = "このアプリの設定で、正確な位置情報を取得できるようにしてください。";

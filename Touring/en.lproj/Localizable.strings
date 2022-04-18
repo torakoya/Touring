@@ -1,0 +1,9 @@
+/* ContentView */
+"main.location_restricted.title" = "Location access is restricted";
+"main.location_restricted.msg" = "This app cannot use your location by some restrictions such as parental controls.";
+
+"main.location_denied.title" = "Location access is denied";
+"main.location_denied.msg" = "Allow this app to use your location or turn on Location Services for this device.";
+
+"main.location_reduced.title" = "Location accuracy is reduced";
+"main.location_reduced.msg" = "Allow this app to get your specific location.";
