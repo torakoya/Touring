@@ -33,6 +33,8 @@ struct ContentView: View {
         } message: {
             Text("main.location_reduced.msg")
         }
+        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
     }
 }
 
