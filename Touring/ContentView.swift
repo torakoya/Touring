@@ -4,32 +4,35 @@ struct ContentView: View {
     @StateObject var vm = ContentViewModel()
 
     var body: some View {
-        Text("Hello, world!")
-            .padding()
-            .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
-            } message: {
-                Text("main.location_restricted.msg")
+        HStack(alignment: .lastTextBaseline) {
+            Text(vm.speedNumber)
+                .font(.largeTitle)
+            Text(vm.speedUnit)
+        }
+        .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
+        } message: {
+            Text("main.location_restricted.msg")
+        }
+        .alert("main.location_denied.title", isPresented: $vm.alertingLocationAuthorizationDenied) {
+            Button("Settings") {
+                vm.openSettings()
             }
-            .alert("main.location_denied.title", isPresented: $vm.alertingLocationAuthorizationDenied) {
-                Button("Settings") {
-                    vm.openSettings()
-                }
-                Button("OK") {
-                }
-                .keyboardShortcut(.defaultAction)
-            } message: {
-                Text("main.location_denied.msg")
+            Button("OK") {
             }
-            .alert("main.location_reduced.title", isPresented: $vm.alertingLocationAccuracy) {
-                Button("Settings") {
-                    vm.openSettings()
-                }
-                Button("OK") {
-                }
-                .keyboardShortcut(.defaultAction)
-            } message: {
-                Text("main.location_reduced.msg")
+            .keyboardShortcut(.defaultAction)
+        } message: {
+            Text("main.location_denied.msg")
+        }
+        .alert("main.location_reduced.title", isPresented: $vm.alertingLocationAccuracy) {
+            Button("Settings") {
+                vm.openSettings()
             }
+            Button("OK") {
+            }
+            .keyboardShortcut(.defaultAction)
+        } message: {
+            Text("main.location_reduced.msg")
+        }
     }
 }
 

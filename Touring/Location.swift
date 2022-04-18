@@ -3,6 +3,9 @@ import Foundation
 
 /// The location manager.
 class Location: NSObject {
+    /// The last location data.
+    private(set) var last: CLLocation?
+
     let manager = CLLocationManager()
     weak var delegate: LocationDelegate?
 
@@ -29,14 +32,23 @@ extension Location: CLLocationManagerDelegate {
 
         delegate?.locationDidChangeAuthorization(self)
     }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        last = locations.last
+        delegate?.locationDidUpdate(self)
+    }
 }
 
 /// The methods that receive location events.
 protocol LocationDelegate: AnyObject {
     /// Tells the delegate that the location authorization status has been changed.
     func locationDidChangeAuthorization(_ location: Location)
+
+    /// Tells the delegate that new location data has arrived.
+    func locationDidUpdate(_ location: Location)
 }
 
 extension LocationDelegate {
     func locationDidChangeAuthorization(_ location: Location) {}
+    func locationDidUpdate(_ location: Location) {}
 }
