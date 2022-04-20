@@ -3,8 +3,9 @@ import UIKit
 class ContentViewModel: ObservableObject, LocationDelegate {
     let location = Location()
 
-    @Published var prefersMile = false {
+    @Published var prefersMile = UserDefaults.standard.bool(forKey: "prefersMile") {
         didSet {
+            UserDefaults.standard.set(prefersMile, forKey: "prefersMile")
             updateSpeedNumber()
         }
     }

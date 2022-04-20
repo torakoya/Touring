@@ -66,4 +66,14 @@ class TouringUITests: XCTestCase {
         XCTAssertEqual(u1.exists, e1)
         XCTAssertNotEqual(u2.exists, e1)
     }
+
+    func testRestoreSpeedUnitChoice() throws {
+        let u1 = app.staticTexts["km/h"]
+        let u2 = app.staticTexts["mph"]
+        let e1 = u1.exists
+
+        (u1.exists ? u1 : u2).tap()
+        app.launch()
+        XCTAssertNotEqual(u1.exists, e1)
+    }
 }
