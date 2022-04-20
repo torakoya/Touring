@@ -2,14 +2,24 @@ import UIKit
 
 class ContentViewModel: ObservableObject, LocationDelegate {
     let location = Location()
-    @Published var speedNumber = "-"
-    @Published var speedUnit = "km/h"
+
+    @Published var prefersMile = false {
+        didSet {
+            updateSpeedNumber()
+        }
+    }
+    @Published var speedNumber = ""
+    var speedUnit: String {
+        return prefersMile ? "mph" : "km/h"
+    }
+
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
     @Published var alertingLocationAccuracy = false
 
     init() {
         location.delegate = self
+        updateSpeedNumber()
     }
 
     func locationDidChangeAuthorization(_ location: Location) {
@@ -22,11 +32,17 @@ class ContentViewModel: ObservableObject, LocationDelegate {
         }
     }
 
-    func locationDidUpdate(_ location: Location) {
+    private func updateSpeedNumber() {
         if let mps = location.last?.speed, mps >= 0 {
-            let kph = mps * 60 * 60 / 1000
-            speedNumber = String(format: "%.*f", kph < 10 ? 1 : 0, kph)
+            let val = mps * 60 * 60 / (prefersMile ? 1609.344 : 1000)
+            speedNumber = String(format: "%.*f", val < 10 ? 1 : 0, val)
+        } else {
+            speedNumber = "-"
         }
+    }
+
+    func locationDidUpdate(_ location: Location) {
+        updateSpeedNumber()
     }
 
     /// Open the Settings app.

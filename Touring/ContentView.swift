@@ -9,6 +9,9 @@ struct ContentView: View {
                 .font(.largeTitle)
             Text(vm.speedUnit)
         }
+        .onTapGesture {
+            vm.prefersMile.toggle()
+        }
         .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
         } message: {
             Text("main.location_restricted.msg")
