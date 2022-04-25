@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A17A46C281283F700F88063 /* LocationLogger.swift */; };
 		7A31F504280D63F000CCB90A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A31F506280D63F000CCB90A /* Localizable.strings */; };
 		7A31F515280D78C000CCB90A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A31F517280D78C000CCB90A /* InfoPlist.strings */; };
 		7A3BCCB5280AAA190021A8BB /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3BCCB4280AAA190021A8BB /* Location.swift */; };
@@ -38,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A17A46C281283F700F88063 /* LocationLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLogger.swift; sourceTree = "<group>"; };
+		7A17A46E2812986F00F88063 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7A31F505280D63F000CCB90A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7A31F508280D640D00CCB90A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7A31F516280D78C000CCB90A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -103,10 +106,12 @@
 		7A4350E8280A958500C42F62 /* Touring */ = {
 			isa = PBXGroup;
 			children = (
+				7A17A46E2812986F00F88063 /* Info.plist */,
 				7A4350E9280A958500C42F62 /* TouringApp.swift */,
 				7A4350EB280A958500C42F62 /* ContentView.swift */,
 				7A3BCCB6280AB4390021A8BB /* ContentViewModel.swift */,
 				7A3BCCB4280AAA190021A8BB /* Location.swift */,
+				7A17A46C281283F700F88063 /* LocationLogger.swift */,
 				7A31F506280D63F000CCB90A /* Localizable.strings */,
 				7A31F517280D78C000CCB90A /* InfoPlist.strings */,
 				7A4350ED280A958700C42F62 /* Assets.xcassets */,
@@ -295,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A3BCCB7280AB4390021A8BB /* ContentViewModel.swift in Sources */,
+				7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */,
 				7A4350EC280A958500C42F62 /* ContentView.swift in Sources */,
 				7A3BCCB5280AAA190021A8BB /* Location.swift in Sources */,
 				7A4350EA280A958500C42F62 /* TouringApp.swift in Sources */,
@@ -478,6 +484,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Touring/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Touring/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to know your position, speed and course. If you want this app to track your location even while it is in the background, allow it to always access.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to know your position, speed and course.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -508,6 +516,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Touring/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Touring/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your location is used to know your position, speed and course. If you want this app to track your location even while it is in the background, allow it to always access.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your location is used to know your position, speed and course.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

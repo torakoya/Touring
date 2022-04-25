@@ -1,6 +1,6 @@
 import UIKit
 
-class ContentViewModel: ObservableObject, LocationDelegate {
+class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelegate {
     let location = Location()
 
     @Published var prefersMile = UserDefaults.standard.bool(forKey: "prefersMile") {
@@ -17,10 +17,15 @@ class ContentViewModel: ObservableObject, LocationDelegate {
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
     @Published var alertingLocationAccuracy = false
+    @Published var alertingLocationLoggingError = false
+    @Published var loggingState = LocationLogger.State.stopped
 
     init() {
         location.delegate = self
+        location.logger.delegate = self
+
         updateSpeedNumber()
+        loggingStateChanged()
     }
 
     func locationDidChangeAuthorization(_ location: Location) {
@@ -44,6 +49,14 @@ class ContentViewModel: ObservableObject, LocationDelegate {
 
     func locationDidUpdate(_ location: Location) {
         updateSpeedNumber()
+    }
+
+    func loggingStateChanged() {
+        loggingState = location.logger.state
+    }
+
+    func loggingDidFailWithError(_ error: Error) {
+        alertingLocationLoggingError = true
     }
 
     /// Open the Settings app.

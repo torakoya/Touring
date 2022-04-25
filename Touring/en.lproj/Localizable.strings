@@ -7,3 +7,6 @@
 
 "main.location_reduced.title" = "Location accuracy is reduced";
 "main.location_reduced.msg" = "Allow this app to get your specific location.";
+
+"main.logging_error.title" = "Location recording failed";
+"main.logging_error.msg" = "Your location can't be saved.";

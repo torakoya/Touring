@@ -18,7 +18,10 @@ class TouringUITests: XCTestCase {
                 alert.buttons["Allow While Using App"].tap()
                 return true
             }
-            app.tap()
+
+            // app.tap() is common, but it fires a tap event on an element
+            // if the element is at the place where XCTest taps.
+            app.swipeDown()
         }
     }
 
@@ -75,5 +78,39 @@ class TouringUITests: XCTestCase {
         (u1.exists ? u1 : u2).tap()
         app.launch()
         XCTAssertNotEqual(u1.exists, e1)
+    }
+
+    func testTapLoggingControlButtons() throws {
+        // Some system-provided symbol images seem to have alternative
+        // names, and they can't be accessed by the original names but
+        // by the alternative names.
+        //
+        // * "record.circle" => "Screen Recording"
+        // * "pause.circle" => "Pause"
+        // * "stop.circle" => "stop.circle" (no alternative name)
+
+        XCTAssert(app.buttons["Screen Recording"].exists)
+        XCTAssert(app.buttons["stop.circle"].exists)
+        XCTAssertFalse(app.buttons["stop.circle"].isEnabled)
+
+        app.buttons["Screen Recording"].tap()
+
+        XCTAssert(app.buttons["Pause"].exists)
+        XCTAssert(app.buttons["stop.circle"].isEnabled)
+
+        app.buttons["Pause"].tap()
+
+        XCTAssert(app.buttons["Screen Recording"].exists)
+        XCTAssert(app.buttons["stop.circle"].isEnabled)
+
+        app.buttons["Screen Recording"].tap()
+
+        XCTAssert(app.buttons["Pause"].exists)
+        XCTAssert(app.buttons["stop.circle"].isEnabled)
+
+        app.buttons["stop.circle"].tap()
+
+        XCTAssert(app.buttons["Screen Recording"].exists)
+        XCTAssertFalse(app.buttons["stop.circle"].isEnabled)
     }
 }

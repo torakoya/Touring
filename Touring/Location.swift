@@ -8,6 +8,7 @@ class Location: NSObject {
 
     let manager = CLLocationManager()
     weak var delegate: LocationDelegate?
+    lazy var logger = LocationLogger(manager: manager)
 
     override init() {
         super.init()
@@ -35,6 +36,7 @@ extension Location: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         last = locations.last
+        logger.save(locations)
         delegate?.locationDidUpdate(self)
     }
 }

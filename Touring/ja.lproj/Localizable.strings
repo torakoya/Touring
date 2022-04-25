@@ -10,3 +10,6 @@
 
 "main.location_reduced.title" = "正確な位置情報が取得できません";
 "main.location_reduced.msg" = "このアプリの設定で、正確な位置情報を取得できるようにしてください。";
+
+"main.logging_error.title" = "位置情報の記録に失敗しました";
+"main.logging_error.msg" = "取得した位置情報をストレージに保存できませんでした。";

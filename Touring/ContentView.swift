@@ -4,13 +4,39 @@ struct ContentView: View {
     @StateObject var vm = ContentViewModel()
 
     var body: some View {
-        HStack(alignment: .lastTextBaseline) {
-            Text(vm.speedNumber)
-                .font(.largeTitle)
-            Text(vm.speedUnit)
-        }
-        .onTapGesture {
-            vm.prefersMile.toggle()
+        HStack {
+            HStack(alignment: .lastTextBaseline) {
+                Text(vm.speedNumber)
+                    .font(.largeTitle)
+                Text(vm.speedUnit)
+            }
+            .onTapGesture {
+                vm.prefersMile.toggle()
+            }
+
+            Button {
+                if vm.loggingState == .started {
+                    vm.location.logger.pause()
+                } else {
+                    vm.location.logger.start()
+                }
+            } label: {
+                Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
+                    .font(.title)
+                    .foregroundColor(.red)
+            }
+            Button {
+                vm.location.logger.stop()
+            } label: {
+                Image(systemName: "stop.circle")
+                    .font(.title)
+            }
+            .disabled(vm.loggingState == .stopped)
+
+            Text("Rec")
+                .font(.caption2.smallCaps().bold())
+                .foregroundColor(.red)
+                .opacity(vm.loggingState == .started ? 1 : 0)
         }
         .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
         } message: {
@@ -35,6 +61,10 @@ struct ContentView: View {
             .keyboardShortcut(.defaultAction)
         } message: {
             Text("main.location_reduced.msg")
+        }
+        .alert("main.logging_error.title", isPresented: $vm.alertingLocationLoggingError) {
+        } message: {
+            Text("main.logging_error.msg")
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
