@@ -4,39 +4,48 @@ struct ContentView: View {
     @StateObject var vm = ContentViewModel()
 
     var body: some View {
-        HStack {
-            HStack(alignment: .lastTextBaseline) {
-                Text(vm.speedNumber)
-                    .font(.largeTitle)
-                Text(vm.speedUnit)
-            }
-            .onTapGesture {
-                vm.prefersMile.toggle()
-            }
+        ZStack(alignment: .topLeading) {
+            MapView()
+                .ignoresSafeArea()
 
-            Button {
-                if vm.loggingState == .started {
-                    vm.location.logger.pause()
-                } else {
-                    vm.location.logger.start()
+            HStack {
+                HStack(alignment: .lastTextBaseline) {
+                    Text(vm.speedNumber)
+                        .font(.largeTitle)
+                    Text(vm.speedUnit)
                 }
-            } label: {
-                Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
-                    .font(.title)
-                    .foregroundColor(.red)
-            }
-            Button {
-                vm.location.logger.stop()
-            } label: {
-                Image(systemName: "stop.circle")
-                    .font(.title)
-            }
-            .disabled(vm.loggingState == .stopped)
+                .onTapGesture {
+                    vm.prefersMile.toggle()
+                }
 
-            Text("Rec")
-                .font(.caption2.smallCaps().bold())
-                .foregroundColor(.red)
-                .opacity(vm.loggingState == .started ? 1 : 0)
+                Button {
+                    if vm.loggingState == .started {
+                        vm.location.logger.pause()
+                    } else {
+                        vm.location.logger.start()
+                    }
+                } label: {
+                    Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
+                        .font(.title)
+                        .foregroundColor(.red)
+                }
+                Button {
+                    vm.location.logger.stop()
+                } label: {
+                    Image(systemName: "stop.circle")
+                        .font(.title)
+                }
+                .disabled(vm.loggingState == .stopped)
+
+                Text("Rec")
+                    .font(.caption2.smallCaps().bold())
+                    .foregroundColor(.red)
+                    .opacity(vm.loggingState == .started ? 1 : 0)
+            }
+            .padding()
+            .background(Color(uiColor: .systemBackground).opacity(0.75))
+            .cornerRadius(15)
+            .padding()
         }
         .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
         } message: {
