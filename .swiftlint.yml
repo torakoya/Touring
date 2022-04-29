@@ -1,6 +1,2 @@
-# TODO: Prettify the code style
-excluded:
-  - TouringTests
-
 identifier_name:
   min_length: 1
