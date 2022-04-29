@@ -9,11 +9,13 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
             updateSpeedNumber()
         }
     }
+    @Published var isSpeedValid = false
     @Published var speedNumber = ""
     var speedUnit: String {
         return prefersMile ? "mph" : "km/h"
     }
-    @Published var course: Angle?
+    @Published var isCourseValid = false
+    @Published var course = Angle.degrees(0)
 
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
@@ -44,16 +46,20 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         if let mps = location.last?.speed, mps >= 0 {
             let val = mps * 60 * 60 / (prefersMile ? 1609.344 : 1000)
             speedNumber = Self.displayString(val)
+            isSpeedValid = true
         } else {
-            speedNumber = "-"
+            speedNumber = Self.displayString(0)
+            isSpeedValid = false
         }
     }
 
     private func updateCourse() {
         if let loc = location.last, loc.courseAccuracy >= 0, loc.course >= 0 {
             course = .degrees(loc.course)
+            isCourseValid = true
         } else {
-            course = nil
+            course = .degrees(0)
+            isCourseValid = false
         }
     }
 

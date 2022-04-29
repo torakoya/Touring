@@ -12,6 +12,7 @@ struct ContentView: View {
                 HStack(alignment: .lastTextBaseline) {
                     Text(vm.speedNumber)
                         .font(.largeTitle)
+                        .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
                     Text(vm.speedUnit)
                         .font(.footnote)
                 }
@@ -21,8 +22,8 @@ struct ContentView: View {
 
                 Image(systemName: "arrow.up.circle")
                     .font(.largeTitle)
-                    .rotationEffect(vm.course ?? Angle.degrees(0))
-                    .foregroundColor(vm.course == nil ? .gray : Color(uiColor: .label))
+                    .rotationEffect(vm.course)
+                    .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
                     .padding(.trailing)
 
                 VStack {
