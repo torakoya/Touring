@@ -13,6 +13,7 @@ struct ContentView: View {
                     Text(vm.speedNumber)
                         .font(.largeTitle)
                     Text(vm.speedUnit)
+                        .font(.footnote)
                 }
                 .onTapGesture {
                     vm.prefersMile.toggle()
@@ -22,30 +23,34 @@ struct ContentView: View {
                     .font(.largeTitle)
                     .rotationEffect(vm.course ?? Angle.degrees(0))
                     .foregroundColor(vm.course == nil ? .gray : Color(uiColor: .label))
+                    .padding(.trailing)
 
-                Button {
-                    if vm.loggingState == .started {
-                        vm.location.logger.pause()
-                    } else {
-                        vm.location.logger.start()
+                VStack {
+                    Text(vm.loggingState == .started ? "Rec" : vm.loggingState == .paused ? "Pause" : "")
+                        .font(.caption2.smallCaps().bold())
+                        .foregroundColor(vm.loggingState == .paused ? .gray : .red)
+
+                    HStack {
+                        Button {
+                            if vm.loggingState == .started {
+                                vm.location.logger.pause()
+                            } else {
+                                vm.location.logger.start()
+                            }
+                        } label: {
+                            Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
+                                .font(.title)
+                                .foregroundColor(.red)
+                        }
+                        Button {
+                            vm.location.logger.stop()
+                        } label: {
+                            Image(systemName: "stop.circle")
+                                .font(.title)
+                        }
+                        .disabled(vm.loggingState == .stopped)
                     }
-                } label: {
-                    Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
-                        .font(.title)
-                        .foregroundColor(.red)
                 }
-                Button {
-                    vm.location.logger.stop()
-                } label: {
-                    Image(systemName: "stop.circle")
-                        .font(.title)
-                }
-                .disabled(vm.loggingState == .stopped)
-
-                Text("Rec")
-                    .font(.caption2.smallCaps().bold())
-                    .foregroundColor(.red)
-                    .opacity(vm.loggingState == .started ? 1 : 0)
             }
             .padding()
             .background(Color(uiColor: .systemBackground).opacity(0.75))
