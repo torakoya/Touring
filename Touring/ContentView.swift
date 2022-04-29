@@ -18,6 +18,11 @@ struct ContentView: View {
                     vm.prefersMile.toggle()
                 }
 
+                Image(systemName: "arrow.up.circle")
+                    .font(.largeTitle)
+                    .rotationEffect(vm.course ?? Angle.degrees(0))
+                    .foregroundColor(vm.course == nil ? .gray : Color(uiColor: .label))
+
                 Button {
                     if vm.loggingState == .started {
                         vm.location.logger.pause()

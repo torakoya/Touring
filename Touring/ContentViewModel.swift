@@ -1,4 +1,4 @@
-import UIKit
+import SwiftUI
 
 class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelegate {
     let location = Location()
@@ -13,6 +13,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     var speedUnit: String {
         return prefersMile ? "mph" : "km/h"
     }
+    @Published var course: Angle?
 
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
@@ -25,6 +26,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         location.logger.delegate = self
 
         updateSpeedNumber()
+        updateCourse()
         loggingStateChanged()
     }
 
@@ -47,8 +49,17 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         }
     }
 
+    private func updateCourse() {
+        if let loc = location.last, loc.courseAccuracy >= 0, loc.course >= 0 {
+            course = .degrees(loc.course)
+        } else {
+            course = nil
+        }
+    }
+
     func locationDidUpdate(_ location: Location) {
         updateSpeedNumber()
+        updateCourse()
     }
 
     func loggingStateChanged() {
