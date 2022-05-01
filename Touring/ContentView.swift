@@ -5,8 +5,11 @@ struct ContentView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MapView()
+            MapView(mapViewContext: $vm.mapViewContext)
                 .ignoresSafeArea()
+                .onChange(of: vm.mapViewContext.heading) { _ in
+                    vm.updateCourse()
+                }
 
             HStack {
                 HStack(alignment: .lastTextBaseline) {

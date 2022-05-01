@@ -23,6 +23,8 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     @Published var alertingLocationLoggingError = false
     @Published var loggingState = LocationLogger.State.stopped
 
+    @Published var mapViewContext = MapViewContext()
+
     init() {
         location.delegate = self
         location.logger.delegate = self
@@ -42,7 +44,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         }
     }
 
-    private func updateSpeedNumber() {
+    func updateSpeedNumber() {
         if let mps = location.last?.speed, mps >= 0 {
             let val = mps * 60 * 60 / (prefersMile ? 1609.344 : 1000)
             speedNumber = Self.displayString(val)
@@ -53,12 +55,12 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         }
     }
 
-    private func updateCourse() {
+    func updateCourse() {
         if let loc = location.last, loc.courseAccuracy >= 0, loc.course >= 0 {
-            course = .degrees(loc.course)
+            course = .degrees(loc.course - mapViewContext.heading)
             isCourseValid = true
         } else {
-            course = .degrees(0)
+            course = .degrees(-mapViewContext.heading)
             isCourseValid = false
         }
     }
