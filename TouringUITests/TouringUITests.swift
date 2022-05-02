@@ -113,4 +113,12 @@ class TouringUITests: XCTestCase {
         XCTAssert(app.buttons["Screen Recording"].exists)
         XCTAssertFalse(app.buttons["stop.circle"].isEnabled)
     }
+
+    func testPutDestinations() throws {
+        let oldCount = app.otherElements.count
+        let point = app.coordinate(withNormalizedOffset: CGVector(
+            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
+        point.press(forDuration: 2)
+        XCTAssertGreaterThan(app.otherElements.count, oldCount)
+    }
 }
