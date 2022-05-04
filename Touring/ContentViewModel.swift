@@ -25,6 +25,9 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
     @Published var mapViewContext = MapViewContext()
 
+    @Published var destinationDetail: DestinationDetail?
+    @Published var showingDestinationDetail = false
+
     init() {
         location.delegate = self
         location.logger.delegate = self

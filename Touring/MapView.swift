@@ -5,6 +5,8 @@ import SwiftUI
 struct MapViewContext {
     var heading: CLLocationDirection = 0
     var destinations: [MKPointAnnotation] = []
+
+    var selectedDestination: Int = -1
 }
 
 struct MapView: UIViewRepresentable {
@@ -54,6 +56,14 @@ class MapViewCoordinator: NSObject {
 extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         view.mapViewContext.heading = mapView.camera.heading
+    }
+
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        if let ann = view.annotation as? MKPointAnnotation,
+           let index = self.view.mapViewContext.destinations.firstIndex(of: ann) {
+            self.view.mapViewContext.selectedDestination = index
+            mapView.deselectAnnotation(ann, animated: false)
+        }
     }
 }
 

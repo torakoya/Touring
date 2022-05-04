@@ -89,6 +89,23 @@ struct ContentView: View {
         } message: {
             Text("main.logging_error.msg")
         }
+        .onChange(of: vm.mapViewContext.selectedDestination) { newValue in
+            if newValue >= 0 {
+                vm.destinationDetail = DestinationDetail(
+                    vm.mapViewContext.destinations[newValue],
+                    at: newValue
+                ) { dest in
+                    vm.mapViewContext.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
+                    try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                }
+                vm.showingDestinationDetail = true
+            }
+        }
+        .sheet(isPresented: $vm.showingDestinationDetail) {
+            vm.mapViewContext.selectedDestination = -1
+        } content: {
+            DestinationDetailView(dest: Binding($vm.destinationDetail)!)
+        }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
     }

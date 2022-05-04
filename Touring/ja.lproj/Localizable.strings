@@ -1,4 +1,6 @@
 /* Common */
+"Name" = "名前";
+"Remove" = "削除";
 "Settings" = "設定";
 
 /* ContentView */
@@ -13,3 +15,6 @@
 
 "main.logging_error.title" = "位置情報の記録に失敗しました";
 "main.logging_error.msg" = "取得した位置情報をストレージに保存できませんでした。";
+
+/* DestinationDetailView */
+"Destination %lld" = "目的地 %lld";
