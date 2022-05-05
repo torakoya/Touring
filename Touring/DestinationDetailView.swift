@@ -6,12 +6,14 @@ class DestinationDetail: Identifiable {
     var title: String
     var coordinate: CLLocationCoordinate2D
     var update: ((DestinationDetail) -> Void)?
+    var remove: ((DestinationDetail) -> Void)?
 
-    init(_ annotation: MKPointAnnotation, at id: Int, onUpdate: ((DestinationDetail) -> Void)? = nil) {
+    init(_ annotation: MKPointAnnotation, at id: Int, onUpdate: ((DestinationDetail) -> Void)? = nil, onRemove: ((DestinationDetail) -> Void)? = nil) {
         self.title = annotation.title ?? ""
         self.coordinate = annotation.coordinate
         self.id = id
         self.update = onUpdate
+        self.remove = onRemove
     }
 }
 
@@ -19,6 +21,7 @@ struct DestinationDetailView: View {
     @Binding var dest: DestinationDetail
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
+    @State private var removeButtonTapped = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -39,7 +42,7 @@ struct DestinationDetailView: View {
                         .submitLabel(.done)
                         .focused($focused)
                         .onChange(of: focused) { newValue in
-                            if !newValue {
+                            if !newValue && !removeButtonTapped {
                                 dest.update?(dest)
                             }
                         }
@@ -48,6 +51,9 @@ struct DestinationDetailView: View {
                 }
                 Section {
                     Button(role: .destructive) {
+                        removeButtonTapped = true
+                        dest.remove?(dest)
+                        dismiss()
                     } label: {
                         Label("Remove", systemImage: "trash")
                     }

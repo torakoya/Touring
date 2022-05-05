@@ -93,11 +93,15 @@ struct ContentView: View {
             if newValue >= 0 {
                 vm.destinationDetail = DestinationDetail(
                     vm.mapViewContext.destinations[newValue],
-                    at: newValue
-                ) { dest in
-                    vm.mapViewContext.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
-                    try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
-                }
+                    at: newValue,
+                    onUpdate: { dest in
+                        vm.mapViewContext.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
+                        try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                    },
+                    onRemove: { dest in
+                        vm.mapViewContext.destinations.remove(at: dest.id)
+                        try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                    })
                 vm.showingDestinationDetail = true
             }
         }

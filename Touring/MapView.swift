@@ -3,10 +3,34 @@ import SwiftUI
 
 /// The information of a map view that the parent view may want.
 struct MapViewContext {
+    fileprivate weak var mapView: MKMapView?
+
     var heading: CLLocationDirection = 0
-    var destinations: [MKPointAnnotation] = []
+    var destinations: [MKPointAnnotation] = [] {
+        didSet {
+            syncDestinations()
+        }
+    }
 
     var selectedDestination: Int = -1
+
+    /// Sync the annotations in the map view with the destinations.
+    func syncDestinations() {
+        if let mapView = mapView {
+            destinations.forEach { dest in
+                if !mapView.annotations.contains(where: { ($0 as? MKPointAnnotation) == dest }) {
+                    mapView.addAnnotation(dest)
+                }
+            }
+
+            mapView.annotations.reversed().forEach { ann in
+                if let ann = ann as? MKPointAnnotation,
+                    !destinations.contains(where: { $0 == ann }) {
+                    mapView.removeAnnotation(ann)
+                }
+            }
+        }
+    }
 }
 
 struct MapView: UIViewRepresentable {
@@ -22,6 +46,8 @@ struct MapView: UIViewRepresentable {
         view.showsScale = true
         view.showsTraffic = true
 
+        mapViewContext.mapView = view
+
         let recog = UILongPressGestureRecognizer(
             target: context.coordinator,
             action: #selector(Coordinator.longPressed(_:)))
@@ -31,7 +57,6 @@ struct MapView: UIViewRepresentable {
         // mapViewContext.destinations seems not to be updated immediately here.
         DispatchQueue.main.async {
             try? mapViewContext.destinations = MapUtil.loadDestinations()
-            view.addAnnotations(mapViewContext.destinations)
         }
 
         return view
@@ -84,7 +109,6 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
             ann.coordinate = coord
             view.mapViewContext.destinations += [ann]
             try? MapUtil.saveDestinations(view.mapViewContext.destinations)
-            mapView.addAnnotation(ann)
         }
     }
 }
