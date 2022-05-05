@@ -18,6 +18,7 @@ class DestinationDetail: Identifiable {
 struct DestinationDetailView: View {
     @Binding var dest: DestinationDetail
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var focused: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -36,8 +37,11 @@ struct DestinationDetailView: View {
                 Section {
                     TextField("Name", text: $dest.title)
                         .submitLabel(.done)
-                        .onSubmit {
-                            dest.update?(dest)
+                        .focused($focused)
+                        .onChange(of: focused) { newValue in
+                            if !newValue {
+                                dest.update?(dest)
+                            }
                         }
                     Text("\(dest.coordinate.latitude) \(dest.coordinate.longitude)")
                         .textSelection(.enabled)

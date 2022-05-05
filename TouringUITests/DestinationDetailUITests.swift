@@ -40,7 +40,7 @@ class DestinationDetailUITests: BaseUITestCase {
 
         let tf = app.textFields["Name"]
         tf.tap()
-        tf.typeText(name + "\n")
+        tf.typeText(name)
         XCTAssert(app.textFields[name].exists)
 
         closeDetail()
