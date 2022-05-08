@@ -13,12 +13,9 @@ struct MapViewContext {
             syncDestinations()
 
             if destinations.isEmpty {
-                currentDestination = nil
                 originOnly = true
             } else if currentDestination == nil {
                 currentDestination = destinations.startIndex
-            } else if currentDestination! >= destinations.endIndex {
-                currentDestination = destinations.endIndex - 1
             }
 
             // If the previously selected destination still exists, it
@@ -36,7 +33,21 @@ struct MapViewContext {
 
     var selectedDestination: Int = -1
 
-    var currentDestination: Int?
+    var currentDestination: Int? {
+        didSet {
+            if destinations.isEmpty {
+                currentDestination = nil
+            } else if let dest = currentDestination {
+                if dest < destinations.startIndex {
+                    currentDestination = destinations.startIndex
+                } else if dest >= destinations.endIndex {
+                    currentDestination = destinations.endIndex - 1
+                }
+            }
+
+            addDestinationLine()
+        }
+    }
     var following = false {
         didSet {
             if let mapView = mapView {
@@ -65,14 +76,11 @@ struct MapViewContext {
     }
 
     mutating func goForward() {
-        if destinations.isEmpty {
-            currentDestination = nil
-        } else if currentDestination == nil {
-            currentDestination = destinations.startIndex
-        } else {
-            currentDestination! += 1
-            if currentDestination! >= destinations.endIndex {
+        if let dest = currentDestination {
+            if dest + 1 >= destinations.endIndex {
                 currentDestination = destinations.startIndex
+            } else {
+                currentDestination = dest + 1
             }
         }
 
@@ -82,14 +90,11 @@ struct MapViewContext {
     }
 
     mutating func goBackward() {
-        if destinations.isEmpty {
-            currentDestination = nil
-        } else if currentDestination == nil {
-            currentDestination = destinations.endIndex - 1
-        } else {
-            currentDestination! -= 1
-            if currentDestination! < destinations.startIndex {
+        if let dest = currentDestination {
+            if dest - 1 < destinations.startIndex {
                 currentDestination = destinations.endIndex - 1
+            } else {
+                currentDestination = dest - 1
             }
         }
 
@@ -125,6 +130,29 @@ struct MapViewContext {
                            destinations[currentDestination].coordinate]),
                 animated: animated)
         }
+    }
+
+    /// Draw a line from the user location to the destination.
+    func addDestinationLine() {
+        if let mapView = mapView, let destIndex = currentDestination {
+            DispatchQueue.main.async {
+                mapView.removeOverlays(mapView.overlays)
+                let dest = destinations[destIndex]
+                let user = mapView.userLocation
+                if !visible(dest.coordinate, in: mapView) ||
+                    !visible(user.coordinate, in: mapView) {
+                    let coords = [user.coordinate, dest.coordinate]
+                    let overlay = MKPolyline(coordinates: coords, count: coords.count)
+                    mapView.addOverlay(overlay, level: .aboveRoads)
+                }
+            }
+        }
+    }
+
+    /// Returns whether the coordinate can currently be seen in the map view.
+    func visible(_ coordinate: CLLocationCoordinate2D, in mapView: MKMapView) -> Bool {
+        let cgpoint = mapView.convert(coordinate, toPointTo: mapView)
+        return mapView.frame.contains(cgpoint)
     }
 }
 
@@ -188,6 +216,8 @@ class MapViewCoordinator: NSObject {
 extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         view.mapViewContext.heading = mapView.camera.heading
+
+        view.mapViewContext.addDestinationLine()
     }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -234,6 +264,18 @@ extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
         if !view.mapViewContext.originOnly && gestured(mapView) {
             view.mapViewContext.following = false
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if let overlay = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: overlay)
+            renderer.strokeColor = .systemCyan
+            renderer.lineWidth = 3
+            renderer.lineDashPattern = [0, 10]
+            return renderer
+        } else {
+            return MKOverlayRenderer(overlay: overlay)
         }
     }
 }
