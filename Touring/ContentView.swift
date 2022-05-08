@@ -3,6 +3,20 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var vm = ContentViewModel()
 
+    var currentDestinationImageName: String {
+        if let destIndex = vm.mapViewContext.currentDestination, destIndex < 40 {
+            return "\(destIndex + 1).circle"
+        } else {
+            return "circle"
+        }
+    }
+
+    var mapModeImageName: String {
+        vm.mapViewContext.originOnly ?
+            (vm.mapViewContext.following ? "o.square.fill" : "o.square") :
+            (vm.mapViewContext.following ? "flag.square.fill" : "flag.square")
+    }
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             MapView(mapViewContext: $vm.mapViewContext)
@@ -11,55 +25,97 @@ struct ContentView: View {
                     vm.updateCourse()
                 }
 
-            HStack {
-                HStack(alignment: .lastTextBaseline) {
-                    Text(vm.speedNumber)
+            VStack(alignment: .leading) {
+                HStack {
+                    HStack(alignment: .lastTextBaseline) {
+                        Text(vm.speedNumber)
+                            .font(.largeTitle)
+                            .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
+                        Text(vm.speedUnit)
+                            .font(.footnote)
+                    }
+                    .onTapGesture {
+                        vm.prefersMile.toggle()
+                    }
+
+                    Image(systemName: "arrow.up.circle")
                         .font(.largeTitle)
-                        .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
-                    Text(vm.speedUnit)
-                        .font(.footnote)
-                }
-                .onTapGesture {
-                    vm.prefersMile.toggle()
-                }
+                        .rotationEffect(vm.course)
+                        .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
+                        .padding(.trailing)
 
-                Image(systemName: "arrow.up.circle")
-                    .font(.largeTitle)
-                    .rotationEffect(vm.course)
-                    .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
-                    .padding(.trailing)
+                    VStack {
+                        Text(vm.loggingState == .started ? "Rec" : vm.loggingState == .paused ? "Pause" : "")
+                            .font(.caption2.smallCaps().bold())
+                            .foregroundColor(vm.loggingState == .paused ? .gray : .red)
 
-                VStack {
-                    Text(vm.loggingState == .started ? "Rec" : vm.loggingState == .paused ? "Pause" : "")
-                        .font(.caption2.smallCaps().bold())
-                        .foregroundColor(vm.loggingState == .paused ? .gray : .red)
-
-                    HStack {
-                        Button {
-                            if vm.loggingState == .started {
-                                vm.location.logger.pause()
-                            } else {
-                                vm.location.logger.start()
+                        HStack {
+                            Button {
+                                if vm.loggingState == .started {
+                                    vm.location.logger.pause()
+                                } else {
+                                    vm.location.logger.start()
+                                }
+                            } label: {
+                                Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
+                                    .font(.title)
+                                    .foregroundColor(.red)
                             }
-                        } label: {
-                            Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
-                                .font(.title)
-                                .foregroundColor(.red)
+                            Button {
+                                vm.location.logger.stop()
+                            } label: {
+                                Image(systemName: "stop.circle")
+                                    .font(.title)
+                            }
+                            .disabled(vm.loggingState == .stopped)
                         }
-                        Button {
-                            vm.location.logger.stop()
-                        } label: {
-                            Image(systemName: "stop.circle")
-                                .font(.title)
-                        }
-                        .disabled(vm.loggingState == .stopped)
                     }
                 }
+                .padding()
+                .background(Color(uiColor: .systemBackground).opacity(0.75))
+                .cornerRadius(15)
+                .padding()
+
+                Spacer()
+
+                HStack {
+                    Button {
+                        vm.mapViewContext.goBackward()
+                    } label: {
+                        Image(systemName: "backward.fill")
+                            .font(.title)
+                    }
+                    .disabled(vm.mapViewContext.destinations.count <= 1)
+                    Image(systemName: currentDestinationImageName)
+                        .font(.title)
+                    Button {
+                        vm.mapViewContext.goForward()
+                    } label: {
+                        Image(systemName: "forward.fill")
+                            .font(.title)
+                    }
+                    .disabled(vm.mapViewContext.destinations.count <= 1)
+                    Button {
+                        if vm.mapViewContext.following {
+                            if vm.mapViewContext.destinations.isEmpty {
+                                vm.mapViewContext.originOnly = true
+                            } else {
+                                vm.mapViewContext.originOnly.toggle()
+                            }
+                        } else {
+                            vm.mapViewContext.following.toggle()
+                        }
+                    } label: {
+                        Image(systemName: mapModeImageName)
+                            .font(.title)
+                    }
+                }
+                .padding()
+                .background(Color(uiColor: .systemBackground).opacity(0.75))
+                .cornerRadius(15)
+                .padding()
+                .padding(.bottom, 10) // Avoid covering MKmapView's legal label
             }
-            .padding()
-            .background(Color(uiColor: .systemBackground).opacity(0.75))
-            .cornerRadius(15)
-            .padding()
         }
         .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
         } message: {

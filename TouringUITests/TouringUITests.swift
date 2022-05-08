@@ -94,4 +94,43 @@ class TouringUITests: BaseUITestCase {
         point.press(forDuration: 2)
         XCTAssertGreaterThan(app.otherElements.count, oldCount)
     }
+
+    func testSwitchFollowing() throws {
+        XCTAssert(app.buttons["o.square.fill"].exists)
+
+        app.swipeUp()
+        XCTAssert(app.buttons["o.square"].exists)
+
+        app.buttons["o.square"].tap()
+        XCTAssert(app.buttons["o.square.fill"].exists)
+    }
+
+    func testSwitchMapMode() throws {
+        app.buttons["o.square.fill"].tap()
+        XCTAssert(app.buttons["flag.square.fill"].exists)
+
+        app.buttons["flag.square.fill"].tap()
+        XCTAssert(app.buttons["o.square.fill"].exists)
+    }
+
+    func testChangeCurrentDestination() throws {
+        let point1 = app.coordinate(withNormalizedOffset: CGVector(
+            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
+        point1.press(forDuration: 2)
+
+        let point2 = app.coordinate(withNormalizedOffset: CGVector(
+            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
+        point2.press(forDuration: 2)
+
+        XCTAssert(app.images["1.circle"].exists)
+
+        app.buttons["Back"].tap()
+        XCTAssertFalse(app.images["1.circle"].exists)
+
+        app.buttons["Forward"].tap()
+        XCTAssert(app.images["1.circle"].exists)
+
+        app.buttons["Forward"].tap()
+        XCTAssert(app.images["2.circle"].exists)
+    }
 }

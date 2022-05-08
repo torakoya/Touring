@@ -21,8 +21,10 @@
 		7A4350FB280A958700C42F62 /* TouringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4350FA280A958700C42F62 /* TouringTests.swift */; };
 		7A435105280A958700C42F62 /* TouringUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A435104280A958700C42F62 /* TouringUITests.swift */; };
 		7A435107280A958700C42F62 /* TouringUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A435106280A958700C42F62 /* TouringUITestsLaunchTests.swift */; };
+		7A4978A22826BC8700313F45 /* MapViewContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4978A12826BC8700313F45 /* MapViewContextTests.swift */; };
 		7A4D72D128239A91003643BA /* DestinationDetailUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D72D028239A90003643BA /* DestinationDetailUITests.swift */; };
 		7A4D72D32823A0CC003643BA /* BaseUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A4D72D22823A0CC003643BA /* BaseUITestCase.swift */; };
+		7AFDD2B228279C2100711F2B /* MapUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDD2B128279C2100711F2B /* MapUtilTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,8 +64,10 @@
 		7A435100280A958700C42F62 /* TouringUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TouringUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A435104280A958700C42F62 /* TouringUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouringUITests.swift; sourceTree = "<group>"; };
 		7A435106280A958700C42F62 /* TouringUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouringUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		7A4978A12826BC8700313F45 /* MapViewContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewContextTests.swift; sourceTree = "<group>"; };
 		7A4D72D028239A90003643BA /* DestinationDetailUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailUITests.swift; sourceTree = "<group>"; };
 		7A4D72D22823A0CC003643BA /* BaseUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUITestCase.swift; sourceTree = "<group>"; };
+		7AFDD2B128279C2100711F2B /* MapUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUtilTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,6 +146,8 @@
 			isa = PBXGroup;
 			children = (
 				7A4350FA280A958700C42F62 /* TouringTests.swift */,
+				7AFDD2B128279C2100711F2B /* MapUtilTests.swift */,
+				7A4978A12826BC8700313F45 /* MapViewContextTests.swift */,
 			);
 			path = TouringTests;
 			sourceTree = "<group>";
@@ -325,7 +331,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AFDD2B228279C2100711F2B /* MapUtilTests.swift in Sources */,
 				7A4350FB280A958700C42F62 /* TouringTests.swift in Sources */,
+				7A4978A22826BC8700313F45 /* MapViewContextTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,7 +8,9 @@ class DestinationDetail: Identifiable {
     var update: ((DestinationDetail) -> Void)?
     var remove: ((DestinationDetail) -> Void)?
 
-    init(_ annotation: MKPointAnnotation, at id: Int, onUpdate: ((DestinationDetail) -> Void)? = nil, onRemove: ((DestinationDetail) -> Void)? = nil) {
+    init(_ annotation: MKPointAnnotation, at id: Int,
+         onUpdate: ((DestinationDetail) -> Void)? = nil,
+         onRemove: ((DestinationDetail) -> Void)? = nil) {
         self.title = annotation.title ?? ""
         self.coordinate = annotation.coordinate
         self.id = id

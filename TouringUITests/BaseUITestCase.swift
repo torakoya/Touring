@@ -19,9 +19,7 @@ class BaseUITestCase: XCTestCase {
                 return true
             }
 
-            // app.tap() is common, but it fires a tap event on an element
-            // if the element is at the place where XCTest taps.
-            app.swipeDown()
+            app.tap()
         }
     }
 

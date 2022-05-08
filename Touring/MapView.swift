@@ -8,11 +8,95 @@ struct MapViewContext {
     var heading: CLLocationDirection = 0
     var destinations: [MKPointAnnotation] = [] {
         didSet {
+            let oldSelectedDestination = currentDestination.map { oldValue[$0] }
+
             syncDestinations()
+
+            if destinations.isEmpty {
+                currentDestination = nil
+                originOnly = true
+            } else if currentDestination == nil {
+                currentDestination = destinations.startIndex
+            } else if currentDestination! >= destinations.endIndex {
+                currentDestination = destinations.endIndex - 1
+            }
+
+            // If the previously selected destination still exists, it
+            // should be kept selected.
+            if let oldSelectedDestination = oldSelectedDestination {
+                currentDestination = destinations.firstIndex(of: oldSelectedDestination)
+ ?? currentDestination
+            }
+
+            if !originOnly && following && oldSelectedDestination != currentDestination.map({ destinations[$0] }) {
+                setRegionWithDestination()
+            }
         }
     }
 
     var selectedDestination: Int = -1
+
+    var currentDestination: Int?
+    var following = false {
+        didSet {
+            if let mapView = mapView {
+                if originOnly {
+                    mapView.setUserTrackingMode(following ? .follow : .none, animated: true)
+                } else if following {
+                    setRegionWithDestination()
+                }
+            }
+        }
+    }
+    var originOnly = true {
+        didSet {
+            if let mapView = mapView {
+                if originOnly && following {
+                    mapView.setUserTrackingMode(.follow, animated: true)
+                } else {
+                    mapView.setUserTrackingMode(.none, animated: true)
+
+                    if !originOnly && following {
+                        setRegionWithDestination()
+                    }
+                }
+            }
+        }
+    }
+
+    mutating func goForward() {
+        if destinations.isEmpty {
+            currentDestination = nil
+        } else if currentDestination == nil {
+            currentDestination = destinations.startIndex
+        } else {
+            currentDestination! += 1
+            if currentDestination! >= destinations.endIndex {
+                currentDestination = destinations.startIndex
+            }
+        }
+
+        if !originOnly && following {
+            setRegionWithDestination()
+        }
+    }
+
+    mutating func goBackward() {
+        if destinations.isEmpty {
+            currentDestination = nil
+        } else if currentDestination == nil {
+            currentDestination = destinations.endIndex - 1
+        } else {
+            currentDestination! -= 1
+            if currentDestination! < destinations.startIndex {
+                currentDestination = destinations.endIndex - 1
+            }
+        }
+
+        if !originOnly && following {
+            setRegionWithDestination()
+        }
+    }
 
     /// Sync the annotations in the map view with the destinations.
     func syncDestinations() {
@@ -29,6 +113,17 @@ struct MapViewContext {
                     mapView.removeAnnotation(ann)
                 }
             }
+        }
+    }
+
+    func setRegionWithDestination(animated: Bool = true) {
+        if let mapView = mapView, let currentDestination = currentDestination,
+           currentDestination < destinations.endIndex {
+            mapView.setRegion(
+                MapUtil.region(
+                    with: [mapView.userLocation.coordinate,
+                           destinations[currentDestination].coordinate]),
+                animated: animated)
         }
     }
 }
@@ -76,6 +171,18 @@ class MapViewCoordinator: NSObject {
     init(_ view: MapView) {
         self.view = view
     }
+
+    /// Returns whether the map view is being gestured.
+    private func gestured(_ mapView: MKMapView) -> Bool {
+        if let recogs = mapView.subviews.first?.gestureRecognizers {
+            for recog in recogs {
+                if recog.state == .began || recog.state == .ended || recog.state == .changed {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 }
 
 extension MapViewCoordinator: MKMapViewDelegate {
@@ -88,6 +195,29 @@ extension MapViewCoordinator: MKMapViewDelegate {
            let index = self.view.mapViewContext.destinations.firstIndex(of: ann) {
             self.view.mapViewContext.selectedDestination = index
             mapView.deselectAnnotation(ann, animated: false)
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
+        // Without DispatchQueue.main.async, during initialization,
+        // the modification here of `following` seems not to be
+        // reflected immediately.
+        DispatchQueue.main.async {
+            if self.view.mapViewContext.originOnly {
+                self.view.mapViewContext.following = (mode != .none)
+            }
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        if !view.mapViewContext.originOnly && view.mapViewContext.following {
+            view.mapViewContext.setRegionWithDestination(animated: false)
+        }
+    }
+
+    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+        if !view.mapViewContext.originOnly && gestured(mapView) {
+            view.mapViewContext.following = false
         }
     }
 }
@@ -165,6 +295,24 @@ enum MapUtil {
         var title: String?
         var latitude: Double
         var longitude: Double
+    }
+
+    /// Returns a region that contains all the coordinates.
+    static func region(with coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion {
+        let paddingratio = 0.15
+        let deltamin: CLLocationDegrees = 0.001
+        var rect = MKMapRect.null
+        for coord in coordinates {
+            rect = rect.union(MKMapRect(origin: MKMapPoint(coord), size: MKMapSize()))
+        }
+        var region = MKCoordinateRegion(rect.insetBy(dx: rect.width * -paddingratio, dy: rect.height * -paddingratio))
+        if region.span.latitudeDelta < deltamin {
+            region.span.latitudeDelta = deltamin
+        }
+        if region.span.longitudeDelta < deltamin {
+            region.span.longitudeDelta = deltamin
+        }
+        return region
     }
 }
 
