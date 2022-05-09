@@ -20,10 +20,14 @@ struct MapViewContext {
 
             // If the previously selected destination still exists, it
             // should be kept selected.
-            if let oldSelectedDestination = oldSelectedDestination {
-                currentDestination = destinations.firstIndex(of: oldSelectedDestination)
- ?? currentDestination
+            if let oldSelectedDestination = oldSelectedDestination,
+                let index = destinations.firstIndex(of: oldSelectedDestination) {
+                currentDestination = index
+            } else if currentDestination.map({ $0 >= destinations.endIndex }) ?? false {
+                currentDestination = destinations.endIndex - 1
             }
+
+            refreshAnnotations()
 
             if !originOnly && following && oldSelectedDestination != currentDestination.map({ destinations[$0] }) {
                 setRegionWithDestination()
@@ -45,6 +49,7 @@ struct MapViewContext {
                 }
             }
 
+            refreshAnnotations()
             addDestinationLine()
         }
     }
@@ -164,6 +169,28 @@ struct MapViewContext {
     func visible(_ coordinate: CLLocationCoordinate2D, in mapView: MKMapView) -> Bool {
         let cgpoint = mapView.convert(coordinate, toPointTo: mapView)
         return mapView.frame.contains(cgpoint)
+    }
+
+    func refreshAnnotations() {
+        if let mapView = mapView {
+            for annotation in mapView.annotations {
+                if let view = mapView.view(for: annotation) {
+                    setupAnnotationView(view)
+                }
+            }
+        }
+    }
+
+    func setupAnnotationView(_ view: MKAnnotationView) {
+        if let view = view as? MKMarkerAnnotationView,
+           let annotation = view.annotation as? MKPointAnnotation {
+            let isCurrent = annotation == currentDestination.map { destinations[$0] }
+            view.markerTintColor = isCurrent ? .systemPurple : nil
+            view.displayPriority = isCurrent ? .required : .defaultHigh
+            if let index = destinations.firstIndex(of: annotation) {
+                view.glyphText = String(index + 1)
+            }
+        }
     }
 }
 
@@ -288,6 +315,23 @@ extension MapViewCoordinator: MKMapViewDelegate {
         } else {
             return MKOverlayRenderer(overlay: overlay)
         }
+    }
+
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let annotation = annotation as? MKPointAnnotation else { return nil }
+
+        let reuseId = "destination"
+        let av = { () -> MKMarkerAnnotationView in
+            if let av = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView {
+                av.annotation = annotation
+                return av
+            } else {
+                return MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            }
+        }()
+
+        view.mapViewContext.setupAnnotationView(av)
+        return av
     }
 }
 
