@@ -109,6 +109,11 @@ struct ContentView: View {
                         Image(systemName: mapModeImageName)
                             .font(.title)
                     }
+
+                    if let dist = vm.mapViewContext.currentDestinationDistance {
+                        let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
+                        Text(diststr[0]) + Text(diststr[1]).font(.footnote)
+                    }
                 }
                 .padding()
                 .background(Color(uiColor: .systemBackground).opacity(0.75))

@@ -75,6 +75,17 @@ struct MapViewContext {
         }
     }
 
+    var currentDestinationDistance: CLLocationDistance? {
+        if let mapView = mapView, let currentDestination = currentDestination {
+            let user = mapView.userLocation.coordinate
+            let dest = destinations[currentDestination].coordinate
+            let userloc = CLLocation(latitude: user.latitude, longitude: user.longitude)
+            let destloc = CLLocation(latitude: dest.latitude, longitude: dest.longitude)
+            return MeasureUtil.distance(from: userloc, to: destloc)
+        }
+        return nil
+    }
+
     mutating func goForward() {
         if let dest = currentDestination {
             if dest + 1 >= destinations.endIndex {
