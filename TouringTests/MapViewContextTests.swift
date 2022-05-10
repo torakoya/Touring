@@ -12,29 +12,38 @@ class MapViewContextTests: XCTestCase {
     func testDestination() throws {
         let ctx = MapViewContext()
         XCTAssert(ctx.destinations.isEmpty)
-        XCTAssertNil(ctx.currentDestination)
+        XCTAssertNil(ctx.targetIndex)
+        XCTAssertNil(ctx.target)
         XCTAssertTrue(ctx.originOnly)
         XCTAssertFalse(ctx.following)
     }
 
     func testAddDestination() throws {
+        let dest0 = MKPointAnnotation()
+        let dest1 = MKPointAnnotation()
+
         var ctx = MapViewContext()
 
-        ctx.destinations += [MKPointAnnotation()]
-        XCTAssertEqual(ctx.currentDestination, 0)
+        ctx.destinations += [dest0]
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dest0)
 
-        ctx.destinations += [MKPointAnnotation()]
-        XCTAssertEqual(ctx.currentDestination, 0)
+        ctx.destinations += [dest1]
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dest0)
     }
 
     func testRemoveDestination() throws {
+        let dests = [MKPointAnnotation(), MKPointAnnotation()]
+
         var ctx = MapViewContext()
 
-        ctx.destinations = [MKPointAnnotation(), MKPointAnnotation()]
-        ctx.currentDestination = 1
+        ctx.destinations = dests
+        ctx.targetIndex = 1
 
         ctx.destinations.remove(at: 1)
-        XCTAssertEqual(ctx.currentDestination, 0)
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dests[0])
     }
 
     func testEmptyDestination() throws {
@@ -44,7 +53,8 @@ class MapViewContextTests: XCTestCase {
         ctx.originOnly = false
 
         ctx.destinations.remove(at: 0)
-        XCTAssertNil(ctx.currentDestination)
+        XCTAssertNil(ctx.targetIndex)
+        XCTAssertNil(ctx.target)
         XCTAssertTrue(ctx.originOnly)
     }
 
@@ -52,57 +62,75 @@ class MapViewContextTests: XCTestCase {
         var ctx = MapViewContext()
 
         ctx.goForward()
-        XCTAssertNil(ctx.currentDestination)
+        XCTAssertNil(ctx.targetIndex)
+        XCTAssertNil(ctx.target)
     }
 
     func testGoForwardWithSingleDestination() throws {
+        let dests = [MKPointAnnotation()]
+
         var ctx = MapViewContext()
-        ctx.destinations = [MKPointAnnotation()]
+        ctx.destinations = dests
 
         ctx.goForward()
-        XCTAssertEqual(ctx.currentDestination, 0)
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dests[0])
     }
 
     func testGoForwardWithSomeDestinations() throws {
+        let dests = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+
         var ctx = MapViewContext()
-        ctx.destinations = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+        ctx.destinations = dests
 
         ctx.goForward()
-        XCTAssertEqual(ctx.currentDestination, 1)
+        XCTAssertEqual(ctx.targetIndex, 1)
+        XCTAssertEqual(ctx.target, dests[1])
 
         ctx.goForward()
-        XCTAssertEqual(ctx.currentDestination, 2)
+        XCTAssertEqual(ctx.targetIndex, 2)
+        XCTAssertEqual(ctx.target, dests[2])
 
         ctx.goForward()
-        XCTAssertEqual(ctx.currentDestination, 0)
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dests[0])
     }
 
     func testGoBackwardWithEmptyDestination() throws {
         var ctx = MapViewContext()
 
         ctx.goBackward()
-        XCTAssertNil(ctx.currentDestination)
+        XCTAssertNil(ctx.targetIndex)
+        XCTAssertNil(ctx.target)
     }
 
     func testGoBackwardWithSingleDestination() throws {
+        let dests = [MKPointAnnotation()]
+
         var ctx = MapViewContext()
-        ctx.destinations = [MKPointAnnotation()]
+        ctx.destinations = dests
 
         ctx.goBackward()
-        XCTAssertEqual(ctx.currentDestination, 0)
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dests[0])
     }
 
     func testGoBackwardWithSomeDestinations() throws {
+        let dests = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+
         var ctx = MapViewContext()
-        ctx.destinations = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+        ctx.destinations = dests
 
         ctx.goBackward()
-        XCTAssertEqual(ctx.currentDestination, 2)
+        XCTAssertEqual(ctx.targetIndex, 2)
+        XCTAssertEqual(ctx.target, dests[2])
 
         ctx.goBackward()
-        XCTAssertEqual(ctx.currentDestination, 1)
+        XCTAssertEqual(ctx.targetIndex, 1)
+        XCTAssertEqual(ctx.target, dests[1])
 
         ctx.goBackward()
-        XCTAssertEqual(ctx.currentDestination, 0)
+        XCTAssertEqual(ctx.targetIndex, 0)
+        XCTAssertEqual(ctx.target, dests[0])
     }
 }

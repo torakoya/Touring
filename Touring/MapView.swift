@@ -8,28 +8,28 @@ struct MapViewContext {
     var heading: CLLocationDirection = 0
     var destinations: [MKPointAnnotation] = [] {
         didSet {
-            let oldSelectedDestination = currentDestination.map { oldValue[$0] }
+            let oldTarget = targetIndex.map { oldValue[$0] }
 
             syncDestinations()
 
             if destinations.isEmpty {
                 originOnly = true
-            } else if currentDestination == nil {
-                currentDestination = destinations.startIndex
+            } else if targetIndex == nil {
+                targetIndex = destinations.startIndex
             }
 
-            // If the previously selected destination still exists, it
-            // should be kept selected.
-            if let oldSelectedDestination = oldSelectedDestination,
-                let index = destinations.firstIndex(of: oldSelectedDestination) {
-                currentDestination = index
-            } else if currentDestination.map({ $0 >= destinations.endIndex }) ?? false {
-                currentDestination = destinations.endIndex - 1
+            // If the previously aimed-at target still exists, it
+            // should be kept aimed at.
+            if let oldTarget = oldTarget,
+                let index = destinations.firstIndex(of: oldTarget) {
+                targetIndex = index
+            } else if targetIndex.map({ $0 >= destinations.endIndex }) ?? false {
+                targetIndex = destinations.endIndex - 1
             }
 
             refreshAnnotations()
 
-            if !originOnly && following && oldSelectedDestination != currentDestination.map({ destinations[$0] }) {
+            if !originOnly && following && oldTarget != target {
                 setRegionWithDestination()
             }
         }
@@ -37,15 +37,15 @@ struct MapViewContext {
 
     var selectedDestination: Int = -1
 
-    var currentDestination: Int? {
+    var targetIndex: Int? {
         didSet {
             if destinations.isEmpty {
-                currentDestination = nil
-            } else if let dest = currentDestination {
+                targetIndex = nil
+            } else if let dest = targetIndex {
                 if dest < destinations.startIndex {
-                    currentDestination = destinations.startIndex
+                    targetIndex = destinations.startIndex
                 } else if dest >= destinations.endIndex {
-                    currentDestination = destinations.endIndex - 1
+                    targetIndex = destinations.endIndex - 1
                 }
             }
 
@@ -53,6 +53,12 @@ struct MapViewContext {
             addDestinationLine()
         }
     }
+
+    /// The destination currently headed for.
+    var target: MKPointAnnotation? {
+        targetIndex.map { $0 >= destinations.startIndex && $0 < destinations.endIndex ? destinations[$0] : nil } ?? nil
+    }
+
     var following = false {
         didSet {
             if let mapView = mapView {
@@ -80,10 +86,10 @@ struct MapViewContext {
         }
     }
 
-    var currentDestinationDistance: CLLocationDistance? {
-        if let mapView = mapView, let currentDestination = currentDestination {
+    var targetDistance: CLLocationDistance? {
+        if let mapView = mapView, let target = target {
             let user = mapView.userLocation.coordinate
-            let dest = destinations[currentDestination].coordinate
+            let dest = target.coordinate
             let userloc = CLLocation(latitude: user.latitude, longitude: user.longitude)
             let destloc = CLLocation(latitude: dest.latitude, longitude: dest.longitude)
             return MeasureUtil.distance(from: userloc, to: destloc)
@@ -92,11 +98,11 @@ struct MapViewContext {
     }
 
     mutating func goForward() {
-        if let dest = currentDestination {
+        if let dest = targetIndex {
             if dest + 1 >= destinations.endIndex {
-                currentDestination = destinations.startIndex
+                targetIndex = destinations.startIndex
             } else {
-                currentDestination = dest + 1
+                targetIndex = dest + 1
             }
         }
 
@@ -106,11 +112,11 @@ struct MapViewContext {
     }
 
     mutating func goBackward() {
-        if let dest = currentDestination {
+        if let dest = targetIndex {
             if dest - 1 < destinations.startIndex {
-                currentDestination = destinations.endIndex - 1
+                targetIndex = destinations.endIndex - 1
             } else {
-                currentDestination = dest - 1
+                targetIndex = dest - 1
             }
         }
 
@@ -138,26 +144,24 @@ struct MapViewContext {
     }
 
     func setRegionWithDestination(animated: Bool = true) {
-        if let mapView = mapView, let currentDestination = currentDestination,
-           currentDestination < destinations.endIndex {
+        if let mapView = mapView, let target = target {
             mapView.setRegion(
                 MapUtil.region(
                     with: [mapView.userLocation.coordinate,
-                           destinations[currentDestination].coordinate]),
+                           target.coordinate]),
                 animated: animated)
         }
     }
 
     /// Draw a line from the user location to the destination.
     func addDestinationLine() {
-        if let mapView = mapView, let destIndex = currentDestination {
+        if let mapView = mapView, let target = target {
             DispatchQueue.main.async {
                 mapView.removeOverlays(mapView.overlays)
-                let dest = destinations[destIndex]
                 let user = mapView.userLocation
-                if !visible(dest.coordinate, in: mapView) ||
+                if !visible(target.coordinate, in: mapView) ||
                     !visible(user.coordinate, in: mapView) {
-                    let coords = [user.coordinate, dest.coordinate]
+                    let coords = [user.coordinate, target.coordinate]
                     let overlay = MKPolyline(coordinates: coords, count: coords.count)
                     mapView.addOverlay(overlay, level: .aboveRoads)
                 }
@@ -184,9 +188,9 @@ struct MapViewContext {
     func setupAnnotationView(_ view: MKAnnotationView) {
         if let view = view as? MKMarkerAnnotationView,
            let annotation = view.annotation as? MKPointAnnotation {
-            let isCurrent = annotation == currentDestination.map { destinations[$0] }
-            view.markerTintColor = isCurrent ? .systemPurple : nil
-            view.displayPriority = isCurrent ? .required : .defaultHigh
+            let isTarget = annotation == target
+            view.markerTintColor = isTarget ? .systemPurple : nil
+            view.displayPriority = isTarget ? .required : .defaultHigh
             if let index = destinations.firstIndex(of: annotation) {
                 view.glyphText = String(index + 1)
             }
@@ -330,7 +334,9 @@ extension MapViewCoordinator: MKMapViewDelegate {
             }
         }()
 
-        view.mapViewContext.setupAnnotationView(av)
+        DispatchQueue.main.async { [self] in
+            view.mapViewContext.setupAnnotationView(av)
+        }
         return av
     }
 }

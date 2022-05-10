@@ -3,9 +3,9 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var vm = ContentViewModel()
 
-    var currentDestinationImageName: String {
-        if let destIndex = vm.mapViewContext.currentDestination, destIndex < 40 {
-            return "\(destIndex + 1).circle"
+    var targetImageName: String {
+        if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
+            return "\(targetIndex + 1).circle"
         } else {
             return "circle"
         }
@@ -86,7 +86,7 @@ struct ContentView: View {
                             .font(.title)
                     }
                     .disabled(vm.mapViewContext.destinations.count <= 1)
-                    Image(systemName: currentDestinationImageName)
+                    Image(systemName: targetImageName)
                         .font(.title)
                     Button {
                         vm.mapViewContext.goForward()
@@ -110,7 +110,7 @@ struct ContentView: View {
                             .font(.title)
                     }
 
-                    if let dist = vm.mapViewContext.currentDestinationDistance {
+                    if let dist = vm.mapViewContext.targetDistance {
                         let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
                         Text(diststr[0]) + Text(diststr[1]).font(.footnote)
                     }

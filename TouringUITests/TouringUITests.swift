@@ -113,7 +113,7 @@ class TouringUITests: BaseUITestCase {
         XCTAssert(app.buttons["o.square.fill"].exists)
     }
 
-    func testChangeCurrentDestination() throws {
+    func testChangeTarget() throws {
         let point1 = app.coordinate(withNormalizedOffset: CGVector(
             dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
         point1.press(forDuration: 2)
