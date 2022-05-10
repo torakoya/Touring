@@ -9,6 +9,7 @@ struct MapViewContext {
     var destinations: [MKPointAnnotation] = [] {
         didSet {
             let oldTarget = targetIndex.map { oldValue[$0] }
+            let oldTargetIndex = targetIndex
 
             syncDestinations()
 
@@ -28,6 +29,13 @@ struct MapViewContext {
             }
 
             refreshAnnotations()
+
+            // If targetIndex hasn't been unchanged but target has
+            // been changed by removing a destination, the line should
+            // be redrawn.
+            if let target = target, targetIndex == oldTargetIndex && target != oldTarget {
+                addDestinationLine()
+            }
 
             if !originOnly && following && oldTarget != target {
                 setRegionWithDestination()
@@ -155,15 +163,17 @@ struct MapViewContext {
 
     /// Draw a line from the user location to the destination.
     func addDestinationLine() {
-        if let mapView = mapView, let target = target {
+        if let mapView = mapView {
             DispatchQueue.main.async {
                 mapView.removeOverlays(mapView.overlays)
-                let user = mapView.userLocation
-                if !visible(target.coordinate, in: mapView) ||
-                    !visible(user.coordinate, in: mapView) {
-                    let coords = [user.coordinate, target.coordinate]
-                    let overlay = MKPolyline(coordinates: coords, count: coords.count)
-                    mapView.addOverlay(overlay, level: .aboveRoads)
+                if let target = target {
+                    let user = mapView.userLocation
+                    if !visible(target.coordinate, in: mapView) ||
+                        !visible(user.coordinate, in: mapView) {
+                        let coords = [user.coordinate, target.coordinate]
+                        let overlay = MKPolyline(coordinates: coords, count: coords.count)
+                        mapView.addOverlay(overlay, level: .aboveRoads)
+                    }
                 }
             }
         }
@@ -300,6 +310,10 @@ extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         if !view.mapViewContext.originOnly && view.mapViewContext.following {
             view.mapViewContext.setRegionWithDestination(animated: false)
+        }
+
+        if !view.mapViewContext.following {
+            view.mapViewContext.addDestinationLine()
         }
     }
 
