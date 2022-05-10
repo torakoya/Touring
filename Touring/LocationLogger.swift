@@ -104,8 +104,8 @@ class LocationLogger {
             let timestamp = type(of: self).logTimeFormatter.string(from: location.timestamp)
             let latitude = location.horizontalAccuracy >= 0 ? "\(location.coordinate.latitude)" : ""
             let longitude = location.horizontalAccuracy >= 0 ? "\(location.coordinate.longitude)" : ""
-            let speed = location.speed > 0 ? "\(location.speed)" : ""
-            let course = location.course > 0 ? "\(location.course)" : ""
+            let speed = location.speed >= 0 ? "\(location.speed)" : ""
+            let course = location.course >= 0 ? "\(location.course)" : ""
             let altitude = location.verticalAccuracy > 0 ?  "\(location.altitude)" : ""
             let floor = location.floor != nil ? "\(location.floor!.level)" : ""
             let hacc = "\(location.horizontalAccuracy)"
