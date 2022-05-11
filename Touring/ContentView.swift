@@ -82,8 +82,9 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                .background(Color(uiColor: .systemBackground).opacity(0.75))
+                .background(Color(uiColor: .systemBackground).opacity(0.4))
                 .cornerRadius(15)
+                .shadow(radius: 10)
                 .padding([.top, .leading, .trailing])
 
                 HStack {
@@ -103,8 +104,9 @@ struct ContentView: View {
                             .padding()
                     }
                     .disabled(vm.location.last == nil)
-                    .background(Color(uiColor: .systemBackground).opacity(0.75))
+                    .background(Color(uiColor: .systemBackground).opacity(0.4))
                     .cornerRadius(15)
+                    .shadow(radius: 10)
                     .padding([.leading, .trailing, .bottom])
                 }
 
@@ -148,8 +150,9 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                .background(Color(uiColor: .systemBackground).opacity(0.75))
+                .background(Color(uiColor: .systemBackground).opacity(0.4))
                 .cornerRadius(15)
+                .shadow(radius: 10)
                 .padding()
                 .padding(.bottom, 10) // Avoid covering MKmapView's legal label
             }
