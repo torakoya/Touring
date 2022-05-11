@@ -96,21 +96,21 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testSwitchFollowing() throws {
-        XCTAssert(app.buttons["o.square.fill"].exists)
+        XCTAssert(app.buttons["location.square.fill"].exists)
 
         app.swipeUp()
-        XCTAssert(app.buttons["o.square"].exists)
+        XCTAssert(app.buttons["location.square"].exists)
 
-        app.buttons["o.square"].tap()
-        XCTAssert(app.buttons["o.square.fill"].exists)
+        app.buttons["location.square"].tap()
+        XCTAssert(app.buttons["location.square.fill"].exists)
     }
 
     func testSwitchMapMode() throws {
-        app.buttons["o.square.fill"].tap()
-        XCTAssert(app.buttons["flag.square.fill"].exists)
+        app.buttons["location.square.fill"].tap()
+        XCTAssert(app.buttons["mappin.square.fill"].exists)
 
-        app.buttons["flag.square.fill"].tap()
-        XCTAssert(app.buttons["o.square.fill"].exists)
+        app.buttons["mappin.square.fill"].tap()
+        XCTAssert(app.buttons["location.square.fill"].exists)
     }
 
     func testChangeTarget() throws {

@@ -14,8 +14,8 @@ struct ContentView: View {
 
     var mapModeImageName: String {
         vm.mapViewContext.originOnly ?
-            (vm.mapViewContext.following ? "o.square.fill" : "o.square") :
-            (vm.mapViewContext.following ? "flag.square.fill" : "flag.square")
+            (vm.mapViewContext.following ? "location.square.fill" : "location.square") :
+            (vm.mapViewContext.following ? "mappin.square.fill" : "mappin.square")
     }
 
     var body: some View {
@@ -141,7 +141,7 @@ struct ContentView: View {
                         }
                     } label: {
                         Image(systemName: mapModeImageName)
-                            .font(.title)
+                            .font(.largeTitle)
                     }
 
                     if let dist = vm.mapViewContext.targetDistance {
