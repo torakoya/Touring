@@ -20,11 +20,20 @@ struct ContentView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MapView(mapViewContext: $vm.mapViewContext)
-                .ignoresSafeArea()
-                .onChange(of: vm.mapViewContext.heading) { _ in
-                    vm.updateCourse()
-                }
+            GeometryReader { geom in
+                MapView(mapViewContext: $vm.mapViewContext)
+                    .ignoresSafeArea()
+                    .onChange(of: vm.mapViewContext.heading) { _ in
+                        vm.updateCourse()
+                    }
+                    .onChange(of: geom.size) { _ in
+                        if !vm.mapViewContext.originOnly && vm.mapViewContext.following {
+                            DispatchQueue.main.async {
+                                vm.mapViewContext.setRegionWithDestination(animated: true)
+                            }
+                        }
+                    }
+            }
 
             VStack(alignment: .leading) {
                 HStack {
