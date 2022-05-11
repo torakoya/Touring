@@ -39,7 +39,7 @@ struct ContentView: View {
                 HStack {
                     HStack(alignment: .lastTextBaseline) {
                         Text(vm.speedNumber)
-                            .font(.largeTitle)
+                            .font(.largeTitle.bold())
                             .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
                         Text(vm.speedUnit)
                             .font(.footnote)
@@ -146,7 +146,7 @@ struct ContentView: View {
 
                     if let dist = vm.mapViewContext.targetDistance {
                         let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
-                        Text(diststr[0]) + Text(diststr[1]).font(.footnote)
+                        Text(diststr[0]).bold() + Text(diststr[1]).font(.footnote)
                     }
                 }
                 .padding()
