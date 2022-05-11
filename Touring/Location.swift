@@ -19,6 +19,12 @@ class Location: NSObject {
         manager.pausesLocationUpdatesAutomatically = false
         manager.delegate = self
     }
+
+    func bookmarkLastLocation() {
+        guard let location = last else { return }
+
+        logger.save([location], to: "bookmarks.csv")
+    }
 }
 
 extension Location: CLLocationManagerDelegate {

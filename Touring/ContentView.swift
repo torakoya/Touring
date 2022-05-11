@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var vm = ContentViewModel()
+    @State var showingBookmarked = false
 
     var targetImageName: String {
         if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
@@ -74,7 +75,29 @@ struct ContentView: View {
                 .padding()
                 .background(Color(uiColor: .systemBackground).opacity(0.75))
                 .cornerRadius(15)
-                .padding()
+                .padding([.top, .leading, .trailing])
+
+                HStack {
+                    Spacer()
+
+                    Button {
+                        if !showingBookmarked {
+                            showingBookmarked = true
+                            vm.location.bookmarkLastLocation()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                showingBookmarked = false
+                            }
+                        }
+                    } label: {
+                        Image(systemName: showingBookmarked ? "star.fill" : "star")
+                            .font(.largeTitle)
+                            .padding()
+                    }
+                    .disabled(vm.location.last == nil)
+                    .background(Color(uiColor: .systemBackground).opacity(0.75))
+                    .cornerRadius(15)
+                    .padding([.leading, .trailing, .bottom])
+                }
 
                 Spacer()
 
