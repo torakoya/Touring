@@ -34,7 +34,7 @@ struct MapViewContext {
             // been changed by removing a destination, the line should
             // be redrawn.
             if let target = target, targetIndex == oldTargetIndex && target != oldTarget {
-                addDestinationLine()
+                addTargetLine()
             }
 
             if !originOnly && following && oldTarget != target {
@@ -58,7 +58,7 @@ struct MapViewContext {
             }
 
             refreshAnnotations()
-            addDestinationLine()
+            addTargetLine()
         }
     }
 
@@ -161,8 +161,8 @@ struct MapViewContext {
         }
     }
 
-    /// Draw a line from the user location to the destination.
-    func addDestinationLine() {
+    /// Draw a line from the user location to the target.
+    func addTargetLine() {
         if let mapView = mapView {
             DispatchQueue.main.async {
                 mapView.removeOverlays(mapView.overlays)
@@ -269,7 +269,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
         view.mapViewContext.heading = mapView.camera.heading
 
-        view.mapViewContext.addDestinationLine()
+        view.mapViewContext.addTargetLine()
     }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -313,7 +313,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
         }
 
         if !view.mapViewContext.following {
-            view.mapViewContext.addDestinationLine()
+            view.mapViewContext.addTargetLine()
         }
     }
 
