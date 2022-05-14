@@ -1,6 +1,47 @@
 import MapKit
 import SwiftUI
 
+class Address {
+    struct Result {
+        private(set) var address: [String?]
+
+        private(set) var fetchLocation: CLLocation
+        private(set) var fetchTime: Date
+    }
+
+    static let minimumFetchDistance = 10.0
+    static let minimumFetchWait = 10.0
+
+    typealias CompletionHandler = (Result?, Error?) -> Void
+
+    private static let geocoder = CLGeocoder()
+
+    private(set) static var result: Result?
+    private(set) static var nextFetchTime = Date(timeIntervalSince1970: 0)
+
+    static func canFetch(location: CLLocation) -> Bool {
+        Date() >= nextFetchTime &&
+        result.map { location.distance(from: $0.fetchLocation) >= minimumFetchDistance } ?? true
+    }
+
+    static func fetch(location: CLLocation, onComplete: @escaping CompletionHandler) {
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            let now = Date()
+            nextFetchTime = now + minimumFetchWait
+
+            if let error = error {
+                onComplete(nil, error)
+            } else if let placemark = placemarks?.first {
+                let result = Result(
+                    address: [placemark.administrativeArea, placemark.locality, placemark.subLocality],
+                    fetchLocation: location, fetchTime: now)
+                self.result = result
+                onComplete(result, nil)
+            }
+        }
+    }
+}
+
 /// The information of a map view that the parent view may want.
 struct MapViewContext {
     fileprivate weak var mapView: MKMapView?
@@ -105,6 +146,8 @@ struct MapViewContext {
         return nil
     }
 
+    var address: [String?]?
+
     mutating func goForward() {
         if let dest = targetIndex {
             if dest + 1 >= destinations.endIndex {
@@ -206,6 +249,22 @@ struct MapViewContext {
             }
         }
     }
+
+    func fetchAddress() {
+        if let mapView = mapView, let userloc = mapView.userLocation.location {
+            if !Address.canFetch(location: userloc) {
+                return
+            }
+
+            Address.fetch(location: userloc) { result, error in
+                if error != nil {
+                    // Ignore an error.
+                } else if let result = result, let view = (mapView.delegate as? MapViewCoordinator)?.view {
+                    view.mapViewContext.address = result.address
+                }
+            }
+        }
+    }
 }
 
 struct MapView: UIViewRepresentable {
@@ -246,7 +305,7 @@ struct MapView: UIViewRepresentable {
 }
 
 class MapViewCoordinator: NSObject {
-    private let view: MapView
+    fileprivate let view: MapView
 
     init(_ view: MapView) {
         self.view = view
@@ -315,6 +374,8 @@ extension MapViewCoordinator: MKMapViewDelegate {
         if !view.mapViewContext.following {
             view.mapViewContext.addTargetLine()
         }
+
+        view.mapViewContext.fetchAddress()
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
