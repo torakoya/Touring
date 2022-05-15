@@ -52,6 +52,8 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         default:
             prefersMile = Locale.current.languageCode != "ja"
         }
+
+        mapViewContext.showsAddress = (UserDefaults.standard.object(forKey: "show_address") as? Int ?? 1) != 0
     }
 
     func locationDidChangeAuthorization(_ location: Location) {

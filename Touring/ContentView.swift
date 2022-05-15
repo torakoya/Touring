@@ -127,7 +127,7 @@ struct ContentView: View {
                 Spacer()
 
                 HStack(alignment: .bottom) {
-                    if let addressText = addressText {
+                    if vm.mapViewContext.showsAddress, let addressText = addressText {
                         addressText
                             .shadow(color: Color(uiColor: .systemBackground), radius: 1) // For visibility of the text.
                             .padding(10)

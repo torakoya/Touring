@@ -147,6 +147,13 @@ struct MapViewContext {
     }
 
     var address: [String?]?
+    var showsAddress = false {
+        didSet {
+            if showsAddress {
+                fetchAddress()
+            }
+        }
+    }
 
     mutating func goForward() {
         if let dest = targetIndex {
@@ -375,7 +382,9 @@ extension MapViewCoordinator: MKMapViewDelegate {
             view.mapViewContext.addTargetLine()
         }
 
-        view.mapViewContext.fetchAddress()
+        if view.mapViewContext.showsAddress {
+            view.mapViewContext.fetchAddress()
+        }
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
