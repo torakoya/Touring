@@ -120,9 +120,11 @@ extension Location: CLLocationManagerDelegate {
             }
         }
 
-        finalLocations.last.map { last = $0 }
-        logger.save(finalLocations)
-        delegate?.locationDidUpdate(self)
+        finalLocations.last.map {
+            last = $0
+            logger.save(finalLocations)
+            delegate?.locationDidUpdate(self)
+        }
     }
 }
 
