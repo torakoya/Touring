@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var vm = ContentViewModel()
     @State var showingBookmarked = false
+    @Environment(\.scenePhase) var scenePhase
 
     var targetImageName: String {
         if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
@@ -59,9 +60,6 @@ struct ContentView: View {
                             .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
                         Text(vm.speedUnit)
                             .font(.footnote)
-                    }
-                    .onTapGesture {
-                        vm.prefersMile.toggle()
                     }
 
                     Image(systemName: "arrow.up.circle")
@@ -128,15 +126,29 @@ struct ContentView: View {
 
                 Spacer()
 
-                if let addressText = addressText {
-                    addressText
-                        .shadow(color: Color(uiColor: .systemBackground), radius: 1) // For visibility of the text.
-                        .padding(10)
-                        .background(Color(uiColor: .systemBackground).opacity(0.4))
-                        .cornerRadius(15)
-                        .shadow(radius: 10)
-                        .padding([.top, .leading, .trailing])
-                }
+                HStack(alignment: .bottom) {
+                    if let addressText = addressText {
+                        addressText
+                            .shadow(color: Color(uiColor: .systemBackground), radius: 1) // For visibility of the text.
+                            .padding(10)
+                            .background(Color(uiColor: .systemBackground).opacity(0.4))
+                            .cornerRadius(15)
+                            .shadow(radius: 10)
+                    }
+
+                    Spacer()
+
+                    Button {
+                        vm.openSettings()
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.title)
+                    }
+                    .padding(10)
+                    .background(Color(uiColor: .systemBackground).opacity(0.4))
+                    .cornerRadius(15)
+                    .shadow(radius: 10)
+                }.padding([.leading, .trailing])
 
                 HStack {
                     Button {
@@ -234,6 +246,11 @@ struct ContentView: View {
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                vm.loadSettings()
+            }
+        }
     }
 }
 

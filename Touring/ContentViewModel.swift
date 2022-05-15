@@ -3,9 +3,8 @@ import SwiftUI
 class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelegate {
     let location = Location()
 
-    @Published var prefersMile = UserDefaults.standard.bool(forKey: "prefersMile") {
+    @Published var prefersMile = false {
         didSet {
-            UserDefaults.standard.set(prefersMile, forKey: "prefersMile")
             updateSpeedNumber()
         }
     }
@@ -28,13 +27,31 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     @Published var destinationDetail: DestinationDetail?
     @Published var showingDestinationDetail = false
 
+    enum DistanceUnit: Int {
+        case automatic, meters, miles
+    }
+
     init() {
         location.delegate = self
         location.logger.delegate = self
 
+        loadSettings()
+
         updateSpeedNumber()
         updateCourse()
         loggingStateChanged()
+    }
+
+    func loadSettings() {
+        let distanceUnit = DistanceUnit(rawValue: UserDefaults.standard.integer(forKey: "distance_unit")) ?? .automatic
+        switch distanceUnit {
+        case .meters:
+            prefersMile = false
+        case .miles:
+            prefersMile = true
+        default:
+            prefersMile = Locale.current.languageCode != "ja"
+        }
     }
 
     func locationDidChangeAuthorization(_ location: Location) {
