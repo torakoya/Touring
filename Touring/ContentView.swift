@@ -134,6 +134,7 @@ struct ContentView: View {
                             .background(Color(uiColor: .systemBackground).opacity(0.4))
                             .cornerRadius(15)
                             .shadow(radius: 10)
+                            .allowsHitTesting(false)
                     }
 
                     Spacer()
