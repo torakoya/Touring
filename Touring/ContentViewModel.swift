@@ -15,6 +15,11 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     }
     @Published var isCourseValid = false
     @Published var course = Angle.degrees(0)
+    @Published var compassType = CompassType.heading {
+        didSet {
+            updateCourse()
+        }
+    }
 
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
@@ -29,6 +34,10 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
     enum DistanceUnit: Int {
         case automatic, meters, miles
+    }
+
+    enum CompassType: Int {
+        case heading, north
     }
 
     init() {
@@ -52,6 +61,8 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         default:
             prefersMile = Locale.current.languageCode != "ja"
         }
+
+        compassType = CompassType(rawValue: UserDefaults.standard.integer(forKey: "compass_type")) ?? .heading
 
         mapViewContext.showsAddress = (UserDefaults.standard.object(forKey: "show_address") as? Int ?? 1) != 0
     }
@@ -79,10 +90,18 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
     func updateCourse() {
         if let loc = location.last, loc.courseAccuracy >= 0, loc.course >= 0 {
-            course = .degrees(loc.course - mapViewContext.heading)
+            if compassType == .north {
+                course = .degrees(-loc.course)
+            } else {
+                course = .degrees(loc.course - mapViewContext.heading)
+            }
             isCourseValid = true
         } else {
-            course = .degrees(-mapViewContext.heading)
+            if compassType == .north {
+                course = .degrees(0)
+            } else {
+                course = .degrees(-mapViewContext.heading)
+            }
             isCourseValid = false
         }
     }

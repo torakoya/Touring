@@ -62,7 +62,7 @@ struct ContentView: View {
                             .font(.footnote)
                     }
 
-                    Image(systemName: "arrow.up.circle")
+                    Image(systemName: vm.compassType == .north ? "location.north.circle" : "arrow.up.circle")
                         .font(.largeTitle)
                         .rotationEffect(vm.course)
                         .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
