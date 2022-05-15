@@ -61,6 +61,10 @@ extension Location: CLLocationManagerDelegate {
         delegate?.locationDidChangeAuthorization(self)
     }
 
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Ignore errors.
+    }
+
     func shouldAccept(_ location: CLLocation, last: CLLocation?) -> Bool {
         // Accept if the last location is empty.
         guard let last = last else {
