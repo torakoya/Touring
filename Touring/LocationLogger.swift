@@ -88,8 +88,8 @@ class LocationLogger {
             .first!.appendingPathComponent(path)
 
         if !FileManager.default.fileExists(atPath: url.path) {
-            let header = "time,latitude,longitude,speed,course,altitude," +
-                "floorLevel,horizontalAccuracy,verticalAccuracy\r\n"
+            let header = "time,latitude,longitude,horizontalAccuracy," +
+            "speed,speedAccuracy,course,courseAccuracy,altitude,verticalAccuracy\r\n"
             FileManager.default.createFile(atPath: url.path, contents: header.data(using: .utf8)!)
         }
 
@@ -101,17 +101,19 @@ class LocationLogger {
         file.seekToEndOfFile()
 
         for location in locations {
-            let timestamp = type(of: self).logTimeFormatter.string(from: location.timestamp)
-            let latitude = location.horizontalAccuracy >= 0 ? "\(location.coordinate.latitude)" : ""
-            let longitude = location.horizontalAccuracy >= 0 ? "\(location.coordinate.longitude)" : ""
-            let speed = location.speed >= 0 ? "\(location.speed)" : ""
-            let course = location.course >= 0 ? "\(location.course)" : ""
-            let altitude = location.verticalAccuracy > 0 ?  "\(location.altitude)" : ""
-            let floor = location.floor != nil ? "\(location.floor!.level)" : ""
+            let timestamp = Self.logTimeFormatter.string(from: location.timestamp)
+            let latitude = location.validLatitude.map { "\($0)" } ?? ""
+            let longitude = location.validLongitude.map { "\($0)" } ?? ""
             let hacc = "\(location.horizontalAccuracy)"
+            let speed = location.validSpeed.map { "\($0)" } ?? ""
+            let sacc = "\(location.speedAccuracy)"
+            let course = location.validCourse.map { "\($0)" } ?? ""
+            let cacc = "\(location.courseAccuracy)"
+            let altitude = location.validAltitude.map { "\($0)" } ?? ""
             let vacc = "\(location.verticalAccuracy)"
 
-            let s = "\(timestamp),\(latitude),\(longitude),\(speed),\(course),\(altitude),\(floor),\(hacc),\(vacc)\r\n"
+            let s = "\(timestamp),\(latitude),\(longitude),\(hacc)," +
+            "\(speed),\(sacc),\(course),\(cacc),\(altitude),\(vacc)\r\n"
             do {
                 try file.write(contentsOf: s.data(using: .utf8)!)
             } catch {
