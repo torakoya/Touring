@@ -29,30 +29,6 @@ class TouringUITests: BaseUITestCase {
         XCTAssert(app.alerts["Location accuracy is reduced"].exists)
     }
 
-    func testToggleSpeedUnit() throws {
-        let u1 = app.staticTexts["km/h"]
-        let u2 = app.staticTexts["mph"]
-        let e1 = u1.exists
-
-        (u1.exists ? u1 : u2).tap()
-        XCTAssertNotEqual(u1.exists, e1)
-        XCTAssertEqual(u2.exists, e1)
-
-        (u1.exists ? u1 : u2).tap()
-        XCTAssertEqual(u1.exists, e1)
-        XCTAssertNotEqual(u2.exists, e1)
-    }
-
-    func testRestoreSpeedUnitChoice() throws {
-        let u1 = app.staticTexts["km/h"]
-        let u2 = app.staticTexts["mph"]
-        let e1 = u1.exists
-
-        (u1.exists ? u1 : u2).tap()
-        app.launch()
-        XCTAssertNotEqual(u1.exists, e1)
-    }
-
     func testTapLoggingControlButtons() throws {
         // Some system-provided symbol images seem to have alternative
         // names, and they can't be accessed by the original names but
