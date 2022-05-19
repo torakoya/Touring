@@ -34,6 +34,7 @@ struct MapViewContext {
             // be redrawn.
             if let target = target, targetIndex == oldTargetIndex && target != oldTarget {
                 addTargetLine()
+                fetchRoutes(byForce: true)
             }
 
             if !originOnly && following && oldTarget != target {
@@ -58,6 +59,7 @@ struct MapViewContext {
 
             refreshAnnotations()
             addTargetLine()
+            fetchRoutes(byForce: true)
         }
     }
 
@@ -102,6 +104,21 @@ struct MapViewContext {
             return MeasureUtil.distance(from: userloc, to: destloc)
         }
         return nil
+    }
+
+    var routes: Route.Result? {
+        didSet {
+            showRoutes()
+        }
+    }
+    var showingRoutes = false {
+        didSet {
+            if showingRoutes {
+                fetchRoutes(byForce: true)
+            } else {
+                showRoutes() // Hide routes
+            }
+        }
     }
 
     var address: [String?]?
@@ -173,7 +190,7 @@ struct MapViewContext {
     func addTargetLine() {
         if let mapView = mapView {
             DispatchQueue.main.async {
-                mapView.removeOverlays(mapView.overlays)
+                mapView.removeOverlays(mapView.overlays.filter { !($0 is Route.Polyline) })
                 if let target = target {
                     let user = mapView.userLocation
                     if !visible(target.coordinate, in: mapView) ||
@@ -211,6 +228,43 @@ struct MapViewContext {
             view.displayPriority = isTarget ? .required : .defaultHigh
             if let index = destinations.firstIndex(of: annotation) {
                 view.glyphText = String(index + 1)
+            }
+        }
+    }
+
+    /// Fetch routes.
+    /// - Parameter byForce: If true, go anyway. Wait until the attempt can be made, if needed.
+    func fetchRoutes(byForce: Bool = false) {
+        Task { @MainActor in
+            if showingRoutes, let mapView = mapView, let userloc = mapView.userLocation.location, let target = target {
+                if byForce, let view = (mapView.delegate as? MapViewCoordinator)?.view {
+                    view.mapViewContext.routes = nil
+                }
+
+                let targetloc = CLLocation(latitude: target.coordinate.latitude, longitude: target.coordinate.longitude)
+                if !byForce && !Route.canFetch(from: userloc, to: targetloc, before: routes) {
+                    return
+                }
+
+                do {
+                    let result = try await Route.fetch(from: userloc, to: targetloc, byForce: byForce)
+                    if let view = (mapView.delegate as? MapViewCoordinator)?.view,
+                        view.mapViewContext.target == target {
+                        view.mapViewContext.routes = result
+                    }
+                } catch {
+                    // Ignore an error.
+                }
+            }
+        }
+    }
+
+    func showRoutes() {
+        if let mapView = mapView {
+            mapView.removeOverlays(mapView.overlays.filter { $0 is Route.Polyline })
+
+            if showingRoutes, let routes = routes {
+                mapView.addOverlays(routes.routes, level: .aboveRoads)
             }
         }
     }

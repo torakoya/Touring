@@ -109,6 +109,10 @@ extension MapViewCoordinator: MKMapViewDelegate {
             view.mapViewContext.addTargetLine()
         }
 
+        if view.mapViewContext.showingRoutes {
+            view.mapViewContext.fetchRoutes()
+        }
+
         if view.mapViewContext.showsAddress {
             view.mapViewContext.fetchAddress()
         }
@@ -121,7 +125,17 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if let overlay = overlay as? MKPolyline {
+        if let overlay = overlay as? Route.Polyline {
+            let renderer = MKPolylineRenderer(polyline: overlay)
+            renderer.strokeColor = overlay.advisoryNotices.isEmpty ? .systemBlue : .systemRed
+            if overlay.isFirst {
+                renderer.lineWidth = 3.5
+            } else {
+                renderer.lineWidth = 2.5
+                renderer.lineDashPattern = [5, 7, 0, 7]
+            }
+            return renderer
+        } else if let overlay = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: overlay)
             renderer.strokeColor = .systemCyan
             renderer.lineWidth = 3

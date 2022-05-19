@@ -109,4 +109,25 @@ class TouringUITests: BaseUITestCase {
         app.buttons["Forward"].tap()
         XCTAssert(app.images["2.circle"].exists)
     }
+
+    func testRoutes() throws {
+        let point1 = app.coordinate(withNormalizedOffset: CGVector(
+            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
+        point1.press(forDuration: 2)
+
+        app.buttons["Back"].tap()
+        app.buttons["Hide"].tap()
+        let query = app.staticTexts.containing(NSPredicate(format: "label matches '[0-9]h [0-9]+m'"))
+        XCTAssert(query.element.waitForExistence(timeout: 5))
+
+        let point2 = app.coordinate(withNormalizedOffset: CGVector(
+            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
+        point2.press(forDuration: 2)
+
+        app.buttons["Forward"].tap()
+        XCTAssert(query.element.waitForExistence(timeout: 8))
+
+        app.buttons["Show"].tap()
+        XCTAssert(query.element.waitForNonexistence(timeout: 5))
+    }
 }
