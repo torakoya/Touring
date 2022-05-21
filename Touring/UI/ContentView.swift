@@ -94,30 +94,66 @@ struct ContentView: View {
                         .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
                         .padding(.trailing)
 
-                    VStack {
+                    VStack(spacing: 0) {
                         Text(vm.loggingState == .started ? "Rec" : vm.loggingState == .paused ? "Pause" : "")
                             .font(.caption2.smallCaps().bold())
                             .foregroundColor(vm.loggingState == .paused ? .gray : .red)
 
-                        HStack {
+                        Menu {
                             Button {
-                                if vm.loggingState == .started {
-                                    vm.location.logger.pause()
-                                } else {
+                            } label: {
+                                Label("Search Destination", systemImage: "magnifyingglass")
+                            }
+                            Button {
+                            } label: {
+                                Label("Destination List", systemImage: "list.bullet")
+                            }
+
+                            Divider()
+
+                            if vm.loggingState != .started {
+                                // This is not destructive, but should
+                                // be paid attention. And this
+                                // "destructive" is also intended to
+                                // make it red, the same as common
+                                // record buttons are.
+                                Button(role: .destructive) {
                                     vm.location.logger.start()
+                                } label: {
+                                    Label(vm.loggingState == .paused ?
+                                          "Resume Location Tracking" :
+                                            "Start Location Tracking",
+                                          systemImage: "record.circle.fill")
                                 }
+                            } else {
+                                Button {
+                                    vm.location.logger.pause()
+                                } label: {
+                                    Label("Pause Location Tracking", systemImage: "pause.circle")
+                                }
+                            }
+                            if vm.loggingState != .stopped {
+                                Button {
+                                    vm.location.logger.stop()
+                                } label: {
+                                    Label("Stop Location Tracking", systemImage: "stop.circle")
+                                }
+                            }
+
+                            Divider()
+
+                            Button {
+                                vm.openSettings()
                             } label: {
-                                Image(systemName: vm.loggingState == .started ? "pause.circle" : "record.circle")
-                                    .font(.title)
-                                    .foregroundColor(.red)
+                                Label("Settings", systemImage: "gearshape")
                             }
                             Button {
-                                vm.location.logger.stop()
                             } label: {
-                                Image(systemName: "stop.circle")
-                                    .font(.title)
+                                Label("Help", systemImage: "questionmark")
                             }
-                            .disabled(vm.loggingState == .stopped)
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .font(.title)
                         }
                     }
                 }
@@ -196,17 +232,6 @@ struct ContentView: View {
                     }
 
                     Spacer()
-
-                    Button {
-                        vm.openSettings()
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.title)
-                    }
-                    .padding(10)
-                    .background(Color(uiColor: .systemBackground).opacity(0.4))
-                    .cornerRadius(15)
-                    .shadow(radius: 10)
                 }.padding([.leading, .trailing])
 
                 HStack {

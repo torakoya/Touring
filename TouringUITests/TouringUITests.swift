@@ -1,5 +1,7 @@
 import XCTest
 
+// swiftlint:disable function_body_length
+
 class TouringUITests: BaseUITestCase {
     func testLocationAuthAllowed() throws {
         XCTAssertEqual(app.alerts.count, 0)
@@ -29,38 +31,78 @@ class TouringUITests: BaseUITestCase {
         XCTAssert(app.alerts["Location accuracy is reduced"].exists)
     }
 
-    func testTapLoggingControlButtons() throws {
-        // Some system-provided symbol images seem to have alternative
-        // names, and they can't be accessed by the original names but
-        // by the alternative names.
-        //
-        // * "record.circle" => "Screen Recording"
-        // * "pause.circle" => "Pause"
-        // * "stop.circle" => "stop.circle" (no alternative name)
+    func testMenu() throws {
+        app.buttons["More"].tap()
+        XCTAssert(app.buttons["Start Location Tracking"].waitForExistence(timeout: 2))
 
-        XCTAssert(app.buttons["Screen Recording"].exists)
-        XCTAssert(app.buttons["stop.circle"].exists)
-        XCTAssertFalse(app.buttons["stop.circle"].isEnabled)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.6, dy: 0.5)).tap()
+        XCTAssert(app.buttons["Start Location Tracking"].waitForNonexistence(timeout: 2))
+    }
 
-        app.buttons["Screen Recording"].tap()
+    func testLocationTracking() throws {
+        let menuButton = app.buttons["More"]
+        let startButton = app.buttons["Start Location Tracking"]
+        let resumeButton = app.buttons["Resume Location Tracking"]
+        let pauseButton = app.buttons["Pause Location Tracking"]
+        let stopButton = app.buttons["Stop Location Tracking"]
+        let recordLabel = app.staticTexts["Rec"]
+        let pauseLabel = app.staticTexts["Pause"]
 
-        XCTAssert(app.buttons["Pause"].exists)
-        XCTAssert(app.buttons["stop.circle"].isEnabled)
+        menuButton.tap()
+        XCTAssert(startButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(resumeButton.exists)
+        XCTAssertFalse(pauseButton.exists)
+        XCTAssertFalse(stopButton.exists)
+        startButton.tap()
+        XCTAssert(recordLabel.waitForExistence(timeout: 2))
 
-        app.buttons["Pause"].tap()
+        menuButton.tap()
+        XCTAssert(pauseButton.waitForExistence(timeout: 2))
+        XCTAssert(stopButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(startButton.exists)
+        XCTAssertFalse(resumeButton.exists)
+        pauseButton.tap()
+        XCTAssert(pauseLabel.waitForExistence(timeout: 2))
 
-        XCTAssert(app.buttons["Screen Recording"].exists)
-        XCTAssert(app.buttons["stop.circle"].isEnabled)
+        menuButton.tap()
+        XCTAssert(resumeButton.waitForExistence(timeout: 2))
+        XCTAssert(stopButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(startButton.exists)
+        XCTAssertFalse(pauseButton.exists)
+        resumeButton.tap()
+        XCTAssert(recordLabel.waitForExistence(timeout: 2))
 
-        app.buttons["Screen Recording"].tap()
+        // started => stop
+        menuButton.tap()
+        XCTAssert(pauseButton.waitForExistence(timeout: 2))
+        XCTAssert(stopButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(startButton.exists)
+        XCTAssertFalse(resumeButton.exists)
+        stopButton.tap()
+        XCTAssert(recordLabel.waitForNonexistence(timeout: 2))
+        XCTAssertFalse(pauseLabel.exists)
 
-        XCTAssert(app.buttons["Pause"].exists)
-        XCTAssert(app.buttons["stop.circle"].isEnabled)
+        menuButton.tap()
+        XCTAssert(startButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(resumeButton.exists)
+        XCTAssertFalse(pauseButton.exists)
+        XCTAssertFalse(stopButton.exists)
 
-        app.buttons["stop.circle"].tap()
-
-        XCTAssert(app.buttons["Screen Recording"].exists)
-        XCTAssertFalse(app.buttons["stop.circle"].isEnabled)
+        // paused => stop
+        startButton.tap()
+        menuButton.tap()
+        _ = pauseButton.waitForExistence(timeout: 2)
+        pauseButton.tap()
+        menuButton.tap()
+        _ = stopButton.waitForExistence(timeout: 2)
+        stopButton.tap()
+        XCTAssert(recordLabel.waitForNonexistence(timeout: 2))
+        XCTAssertFalse(pauseLabel.exists)
+        menuButton.tap()
+        XCTAssert(startButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(resumeButton.exists)
+        XCTAssertFalse(pauseButton.exists)
+        XCTAssertFalse(stopButton.exists)
     }
 
     func testPutDestinations() throws {
