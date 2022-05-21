@@ -238,7 +238,7 @@ struct ContentView: View {
                     Button {
                         vm.mapViewContext.goBackward()
                     } label: {
-                        Image(systemName: "backward.fill")
+                        Image(systemName: "chevron.backward.2")
                             .font(.title)
                     }
                     .disabled(vm.mapViewContext.destinations.count <= 1)
@@ -247,10 +247,12 @@ struct ContentView: View {
                     Button {
                         vm.mapViewContext.goForward()
                     } label: {
-                        Image(systemName: "forward.fill")
+                        Image(systemName: "chevron.forward.2")
                             .font(.title)
                     }
                     .disabled(vm.mapViewContext.destinations.count <= 1)
+                    .padding(.trailing, 10)
+
                     Button {
                         if vm.mapViewContext.following {
                             if vm.mapViewContext.destinations.isEmpty {

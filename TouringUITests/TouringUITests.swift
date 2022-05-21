@@ -3,6 +3,9 @@ import XCTest
 // swiftlint:disable function_body_length
 
 class TouringUITests: BaseUITestCase {
+    var backwardButton: XCUIElement { app.buttons["chevron.backward.2"] }
+    var forwardButton: XCUIElement { app.buttons["chevron.forward.2"] }
+
     func testLocationAuthAllowed() throws {
         XCTAssertEqual(app.alerts.count, 0)
     }
@@ -142,13 +145,13 @@ class TouringUITests: BaseUITestCase {
 
         XCTAssert(app.images["1.circle"].exists)
 
-        app.buttons["Back"].tap()
+        backwardButton.tap()
         XCTAssertFalse(app.images["1.circle"].exists)
 
-        app.buttons["Forward"].tap()
+        forwardButton.tap()
         XCTAssert(app.images["1.circle"].exists)
 
-        app.buttons["Forward"].tap()
+        forwardButton.tap()
         XCTAssert(app.images["2.circle"].exists)
     }
 
@@ -157,7 +160,7 @@ class TouringUITests: BaseUITestCase {
             dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
         point1.press(forDuration: 2)
 
-        app.buttons["Back"].tap()
+        backwardButton.tap()
         app.buttons["Hide"].tap()
         let query = app.staticTexts.containing(NSPredicate(format: "label matches '[0-9]h [0-9]+m'"))
         XCTAssert(query.element.waitForExistence(timeout: 5))
@@ -166,7 +169,7 @@ class TouringUITests: BaseUITestCase {
             dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
         point2.press(forDuration: 2)
 
-        app.buttons["Forward"].tap()
+        forwardButton.tap()
         XCTAssert(query.element.waitForExistence(timeout: 8))
 
         app.buttons["Show"].tap()
