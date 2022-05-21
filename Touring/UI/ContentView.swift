@@ -143,7 +143,7 @@ struct ContentView: View {
                             Divider()
 
                             Button {
-                                vm.openSettings()
+                                UIApplication.shared.openSettings()
                             } label: {
                                 Label("Settings", systemImage: "gearshape")
                             }
@@ -287,7 +287,7 @@ struct ContentView: View {
         }
         .alert("main.location_denied.title", isPresented: $vm.alertingLocationAuthorizationDenied) {
             Button("Settings") {
-                vm.openSettings()
+                UIApplication.shared.openSettings()
             }
             Button("OK") {
             }
@@ -297,7 +297,7 @@ struct ContentView: View {
         }
         .alert("main.location_reduced.title", isPresented: $vm.alertingLocationAccuracy) {
             Button("Settings") {
-                vm.openSettings()
+                UIApplication.shared.openSettings()
             }
             Button("OK") {
             }

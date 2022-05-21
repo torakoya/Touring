@@ -118,11 +118,4 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     func loggingDidFailWithError(_ error: Error) {
         alertingLocationLoggingError = true
     }
-
-    /// Open the Settings app.
-    func openSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
-        }
-    }
 }

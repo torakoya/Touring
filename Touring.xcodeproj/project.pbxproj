@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A100CC22839AF6E00251D89 /* UIApplication+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */; };
 		7A121BD328170894006CC6C7 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A121BD228170894006CC6C7 /* MapView.swift */; };
 		7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A17A46C281283F700F88063 /* LocationLogger.swift */; };
 		7A31F504280D63F000CCB90A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A31F506280D63F000CCB90A /* Localizable.strings */; };
@@ -54,6 +55,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ex.swift"; sourceTree = "<group>"; };
 		7A121BD228170894006CC6C7 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7A17A46C281283F700F88063 /* LocationLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationLogger.swift; sourceTree = "<group>"; };
 		7A17A46E2812986F00F88063 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 				7A17A46C281283F700F88063 /* LocationLogger.swift */,
 				7A54261728320052003813F7 /* MapUtil.swift */,
 				7A3258502829003500EBA518 /* MeasureUtil.swift */,
+				7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 				7A3506512822DC2C00B33B2C /* DestinationDetailView.swift in Sources */,
 				7A54261A28320539003813F7 /* CLLocation+ex.swift in Sources */,
 				7A3258512829003500EBA518 /* MeasureUtil.swift in Sources */,
+				7A100CC22839AF6E00251D89 /* UIApplication+ex.swift in Sources */,
 				7A4350EC280A958500C42F62 /* ContentView.swift in Sources */,
 				7A3BCCB5280AAA190021A8BB /* Location.swift in Sources */,
 				7A4350EA280A958500C42F62 /* TouringApp.swift in Sources */,
