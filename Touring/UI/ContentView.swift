@@ -154,6 +154,7 @@ struct ContentView: View {
                         } label: {
                             Image(systemName: "ellipsis.circle")
                                 .font(.title)
+                                .foregroundColor(vm.loggingState == .started ? .red : Color(uiColor: .link))
                         }
                     }
                 }
