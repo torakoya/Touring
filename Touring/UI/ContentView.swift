@@ -158,10 +158,7 @@ struct ContentView: View {
                         }
                     }
                 }
-                .padding()
-                .background(Color(uiColor: .systemBackground).opacity(0.4))
-                .cornerRadius(15)
-                .shadow(radius: 10)
+                .panel()
                 .padding([.top, .leading, .trailing])
 
                 HStack {
@@ -192,9 +189,7 @@ struct ContentView: View {
                             .padding(.trailing)
                         }
                     }
-                    .background(Color(uiColor: .systemBackground).opacity(0.4))
-                    .cornerRadius(15)
-                    .shadow(radius: 10)
+                    .panel(padding: 0)
                     .padding([.leading, .trailing, .bottom])
 
                     Spacer()
@@ -213,9 +208,7 @@ struct ContentView: View {
                             .padding()
                     }
                     .disabled(vm.location.last == nil)
-                    .background(Color(uiColor: .systemBackground).opacity(0.4))
-                    .cornerRadius(15)
-                    .shadow(radius: 10)
+                    .panel(padding: 0)
                     .padding([.leading, .trailing, .bottom])
                 }
 
@@ -225,10 +218,7 @@ struct ContentView: View {
                     if vm.mapViewContext.showsAddress, let addressText = addressText {
                         addressText
                             .shadow(color: Color(uiColor: .systemBackground), radius: 1) // For visibility of the text.
-                            .padding(10)
-                            .background(Color(uiColor: .systemBackground).opacity(0.4))
-                            .cornerRadius(15)
-                            .shadow(radius: 10)
+                            .panel(padding: 10)
                             .allowsHitTesting(false)
                     }
 
@@ -274,10 +264,7 @@ struct ContentView: View {
                         Text(diststr[0]).bold() + Text(diststr[1]).font(.footnote)
                     }
                 }
-                .padding()
-                .background(Color(uiColor: .systemBackground).opacity(0.4))
-                .cornerRadius(15)
-                .shadow(radius: 10)
+                .panel()
                 .padding([.leading, .trailing, .bottom])
                 .padding(.bottom, 10) // Avoid covering MKmapView's legal label
             }

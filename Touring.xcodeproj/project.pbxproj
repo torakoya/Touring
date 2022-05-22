@@ -33,6 +33,7 @@
 		7A5499DB2839E4FD00C82658 /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5499DA2839E4FD00C82658 /* FileManagerTests.swift */; };
 		7A8B58512839D9330087AB05 /* FileManager+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8B58502839D9330087AB05 /* FileManager+ex.swift */; };
 		7A9EB4FF283034D20044CB92 /* LocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A9EB4FE283034D20044CB92 /* LocationTests.swift */; };
+		7AA6068E283A09AC000522D1 /* Panel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA6068D283A09AC000522D1 /* Panel.swift */; };
 		7AE1768A2831045700EC75A8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7AE176892831045700EC75A8 /* Settings.bundle */; };
 		7AF2DBD72829288A004B16D7 /* MeasureUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */; };
 		7AF5670128336CEA0011EDDD /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF5670028336CEA0011EDDD /* Route.swift */; };
@@ -88,6 +89,7 @@
 		7A5499DA2839E4FD00C82658 /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
 		7A8B58502839D9330087AB05 /* FileManager+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+ex.swift"; sourceTree = "<group>"; };
 		7A9EB4FE283034D20044CB92 /* LocationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTests.swift; sourceTree = "<group>"; };
+		7AA6068D283A09AC000522D1 /* Panel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panel.swift; sourceTree = "<group>"; };
 		7AE176892831045700EC75A8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureUtilTests.swift; sourceTree = "<group>"; };
 		7AF5670028336CEA0011EDDD /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				7A3506502822DC2C00B33B2C /* DestinationDetailView.swift */,
 				7A121BD228170894006CC6C7 /* MapView.swift */,
 				7A5426152831FF28003813F7 /* MapViewContext.swift */,
+				7AA6068D283A09AC000522D1 /* Panel.swift */,
 				7A4350E9280A958500C42F62 /* TouringApp.swift */,
 			);
 			path = UI;
@@ -408,6 +411,7 @@
 				7A5426162831FF28003813F7 /* MapViewContext.swift in Sources */,
 				7A8B58512839D9330087AB05 /* FileManager+ex.swift in Sources */,
 				7AF5670128336CEA0011EDDD /* Route.swift in Sources */,
+				7AA6068E283A09AC000522D1 /* Panel.swift in Sources */,
 				7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */,
 				7A3506512822DC2C00B33B2C /* DestinationDetailView.swift in Sources */,
 				7A54261A28320539003813F7 /* CLLocation+ex.swift in Sources */,
