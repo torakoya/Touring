@@ -78,7 +78,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     }
 
     func updateSpeedNumber() {
-        if let mps = location.last?.speed, mps >= 0 {
+        if let mps = location.last?.validSpeed {
             let val = prefersMile ? MeasureUtil.mphFrom(mps: mps) : MeasureUtil.kphFrom(mps: mps)
             speedNumber = MeasureUtil.displayString(val)
             isSpeedValid = true
@@ -89,18 +89,18 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     }
 
     func updateCourse() {
-        if let loc = location.last, loc.courseAccuracy >= 0, loc.course >= 0 {
+        if let course = location.last?.validCourse {
             if compassType == .north {
-                course = .degrees(-loc.course)
+                self.course = .degrees(-course)
             } else {
-                course = .degrees(loc.course - mapViewContext.heading)
+                self.course = .degrees(course - mapViewContext.heading)
             }
             isCourseValid = true
         } else {
             if compassType == .north {
-                course = .degrees(0)
+                self.course = .degrees(0)
             } else {
-                course = .degrees(-mapViewContext.heading)
+                self.course = .degrees(-mapViewContext.heading)
             }
             isCourseValid = false
         }
