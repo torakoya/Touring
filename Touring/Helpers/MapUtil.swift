@@ -2,8 +2,7 @@ import MapKit
 
 enum MapUtil {
     static func destinationFileUrl() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            .first!.appendingPathComponent("destinations.json")
+        FileManager.default.documentURL(of: "destinations.json")
     }
 
     static func saveDestinations(_ destinations: [MKPointAnnotation]) throws {

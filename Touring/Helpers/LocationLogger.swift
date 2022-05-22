@@ -84,8 +84,7 @@ class LocationLogger {
     func save(_ locations: [CLLocation], to path: String? = nil) {
         guard let path = (path != nil ? path : logPath) else { return }
 
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            .first!.appendingPathComponent(path)
+        let url = FileManager.default.documentURL(of: path)
 
         if !FileManager.default.fileExists(atPath: url.path) {
             let header = "time,latitude,longitude,horizontalAccuracy," +
