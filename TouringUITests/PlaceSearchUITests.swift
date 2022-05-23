@@ -28,4 +28,17 @@ class PlaceSearchUITests: BaseUITestCase {
         row.tap()
         XCTAssert(app.buttons["Close"].waitForNonexistence(timeout: 3))
     }
+
+    func testPin() throws {
+        openSearch()
+
+        searchField.tap()
+        searchField.typeText("apple park")
+
+        let row = app.staticTexts["Apple Park"]
+        XCTAssert(row.waitForExistence(timeout: 3))
+        app.buttons["Map Pin"].firstMatch.tap()
+        XCTAssert(app.buttons["Close"].waitForNonexistence(timeout: 3))
+        XCTAssert(app.otherElements["Apple Park"].exists)
+    }
 }

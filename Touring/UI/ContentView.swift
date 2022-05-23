@@ -6,7 +6,7 @@ struct ContentView: View {
     @State var showingBookmarked = false
     @State var showingPlaceSearch = false
     @Environment(\.scenePhase) var scenePhase
-    @State var mapItem: MKMapItem?
+    @State var searchResult: PlaceSearchResult?
 
     var targetImageName: String {
         if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
@@ -323,16 +323,24 @@ struct ContentView: View {
             DestinationDetailView(dest: Binding($vm.destinationDetail)!)
         }
         .sheet(isPresented: $showingPlaceSearch) {
-            PlaceSearchView(mapItem: $mapItem)
+            PlaceSearchView(result: $searchResult)
         }
-        .onChange(of: mapItem) {
-            if let mapItem = $0, let mapView = vm.mapViewContext.mapView {
+        .onChange(of: searchResult) {
+            if let searchResult = $0, let mapView = vm.mapViewContext.mapView {
                 // Keep the span, just change the center.
                 var region = mapView.region
-                region.center = mapItem.placemark.coordinate
+                region.center = searchResult.mapItem.placemark.coordinate
                 mapView.setRegion(region, animated: true)
 
-                self.mapItem = nil
+                if searchResult.action == .pin {
+                    let ann = MKPointAnnotation()
+                    ann.coordinate = searchResult.mapItem.placemark.coordinate
+                    ann.title = searchResult.mapItem.name
+                    vm.mapViewContext.destinations += [ann]
+                    try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                }
+
+                self.searchResult = nil
             }
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }

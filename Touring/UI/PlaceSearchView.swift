@@ -1,12 +1,21 @@
 import MapKit
 import SwiftUI
 
+struct PlaceSearchResult: Equatable {
+    enum Action {
+        case show, pin
+    }
+
+    fileprivate(set) var mapItem: MKMapItem
+    fileprivate(set) var action: Action
+}
+
 struct PlaceSearchView: View {
     @StateObject var vm = PlaceSearchViewModel()
     @State var searchWord: String = ""
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
-    @Binding var mapItem: MKMapItem?
+    @Binding var result: PlaceSearchResult?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -61,11 +70,22 @@ struct PlaceSearchView: View {
                         Text(e.subtitle).font(.footnote).foregroundColor(.secondary)
                     }
                     Spacer()
+
+                    Button {
+                        vm.fetchDetail(of: e) {
+                            result = PlaceSearchResult(mapItem: $0, action: .pin)
+                            dismiss()
+                        }
+                    } label: {
+                        Image(systemName: "mappin.circle")
+                            .font(.largeTitle)
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
                     vm.fetchDetail(of: e) {
-                        mapItem = $0
+                        result = PlaceSearchResult(mapItem: $0, action: .show)
                         dismiss()
                     }
                 }
@@ -118,6 +138,6 @@ class PlaceSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDe
 
 struct PlaceSearchView_Previews: PreviewProvider {
     static var previews: some View {
-        PlaceSearchView(mapItem: .constant(nil))
+        PlaceSearchView(result: .constant(nil))
     }
 }
