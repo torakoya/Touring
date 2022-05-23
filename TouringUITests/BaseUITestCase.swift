@@ -3,6 +3,8 @@ import XCTest
 class BaseUITestCase: XCTestCase {
     let app = XCUIApplication()
 
+    var menuButton: XCUIElement { app.buttons["More"] }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
         app.launchArguments += ["-AppleLanguages", "(en)"]

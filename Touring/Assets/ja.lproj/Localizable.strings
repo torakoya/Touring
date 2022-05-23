@@ -3,6 +3,7 @@
 "Remove" = "削除";
 "Settings" = "設定";
 "Help" = "ヘルプ";
+"Search" = "検索";
 
 /* ContentView */
 "main.location_restricted.title" = "位置情報の利用が禁止されています";
@@ -18,7 +19,7 @@
 "main.logging_error.msg" = "取得した位置情報をストレージに保存できませんでした。";
 
 /* ContentView - Menu */
-"Search Destination" = "目的地を検索";
+"Search Place" = "場所を検索";
 "Destination List" = "目的地の一覧";
 "Start Location Tracking" = "位置情報の記録を開始";
 "Resume Location Tracking" = "位置情報の記録を再開";

@@ -1,9 +1,12 @@
+import MapKit
 import SwiftUI
 
 struct ContentView: View {
     @StateObject var vm = ContentViewModel()
     @State var showingBookmarked = false
+    @State var showingPlaceSearch = false
     @Environment(\.scenePhase) var scenePhase
+    @State var mapItem: MKMapItem?
 
     var targetImageName: String {
         if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
@@ -101,8 +104,9 @@ struct ContentView: View {
 
                         Menu {
                             Button {
+                                showingPlaceSearch = true
                             } label: {
-                                Label("Search Destination", systemImage: "magnifyingglass")
+                                Label("Search Place", systemImage: "magnifyingglass")
                             }
                             Button {
                             } label: {
@@ -317,6 +321,19 @@ struct ContentView: View {
             vm.mapViewContext.selectedDestination = -1
         } content: {
             DestinationDetailView(dest: Binding($vm.destinationDetail)!)
+        }
+        .sheet(isPresented: $showingPlaceSearch) {
+            PlaceSearchView(mapItem: $mapItem)
+        }
+        .onChange(of: mapItem) {
+            if let mapItem = $0, let mapView = vm.mapViewContext.mapView {
+                // Keep the span, just change the center.
+                var region = mapView.region
+                region.center = mapItem.placemark.coordinate
+                mapView.setRegion(region, animated: true)
+
+                self.mapItem = nil
+            }
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }

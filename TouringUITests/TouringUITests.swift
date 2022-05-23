@@ -35,7 +35,7 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testMenu() throws {
-        app.buttons["More"].tap()
+        menuButton.tap()
         XCTAssert(app.buttons["Start Location Tracking"].waitForExistence(timeout: 2))
 
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.6, dy: 0.5)).tap()
@@ -43,7 +43,6 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testLocationTracking() throws {
-        let menuButton = app.buttons["More"]
         let startButton = app.buttons["Start Location Tracking"]
         let resumeButton = app.buttons["Resume Location Tracking"]
         let pauseButton = app.buttons["Pause Location Tracking"]
