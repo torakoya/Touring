@@ -5,8 +5,10 @@ struct ContentView: View {
     @StateObject var vm = ContentViewModel()
     @State var showingBookmarked = false
     @State var showingPlaceSearch = false
+    @State var showingDestinationList = false
     @Environment(\.scenePhase) var scenePhase
     @State var searchResult: PlaceSearchResult?
+    @State var destinationListResult: DestinationListView.Result?
 
     var targetImageName: String {
         if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
@@ -109,9 +111,11 @@ struct ContentView: View {
                                 Label("Search Place", systemImage: "magnifyingglass")
                             }
                             Button {
+                                showingDestinationList = true
                             } label: {
                                 Label("Destination List", systemImage: "list.bullet")
                             }
+                            .disabled(vm.mapViewContext.destinations.isEmpty)
 
                             Divider()
 
@@ -341,6 +345,19 @@ struct ContentView: View {
                 }
 
                 self.searchResult = nil
+            }
+        }
+        .sheet(isPresented: $showingDestinationList) {
+            DestinationListView(list: $vm.mapViewContext.destinations, result: $destinationListResult)
+        }
+        .onChange(of: destinationListResult) {
+            if let result = $0, let mapView = vm.mapViewContext.mapView {
+                // Keep the span, just change the center.
+                var region = mapView.region
+                region.center = result.destination.coordinate
+                mapView.setRegion(region, animated: true)
+
+                destinationListResult = nil
             }
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
