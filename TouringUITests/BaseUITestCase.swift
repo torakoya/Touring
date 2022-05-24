@@ -24,6 +24,7 @@ class BaseUITestCase: XCTestCase {
 
             // Make the app responsive.
             app.tap()
+            _ = app.otherElements["My Location"].waitForExistence(timeout: 2)
 
             // Tap a bit right of the center of the screen. The above
             // makes the user location annotation in the map selected,
