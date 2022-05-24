@@ -41,6 +41,15 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     }
 
     init() {
+#if DEBUG
+        if let uitest = ProcessInfo.processInfo.environment["UITEST"], uitest == "1" {
+            try? FileManager.default.removeItem(at: FileManager.default.documentURL(of: "destinations.json"))
+            for (key, _) in UserDefaults.standard.dictionaryRepresentation() {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
+#endif
+
         location.delegate = self
         location.logger.delegate = self
 

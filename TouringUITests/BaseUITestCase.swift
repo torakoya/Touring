@@ -8,6 +8,7 @@ class BaseUITestCase: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app.launchArguments += ["-AppleLanguages", "(en)"]
+        app.launchEnvironment["UITEST"] = "1"
         app.resetAuthorizationStatus(for: .location)
         app.launch()
 
