@@ -108,7 +108,7 @@ struct ContentView: View {
                             Button {
                                 showingPlaceSearch = true
                             } label: {
-                                Label("Search Place", systemImage: "magnifyingglass")
+                                Label("Search for Place", systemImage: "magnifyingglass")
                             }
                             Button {
                                 showingDestinationList = true
@@ -327,7 +327,7 @@ struct ContentView: View {
             DestinationDetailView(dest: Binding($vm.destinationDetail)!)
         }
         .sheet(isPresented: $showingPlaceSearch) {
-            PlaceSearchView(result: $searchResult)
+            PlaceSearchView(result: $searchResult, region: vm.mapViewContext.mapView?.region)
         }
         .onChange(of: searchResult) {
             if let searchResult = $0, let mapView = vm.mapViewContext.mapView {

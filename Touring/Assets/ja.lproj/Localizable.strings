@@ -19,7 +19,7 @@
 "main.logging_error.msg" = "取得した位置情報をストレージに保存できませんでした。";
 
 /* ContentView - Menu */
-"Search Place" = "場所を検索";
+"Search for Place" = "場所を検索";
 "Destination List" = "目的地の一覧";
 "Start Location Tracking" = "位置情報の記録を開始";
 "Resume Location Tracking" = "位置情報の記録を再開";
@@ -28,3 +28,6 @@
 
 /* DestinationDetailView */
 "Destination %lld" = "目的地 %lld";
+
+/* PlaceSearchView */
+"Prefer This Area" = "このエリアを優先";

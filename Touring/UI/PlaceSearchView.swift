@@ -16,6 +16,8 @@ struct PlaceSearchView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
     @Binding var result: PlaceSearchResult?
+    var region: MKCoordinateRegion?
+    @State private var searchesInMap = true
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -34,7 +36,7 @@ struct PlaceSearchView: View {
                         }
                     }
                     .onChange(of: searchWord) {
-                        vm.search(for: $0)
+                        vm.search(for: $0, in: searchesInMap ? region : nil)
                     }
                     .overlay(alignment: .trailing) {
                         if !searchWord.isEmpty {
@@ -62,6 +64,14 @@ struct PlaceSearchView: View {
                 }
             }
             .padding()
+
+            Toggle(isOn: $searchesInMap) {
+                Text("Prefer This Area")
+            }
+            .padding([.leading, .trailing, .bottom])
+            .onChange(of: searchesInMap) {
+                vm.search(for: searchWord, in: $0 ? region : nil)
+            }
 
             List(vm.results, id: \.self) { e in
                 HStack {
@@ -105,9 +115,18 @@ class PlaceSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDe
         comp.resultTypes = [.address, .pointOfInterest]
     }
 
-    func search(for word: String) {
+    func search(for word: String, in region: MKCoordinateRegion? = nil) {
         // queryFragment is capable of updating in real time.
         comp.queryFragment = word
+
+        if let region = region {
+            comp.region = region
+        } else {
+            // The default value; seems to search near the current location.
+            comp.region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+                span: MKCoordinateSpan(latitudeDelta: 180, longitudeDelta: 360))
+        }
 
         if word.isEmpty {
             results = []
@@ -138,6 +157,6 @@ class PlaceSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDe
 
 struct PlaceSearchView_Previews: PreviewProvider {
     static var previews: some View {
-        PlaceSearchView(result: .constant(nil))
+        PlaceSearchView(result: .constant(nil), region: nil)
     }
 }

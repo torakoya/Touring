@@ -5,8 +5,8 @@ class PlaceSearchUITests: BaseUITestCase {
 
     func openSearch() {
         menuButton.tap()
-        _ = app.buttons["Search Place"].waitForExistence(timeout: 2)
-        app.buttons["Search Place"].tap()
+        _ = app.buttons["Search for Place"].waitForExistence(timeout: 2)
+        app.buttons["Search for Place"].tap()
         _ = searchField.waitForExistence(timeout: 2)
     }
 
