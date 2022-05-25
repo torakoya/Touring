@@ -33,6 +33,7 @@
 		7A54261D28323890003813F7 /* CLLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A54261C28323890003813F7 /* CLLocationTests.swift */; };
 		7A5499DB2839E4FD00C82658 /* FileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5499DA2839E4FD00C82658 /* FileManagerTests.swift */; };
 		7A8B58512839D9330087AB05 /* FileManager+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8B58502839D9330087AB05 /* FileManager+ex.swift */; };
+		7A8BA64C283EBA66004FFED1 /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8BA64B283EBA66004FFED1 /* Destination.swift */; };
 		7A94434528375E1D00F4FFDB /* PlaceSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A94434428375E1D00F4FFDB /* PlaceSearchView.swift */; };
 		7A95BF7C283B4EBA002EBE77 /* PlaceSearchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95BF7B283B4EBA002EBE77 /* PlaceSearchUITests.swift */; };
 		7A95BF7E283B5DC1002EBE77 /* DestinationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A95BF7D283B5DC1002EBE77 /* DestinationListView.swift */; };
@@ -93,6 +94,7 @@
 		7A54261C28323890003813F7 /* CLLocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationTests.swift; sourceTree = "<group>"; };
 		7A5499DA2839E4FD00C82658 /* FileManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerTests.swift; sourceTree = "<group>"; };
 		7A8B58502839D9330087AB05 /* FileManager+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+ex.swift"; sourceTree = "<group>"; };
+		7A8BA64B283EBA66004FFED1 /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
 		7A94434428375E1D00F4FFDB /* PlaceSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceSearchView.swift; sourceTree = "<group>"; };
 		7A95BF7B283B4EBA002EBE77 /* PlaceSearchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceSearchUITests.swift; sourceTree = "<group>"; };
 		7A95BF7D283B5DC1002EBE77 /* DestinationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationListView.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				7A5426132831FEDF003813F7 /* Address.swift */,
+				7A8BA64B283EBA66004FFED1 /* Destination.swift */,
 				7AF5670028336CEA0011EDDD /* Route.swift */,
 			);
 			path = Models;
@@ -425,6 +428,7 @@
 				7AF5670128336CEA0011EDDD /* Route.swift in Sources */,
 				7AA6068E283A09AC000522D1 /* Panel.swift in Sources */,
 				7A94434528375E1D00F4FFDB /* PlaceSearchView.swift in Sources */,
+				7A8BA64C283EBA66004FFED1 /* Destination.swift in Sources */,
 				7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */,
 				7A3506512822DC2C00B33B2C /* DestinationDetailView.swift in Sources */,
 				7A54261A28320539003813F7 /* CLLocation+ex.swift in Sources */,

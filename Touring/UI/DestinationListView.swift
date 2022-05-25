@@ -1,12 +1,11 @@
 import SwiftUI
-import MapKit
 
 struct DestinationListView: View {
     struct Result: Equatable {
-        private(set) var destination: MKPointAnnotation
+        private(set) var destination: Destination
     }
 
-    @Binding var list: [MKPointAnnotation]
+    @Binding var list: [Destination]
     @Binding var result: Result?
     @Environment(\.dismiss) private var dismiss
 
@@ -28,11 +27,11 @@ struct DestinationListView: View {
                 }
                 .onMove { from, to in
                     list.move(fromOffsets: from, toOffset: to)
-                    try? MapUtil.saveDestinations(list)
+                    try? Destination.save(list)
                 }
                 .onDelete { offsets in
                     list.remove(atOffsets: offsets)
-                    try? MapUtil.saveDestinations(list)
+                    try? Destination.save(list)
                 }
             }
             .toolbar {

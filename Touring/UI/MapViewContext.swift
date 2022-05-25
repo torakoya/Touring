@@ -5,7 +5,7 @@ struct MapViewContext {
     weak var mapView: MKMapView?
 
     var heading: CLLocationDirection = 0
-    var destinations: [MKPointAnnotation] = [] {
+    var destinations: [Destination] = [] {
         didSet {
             let oldTarget = targetIndex.map { oldValue[$0] }
             let oldTargetIndex = targetIndex
@@ -64,7 +64,7 @@ struct MapViewContext {
     }
 
     /// The destination currently headed for.
-    var target: MKPointAnnotation? {
+    var target: Destination? {
         targetIndex.map { $0 >= destinations.startIndex && $0 < destinations.endIndex ? destinations[$0] : nil } ?? nil
     }
 
@@ -162,13 +162,13 @@ struct MapViewContext {
     func syncDestinations() {
         if let mapView = mapView {
             destinations.forEach { dest in
-                if !mapView.annotations.contains(where: { ($0 as? MKPointAnnotation) == dest }) {
+                if !mapView.annotations.contains(where: { ($0 as? Destination) == dest }) {
                     mapView.addAnnotation(dest)
                 }
             }
 
             mapView.annotations.reversed().forEach { ann in
-                if let ann = ann as? MKPointAnnotation,
+                if let ann = ann as? Destination,
                     !destinations.contains(where: { $0 == ann }) {
                     mapView.removeAnnotation(ann)
                 }
@@ -222,7 +222,7 @@ struct MapViewContext {
 
     func setupAnnotationView(_ view: MKAnnotationView) {
         if let view = view as? MKMarkerAnnotationView,
-           let annotation = view.annotation as? MKPointAnnotation {
+           let annotation = view.annotation as? Destination {
             let isTarget = annotation == target
             view.markerTintColor = isTarget ? .systemPurple : nil
             view.displayPriority = isTarget ? .required : .defaultHigh

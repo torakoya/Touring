@@ -312,11 +312,11 @@ struct ContentView: View {
                     at: newValue,
                     onUpdate: { dest in
                         vm.mapViewContext.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
-                        try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                        try? Destination.save(vm.mapViewContext.destinations)
                     },
                     onRemove: { dest in
                         vm.mapViewContext.destinations.remove(at: dest.id)
-                        try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                        try? Destination.save(vm.mapViewContext.destinations)
                     })
                 vm.showingDestinationDetail = true
             }
@@ -334,11 +334,11 @@ struct ContentView: View {
                 mapView.setCenter(searchResult.mapItem.placemark.coordinate, animated: true)
 
                 if searchResult.action == .pin {
-                    let ann = MKPointAnnotation()
-                    ann.coordinate = searchResult.mapItem.placemark.coordinate
-                    ann.title = searchResult.mapItem.name
-                    vm.mapViewContext.destinations += [ann]
-                    try? MapUtil.saveDestinations(vm.mapViewContext.destinations)
+                    let dest = Destination()
+                    dest.coordinate = searchResult.mapItem.placemark.coordinate
+                    dest.title = searchResult.mapItem.name
+                    vm.mapViewContext.destinations += [dest]
+                    try? Destination.save(vm.mapViewContext.destinations)
                 }
 
                 self.searchResult = nil

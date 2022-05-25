@@ -1,4 +1,3 @@
-import MapKit
 import XCTest
 @testable import Touring
 
@@ -19,8 +18,8 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testAddDestination() throws {
-        let dest0 = MKPointAnnotation()
-        let dest1 = MKPointAnnotation()
+        let dest0 = Destination()
+        let dest1 = Destination()
 
         var ctx = MapViewContext()
 
@@ -34,7 +33,7 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testRemoveDestination() throws {
-        let dests = [MKPointAnnotation(), MKPointAnnotation()]
+        let dests = [Destination(), Destination()]
 
         var ctx = MapViewContext()
 
@@ -49,7 +48,7 @@ class MapViewContextTests: XCTestCase {
     func testEmptyDestination() throws {
         var ctx = MapViewContext()
 
-        ctx.destinations = [MKPointAnnotation()]
+        ctx.destinations = [Destination()]
         ctx.originOnly = false
 
         ctx.destinations.remove(at: 0)
@@ -67,7 +66,7 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testGoForwardWithSingleDestination() throws {
-        let dests = [MKPointAnnotation()]
+        let dests = [Destination()]
 
         var ctx = MapViewContext()
         ctx.destinations = dests
@@ -78,7 +77,7 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testGoForwardWithSomeDestinations() throws {
-        let dests = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+        let dests = [Destination(), Destination(), Destination()]
 
         var ctx = MapViewContext()
         ctx.destinations = dests
@@ -105,7 +104,7 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testGoBackwardWithSingleDestination() throws {
-        let dests = [MKPointAnnotation()]
+        let dests = [Destination()]
 
         var ctx = MapViewContext()
         ctx.destinations = dests
@@ -116,7 +115,7 @@ class MapViewContextTests: XCTestCase {
     }
 
     func testGoBackwardWithSomeDestinations() throws {
-        let dests = [MKPointAnnotation(), MKPointAnnotation(), MKPointAnnotation()]
+        let dests = [Destination(), Destination(), Destination()]
 
         var ctx = MapViewContext()
         ctx.destinations = dests

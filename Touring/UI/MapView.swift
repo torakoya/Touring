@@ -24,7 +24,7 @@ struct MapView: UIViewRepresentable {
 
         // mapViewContext.destinations seems not to be updated immediately here.
         DispatchQueue.main.async {
-            try? mapViewContext.destinations = MapUtil.loadDestinations()
+            try? mapViewContext.destinations = Destination.load()
         }
 
         return view
@@ -66,7 +66,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        if let ann = view.annotation as? MKPointAnnotation,
+        if let ann = view.annotation as? Destination,
            let index = self.view.mapViewContext.destinations.firstIndex(of: ann) {
             self.view.mapViewContext.selectedDestination = index
 
@@ -147,7 +147,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? MKPointAnnotation else { return nil }
+        guard let annotation = annotation as? Destination else { return nil }
 
         let reuseId = "destination"
         let av = { () -> MKMarkerAnnotationView in
@@ -180,10 +180,10 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
            mapView.selectedAnnotations.isEmpty {
             let cgpoint = sender.location(in: mapView)
             let coord = mapView.convert(cgpoint, toCoordinateFrom: mapView)
-            let ann = MKPointAnnotation()
-            ann.coordinate = coord
-            view.mapViewContext.destinations += [ann]
-            try? MapUtil.saveDestinations(view.mapViewContext.destinations)
+            let dest = Destination()
+            dest.coordinate = coord
+            view.mapViewContext.destinations += [dest]
+            try? Destination.save(view.mapViewContext.destinations)
         }
     }
 }

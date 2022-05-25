@@ -1,4 +1,4 @@
-import MapKit
+import CoreLocation
 import SwiftUI
 
 class DestinationDetail: Identifiable {
@@ -8,11 +8,11 @@ class DestinationDetail: Identifiable {
     var update: ((DestinationDetail) -> Void)?
     var remove: ((DestinationDetail) -> Void)?
 
-    init(_ annotation: MKPointAnnotation, at id: Int,
+    init(_ destination: Destination, at id: Int,
          onUpdate: ((DestinationDetail) -> Void)? = nil,
          onRemove: ((DestinationDetail) -> Void)? = nil) {
-        self.title = annotation.title ?? ""
-        self.coordinate = annotation.coordinate
+        self.title = destination.title ?? ""
+        self.coordinate = destination.coordinate
         self.id = id
         self.update = onUpdate
         self.remove = onRemove
@@ -67,6 +67,6 @@ struct DestinationDetailView: View {
 
 struct DestinationDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DestinationDetailView(dest: .constant(DestinationDetail(MKPointAnnotation(), at: 0)))
+        DestinationDetailView(dest: .constant(DestinationDetail(Destination(), at: 0)))
     }
 }
