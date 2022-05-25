@@ -331,10 +331,7 @@ struct ContentView: View {
         }
         .onChange(of: searchResult) {
             if let searchResult = $0, let mapView = vm.mapViewContext.mapView {
-                // Keep the span, just change the center.
-                var region = mapView.region
-                region.center = searchResult.mapItem.placemark.coordinate
-                mapView.setRegion(region, animated: true)
+                mapView.setCenter(searchResult.mapItem.placemark.coordinate, animated: true)
 
                 if searchResult.action == .pin {
                     let ann = MKPointAnnotation()
@@ -352,11 +349,7 @@ struct ContentView: View {
         }
         .onChange(of: destinationListResult) {
             if let result = $0, let mapView = vm.mapViewContext.mapView {
-                // Keep the span, just change the center.
-                var region = mapView.region
-                region.center = result.destination.coordinate
-                mapView.setRegion(region, animated: true)
-
+                mapView.setCenter(result.destination.coordinate, animated: true)
                 destinationListResult = nil
             }
         }
