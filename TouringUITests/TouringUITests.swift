@@ -126,6 +126,9 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testSwitchMapMode() throws {
+        let point = randomPoint()
+        point.press(forDuration: 2)
+
         app.buttons["location.square.fill"].tap()
         XCTAssert(app.buttons["mappin.square.fill"].exists)
 
