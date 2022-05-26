@@ -1,8 +1,8 @@
 import MapKit
 
-enum MapUtil {
+extension MKCoordinateRegion {
     /// Returns a region that contains all the coordinates.
-    static func region(with coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion {
+    static func contains(_ coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion {
         let paddingratio = 0.15
         let deltamin: CLLocationDegrees = 0.001
         var rect = MKMapRect.null

@@ -179,9 +179,9 @@ struct MapViewContext {
     func setRegionWithDestination(animated: Bool = true) {
         if let mapView = mapView, let target = target {
             mapView.setRegion(
-                MapUtil.region(
-                    with: [mapView.userLocation.coordinate,
-                           target.coordinate]),
+                MKCoordinateRegion.contains(
+                    [mapView.userLocation.coordinate,
+                     target.coordinate]),
                 animated: animated)
         }
     }
