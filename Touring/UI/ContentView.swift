@@ -2,22 +2,23 @@ import MapKit
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var vm = ContentViewModel()
+    @EnvironmentObject private var vm: ContentViewModel
+    @EnvironmentObject private var map: MapViewContext
     @State private var showingBookmarked = false
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack(alignment: .topLeading) {
             GeometryReader { geom in
-                MapView(mapViewContext: $vm.mapViewContext)
+                MapView()
                     .ignoresSafeArea()
-                    .onChange(of: vm.mapViewContext.heading) { _ in
+                    .onChange(of: map.heading) { _ in
                         vm.updateCourse()
                     }
                     .onChange(of: geom.size) { _ in
-                        if !vm.mapViewContext.originOnly && vm.mapViewContext.following {
+                        if !map.originOnly && map.following {
                             DispatchQueue.main.async {
-                                vm.mapViewContext.setRegionWithDestination(animated: true)
+                                map.setRegionWithDestination(animated: true)
                             }
                         }
                     }
@@ -54,7 +55,7 @@ struct ContentView: View {
 
                 Spacer()
 
-                if vm.mapViewContext.showsAddress {
+                if map.showsAddress {
                     AddressPanel()
                         .padding([.leading, .trailing])
                 }
@@ -64,7 +65,6 @@ struct ContentView: View {
                     .padding(.bottom, 10) // Avoid covering MKmapView's legal label
             }
         }
-        .environmentObject(vm)
 
         .alert("main.location_restricted.title", isPresented: $vm.alertingLocationAuthorizationRestricted) {
         } message: {
@@ -95,29 +95,32 @@ struct ContentView: View {
             Text("main.logging_error.msg")
         }
 
-        .onChange(of: vm.mapViewContext.selectedDestination) { newValue in
+        .onChange(of: map.selectedDestination) { newValue in
             if newValue >= 0 {
                 vm.destinationDetail = DestinationDetail(
-                    vm.mapViewContext.destinations[newValue],
+                    DestinationSet.current.destinations[newValue],
                     at: newValue,
                     onUpdate: { dest in
-                        vm.mapViewContext.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
-                        try? Destination.save(vm.mapViewContext.destinations)
+                        DestinationSet.current.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
+                        try? DestinationSet.saveAll()
                     },
                     onRemove: { dest in
-                        vm.mapViewContext.destinations.remove(at: dest.id)
-                        try? Destination.save(vm.mapViewContext.destinations)
+                        DestinationSet.current.destinations.remove(at: dest.id)
+                        try? DestinationSet.saveAll()
                     })
                 vm.showingDestinationDetail = true
             }
         }
         .sheet(isPresented: $vm.showingDestinationDetail) {
-            vm.mapViewContext.selectedDestination = -1
+            map.selectedDestination = -1
         } content: {
             DestinationDetailView(dest: Binding($vm.destinationDetail)!)
         }
 
-        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onAppear {
+            if vm.map == nil { vm.map = map }
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
 
         .onChange(of: scenePhase) { newPhase in

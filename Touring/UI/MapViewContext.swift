@@ -1,74 +1,15 @@
+import Combine
 import MapKit
 
 /// The information of a map view that the parent view may want.
-struct MapViewContext {
+class MapViewContext: ObservableObject {
     weak var mapView: MKMapView?
 
-    var heading: CLLocationDirection = 0
-    var destinations: [Destination] = [] {
-        didSet {
-            let oldTarget = targetIndex.map { oldValue[$0] }
-            let oldTargetIndex = targetIndex
+    @Published var heading: CLLocationDirection = 0
 
-            syncDestinations()
+    @Published var selectedDestination: Int = -1
 
-            if destinations.isEmpty {
-                originOnly = true
-            } else if targetIndex == nil {
-                targetIndex = destinations.startIndex
-            }
-
-            // If the previously aimed-at target still exists, it
-            // should be kept aimed at.
-            if let oldTarget = oldTarget,
-                let index = destinations.firstIndex(of: oldTarget) {
-                targetIndex = index
-            } else if targetIndex.map({ $0 >= destinations.endIndex }) ?? false {
-                targetIndex = destinations.endIndex - 1
-            }
-
-            refreshAnnotations()
-
-            // If targetIndex hasn't been unchanged but target has
-            // been changed by removing a destination, the line should
-            // be redrawn.
-            if let target = target, targetIndex == oldTargetIndex && target != oldTarget {
-                addTargetLine()
-                fetchRoutes(byForce: true)
-            }
-
-            if !originOnly && following && oldTarget != target {
-                setRegionWithDestination()
-            }
-        }
-    }
-
-    var selectedDestination: Int = -1
-
-    var targetIndex: Int? {
-        didSet {
-            if destinations.isEmpty {
-                targetIndex = nil
-            } else if let dest = targetIndex {
-                if dest < destinations.startIndex {
-                    targetIndex = destinations.startIndex
-                } else if dest >= destinations.endIndex {
-                    targetIndex = destinations.endIndex - 1
-                }
-            }
-
-            refreshAnnotations()
-            addTargetLine()
-            fetchRoutes(byForce: true)
-        }
-    }
-
-    /// The destination currently headed for.
-    var target: Destination? {
-        targetIndex.map { $0 >= destinations.startIndex && $0 < destinations.endIndex ? destinations[$0] : nil } ?? nil
-    }
-
-    var following = false {
+    @Published var following = false {
         didSet {
             if let mapView = mapView {
                 if originOnly {
@@ -79,7 +20,7 @@ struct MapViewContext {
             }
         }
     }
-    var originOnly = true {
+    @Published var originOnly = true {
         didSet {
             if let mapView = mapView {
                 if originOnly && following {
@@ -96,7 +37,7 @@ struct MapViewContext {
     }
 
     var targetDistance: CLLocationDistance? {
-        if let mapView = mapView, let target = target {
+        if let mapView = mapView, let target = DestinationSet.current.target {
             let user = mapView.userLocation.coordinate
             let dest = target.coordinate
             let userloc = CLLocation(latitude: user.latitude, longitude: user.longitude)
@@ -106,12 +47,12 @@ struct MapViewContext {
         return nil
     }
 
-    var routes: Route.Result? {
+    @Published var routes: Route.Result? {
         didSet {
             showRoutes()
         }
     }
-    var showingRoutes = false {
+    @Published var showingRoutes = false {
         didSet {
             if showingRoutes {
                 fetchRoutes(byForce: true)
@@ -121,8 +62,8 @@ struct MapViewContext {
         }
     }
 
-    var address: [String?]?
-    var showsAddress = false {
+    @Published var address: [String?]?
+    @Published var showsAddress = false {
         didSet {
             if showsAddress {
                 fetchAddress()
@@ -130,38 +71,45 @@ struct MapViewContext {
         }
     }
 
-    mutating func goForward() {
-        if let dest = targetIndex {
-            if dest + 1 >= destinations.endIndex {
-                targetIndex = destinations.startIndex
-            } else {
-                targetIndex = dest + 1
+    private var cancellable: AnyCancellable?
+    private var subcancellables = Set<AnyCancellable>()
+
+    init() {
+        cancellable = DestinationSet.currentPublisher.sink { [self] current in
+            subcancellables.removeAll()
+
+            current.destinationsPublisher.sink { [self] in
+                objectWillChange.send()
+
+                syncDestinations()
+
+                if $0.isEmpty {
+                    originOnly = true
+                }
+
+                refreshAnnotations()
             }
-        }
+            .store(in: &subcancellables)
 
-        if !originOnly && following {
-            setRegionWithDestination()
-        }
-    }
+            current.targetIndexPublisher.sink { [self] _ in
+                objectWillChange.send()
 
-    mutating func goBackward() {
-        if let dest = targetIndex {
-            if dest - 1 < destinations.startIndex {
-                targetIndex = destinations.endIndex - 1
-            } else {
-                targetIndex = dest - 1
+                if !originOnly && following {
+                    setRegionWithDestination()
+                }
+
+                refreshAnnotations()
+                addTargetLine()
+                fetchRoutes(byForce: true)
             }
-        }
-
-        if !originOnly && following {
-            setRegionWithDestination()
+            .store(in: &subcancellables)
         }
     }
 
     /// Sync the annotations in the map view with the destinations.
     func syncDestinations() {
         if let mapView = mapView {
-            destinations.forEach { dest in
+            DestinationSet.current.destinations.forEach { dest in
                 if !mapView.annotations.contains(where: { ($0 as? Destination) == dest }) {
                     mapView.addAnnotation(dest)
                 }
@@ -169,7 +117,7 @@ struct MapViewContext {
 
             mapView.annotations.reversed().forEach { ann in
                 if let ann = ann as? Destination,
-                    !destinations.contains(where: { $0 == ann }) {
+                   !DestinationSet.current.destinations.contains(where: { $0 == ann }) {
                     mapView.removeAnnotation(ann)
                 }
             }
@@ -177,7 +125,7 @@ struct MapViewContext {
     }
 
     func setRegionWithDestination(animated: Bool = true) {
-        if let mapView = mapView, let target = target {
+        if let mapView = mapView, let target = DestinationSet.current.target {
             mapView.setRegion(
                 MKCoordinateRegion.contains(
                     [mapView.userLocation.coordinate,
@@ -189,9 +137,9 @@ struct MapViewContext {
     /// Draw a line from the user location to the target.
     func addTargetLine() {
         if let mapView = mapView {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [self] in
                 mapView.removeOverlays(mapView.overlays.filter { !($0 is Route.Polyline) })
-                if let target = target {
+                if let target = DestinationSet.current.target {
                     let user = mapView.userLocation
                     if !visible(target.coordinate, in: mapView) ||
                         !visible(user.coordinate, in: mapView) {
@@ -223,10 +171,10 @@ struct MapViewContext {
     func setupAnnotationView(_ view: MKAnnotationView) {
         if let view = view as? MKMarkerAnnotationView,
            let annotation = view.annotation as? Destination {
-            let isTarget = annotation == target
+            let isTarget = annotation == DestinationSet.current.target
             view.markerTintColor = isTarget ? .systemPurple : nil
             view.displayPriority = isTarget ? .required : .defaultHigh
-            if let index = destinations.firstIndex(of: annotation) {
+            if let index = DestinationSet.current.destinations.firstIndex(of: annotation) {
                 view.glyphText = String(index + 1)
             }
         }
@@ -236,9 +184,11 @@ struct MapViewContext {
     /// - Parameter byForce: If true, go anyway. Wait until the attempt can be made, if needed.
     func fetchRoutes(byForce: Bool = false) {
         Task { @MainActor in
-            if showingRoutes, let mapView = mapView, let userloc = mapView.userLocation.location, let target = target {
-                if byForce, let view = (mapView.delegate as? MapViewCoordinator)?.view {
-                    view.mapViewContext.routes = nil
+            if showingRoutes, let mapView = mapView,
+                let userloc = mapView.userLocation.location,
+                let target = DestinationSet.current.target {
+                if byForce {
+                    routes = nil
                 }
 
                 let targetloc = CLLocation(latitude: target.coordinate.latitude, longitude: target.coordinate.longitude)
@@ -248,9 +198,8 @@ struct MapViewContext {
 
                 do {
                     let result = try await Route.fetch(from: userloc, to: targetloc, byForce: byForce)
-                    if let view = (mapView.delegate as? MapViewCoordinator)?.view,
-                        view.mapViewContext.target == target {
-                        view.mapViewContext.routes = result
+                    if DestinationSet.current.target == target {
+                        routes = result
                     }
                 } catch {
                     // Ignore an error.
@@ -275,11 +224,11 @@ struct MapViewContext {
                 return
             }
 
-            Address.fetch(location: userloc) { result, error in
+            Address.fetch(location: userloc) { [self] result, error in
                 if error != nil {
                     // Ignore an error.
-                } else if let result = result, let view = (mapView.delegate as? MapViewCoordinator)?.view {
-                    view.mapViewContext.address = result.address
+                } else if let result = result {
+                    address = result.address
                 }
             }
         }

@@ -2,9 +2,10 @@ import SwiftUI
 
 struct DestinationPanel: View {
     @EnvironmentObject private var vm: ContentViewModel
+    @EnvironmentObject private var map: MapViewContext
 
     var targetImageName: String {
-        if let targetIndex = vm.mapViewContext.targetIndex, targetIndex < 40 {
+        if let targetIndex = DestinationSet.current.targetIndex, targetIndex < 40 {
             return "\(targetIndex + 1).circle"
         } else {
             return "circle"
@@ -12,47 +13,47 @@ struct DestinationPanel: View {
     }
 
     var mapModeImageName: String {
-        vm.mapViewContext.originOnly ?
-            (vm.mapViewContext.following ? "location.square.fill" : "location.square") :
-            (vm.mapViewContext.following ? "mappin.square.fill" : "mappin.square")
+        map.originOnly ?
+            (map.following ? "location.square.fill" : "location.square") :
+            (map.following ? "mappin.square.fill" : "mappin.square")
     }
 
     var body: some View {
         HStack {
             Button {
-                vm.mapViewContext.goBackward()
+                DestinationSet.current.goBackward()
             } label: {
                 Image(systemName: "chevron.backward.2")
                     .font(.title)
             }
-            .disabled(vm.mapViewContext.destinations.count <= 1)
+            .disabled(DestinationSet.current.destinations.count <= 1)
             Image(systemName: targetImageName)
                 .font(.title)
             Button {
-                vm.mapViewContext.goForward()
+                DestinationSet.current.goForward()
             } label: {
                 Image(systemName: "chevron.forward.2")
                     .font(.title)
             }
-            .disabled(vm.mapViewContext.destinations.count <= 1)
+            .disabled(DestinationSet.current.destinations.count <= 1)
             .padding(.trailing, 10)
 
             Button {
-                if vm.mapViewContext.following {
-                    if vm.mapViewContext.destinations.isEmpty {
-                        vm.mapViewContext.originOnly = true
+                if map.following {
+                    if DestinationSet.current.destinations.isEmpty {
+                        map.originOnly = true
                     } else {
-                        vm.mapViewContext.originOnly.toggle()
+                        map.originOnly.toggle()
                     }
                 } else {
-                    vm.mapViewContext.following.toggle()
+                    map.following.toggle()
                 }
             } label: {
                 Image(systemName: mapModeImageName)
                     .font(.largeTitle)
             }
 
-            if let dist = vm.mapViewContext.targetDistance {
+            if let dist = map.targetDistance {
                 let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
                 Text(diststr[0]).bold() + Text(diststr[1]).font(.footnote)
             }

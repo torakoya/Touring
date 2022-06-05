@@ -2,9 +2,10 @@ import SwiftUI
 
 struct AddressPanel: View {
     @EnvironmentObject private var vm: ContentViewModel
+    @EnvironmentObject private var map: MapViewContext
 
     var addressText: Text? {
-        guard let address = vm.mapViewContext.address else { return nil }
+        guard let address = map.address else { return nil }
 
         var ss = address.map { $0.map { Text($0) } }
         ss[1] = ss[1].map { $0.bold() }

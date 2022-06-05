@@ -2,18 +2,19 @@ import SwiftUI
 
 struct RouteButton: View {
     @EnvironmentObject var vm: ContentViewModel
+    @EnvironmentObject var map: MapViewContext
 
     var isRouteButtonDisabled: Bool {
-        vm.mapViewContext.mapView?.userLocation.location == nil || vm.mapViewContext.target == nil
+        map.mapView?.userLocation.location == nil || DestinationSet.current.target == nil
     }
 
     var isRouteButtonExpanded: Bool {
-        vm.mapViewContext.showingRoutes &&
+        map.showingRoutes &&
         (routeDistanceString != nil || routeTimeString != nil)
     }
 
     var routeDistanceString: [String]? {
-        if vm.mapViewContext.showingRoutes, let routes = vm.mapViewContext.routes {
+        if map.showingRoutes, let routes = map.routes {
             return MeasureUtil.distanceString(meters: routes.distance, prefersMile: vm.prefersMile)
         } else {
             return nil
@@ -21,7 +22,7 @@ struct RouteButton: View {
     }
 
     var routeTimeString: [String]? {
-        if vm.mapViewContext.showingRoutes, let routes = vm.mapViewContext.routes {
+        if map.showingRoutes, let routes = map.routes {
             return [String(Int(routes.time / 60 / 60)), String(Int(routes.time / 60) % 60)]
         } else {
             return nil
@@ -31,9 +32,9 @@ struct RouteButton: View {
     var body: some View {
         HStack {
             Button {
-                vm.mapViewContext.showingRoutes.toggle()
+                map.showingRoutes.toggle()
             } label: {
-                Image(systemName: vm.mapViewContext.showingRoutes ? "eye" : "eye.slash")
+                Image(systemName: map.showingRoutes ? "eye" : "eye.slash")
                     .font(.largeTitle)
                     .padding(isRouteButtonExpanded ? [.top, .bottom, .leading] : .all)
             }

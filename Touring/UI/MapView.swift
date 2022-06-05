@@ -2,7 +2,7 @@ import MapKit
 import SwiftUI
 
 struct MapView: UIViewRepresentable {
-    @Binding var mapViewContext: MapViewContext
+    @EnvironmentObject fileprivate var map: MapViewContext
 
     func makeUIView(context: Context) -> MKMapView {
         // Giving a non-empty frame is a workaround for the strange
@@ -14,7 +14,7 @@ struct MapView: UIViewRepresentable {
         view.showsScale = true
         view.showsTraffic = true
 
-        mapViewContext.mapView = view
+        map.mapView = view
 
         let recog = UILongPressGestureRecognizer(
             target: context.coordinator,
@@ -22,10 +22,7 @@ struct MapView: UIViewRepresentable {
         recog.delegate = context.coordinator
         view.addGestureRecognizer(recog)
 
-        // mapViewContext.destinations seems not to be updated immediately here.
-        DispatchQueue.main.async {
-            try? mapViewContext.destinations = Destination.load()
-        }
+        try? DestinationSet.loadAll()
 
         return view
     }
@@ -39,7 +36,7 @@ struct MapView: UIViewRepresentable {
 }
 
 class MapViewCoordinator: NSObject {
-    let view: MapView
+    private let view: MapView
 
     init(_ view: MapView) {
         self.view = view
@@ -60,15 +57,15 @@ class MapViewCoordinator: NSObject {
 
 extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        view.mapViewContext.heading = mapView.camera.heading
+        view.map.heading = mapView.camera.heading
 
-        view.mapViewContext.addTargetLine()
+        view.map.addTargetLine()
     }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let ann = view.annotation as? Destination,
-           let index = self.view.mapViewContext.destinations.firstIndex(of: ann) {
-            self.view.mapViewContext.selectedDestination = index
+            let index = DestinationSet.current.destinations.firstIndex(of: ann) {
+            self.view.map.selectedDestination = index
 
             // Wait for long-press gesture deadline and deselect the
             // annotation.
@@ -90,37 +87,32 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
-        // Without DispatchQueue.main.async, during initialization,
-        // the modification here of `following` seems not to be
-        // reflected immediately.
-        DispatchQueue.main.async {
-            if self.view.mapViewContext.originOnly {
-                self.view.mapViewContext.following = (mode != .none)
-            }
+        if self.view.map.originOnly {
+            self.view.map.following = (mode != .none)
         }
     }
 
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        if !view.mapViewContext.originOnly && view.mapViewContext.following {
-            view.mapViewContext.setRegionWithDestination(animated: false)
+        if !view.map.originOnly && view.map.following {
+            view.map.setRegionWithDestination(animated: false)
         }
 
-        if !view.mapViewContext.following {
-            view.mapViewContext.addTargetLine()
+        if !view.map.following {
+            view.map.addTargetLine()
         }
 
-        if view.mapViewContext.showingRoutes {
-            view.mapViewContext.fetchRoutes()
+        if view.map.showingRoutes {
+            view.map.fetchRoutes()
         }
 
-        if view.mapViewContext.showsAddress {
-            view.mapViewContext.fetchAddress()
+        if view.map.showsAddress {
+            view.map.fetchAddress()
         }
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        if !view.mapViewContext.originOnly && gestured(mapView) {
-            view.mapViewContext.following = false
+        if !view.map.originOnly && gestured(mapView) {
+            view.map.following = false
         }
     }
 
@@ -160,7 +152,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
         }()
 
         DispatchQueue.main.async { [self] in
-            view.mapViewContext.setupAnnotationView(av)
+            view.map.setupAnnotationView(av)
         }
         return av
     }
@@ -182,21 +174,14 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
             let coord = mapView.convert(cgpoint, toCoordinateFrom: mapView)
             let dest = Destination()
             dest.coordinate = coord
-            view.mapViewContext.destinations += [dest]
-            try? Destination.save(view.mapViewContext.destinations)
+            DestinationSet.current.destinations += [dest]
+            try? DestinationSet.saveAll()
         }
-    }
-}
-
-extension MapView {
-    enum Error: Swift.Error {
-        case fileIOError(original: Swift.Error?)
-        case jsonCodingError
     }
 }
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(mapViewContext: .constant(MapViewContext()))
+        MapView()
     }
 }

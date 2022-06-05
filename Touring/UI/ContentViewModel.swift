@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelegate {
@@ -27,7 +28,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     @Published var alertingLocationLoggingError = false
     @Published var loggingState = LocationLogger.State.stopped
 
-    @Published var mapViewContext = MapViewContext()
+    var map: MapViewContext?
 
     @Published var destinationDetail: DestinationDetail?
     @Published var showingDestinationDetail = false
@@ -39,6 +40,9 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     enum CompassType: Int {
         case heading, north
     }
+
+    private var cancellable: AnyCancellable?
+    private var subcancellables = Set<AnyCancellable>()
 
     init() {
 #if DEBUG
@@ -58,6 +62,22 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         updateSpeedNumber()
         updateCourse()
         loggingStateChanged()
+
+        cancellable = DestinationSet.currentPublisher.sink { [self] _ in
+            subcancellables.removeAll()
+
+            DestinationSet.current.destinationsPublisher.sink { [self] _ in
+                objectWillChange.send()
+            }
+            .store(in: &subcancellables)
+
+            DestinationSet.current.targetIndexPublisher.sink { [self] _ in
+                objectWillChange.send()
+            }
+            .store(in: &subcancellables)
+
+            objectWillChange.send()
+        }
     }
 
     func loadSettings() {
@@ -73,7 +93,7 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
         compassType = CompassType(rawValue: UserDefaults.standard.integer(forKey: "compass_type")) ?? .heading
 
-        mapViewContext.showsAddress = (UserDefaults.standard.object(forKey: "show_address") as? Int ?? 1) != 0
+        map?.showsAddress = (UserDefaults.standard.object(forKey: "show_address") as? Int ?? 1) != 0
     }
 
     func locationDidChangeAuthorization(_ location: Location) {
@@ -102,14 +122,14 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
             if compassType == .north {
                 self.course = .degrees(-course)
             } else {
-                self.course = .degrees(course - mapViewContext.heading)
+                self.course = .degrees(course - (map?.heading ?? 0))
             }
             isCourseValid = true
         } else {
             if compassType == .north {
                 self.course = .degrees(0)
             } else {
-                self.course = .degrees(-mapViewContext.heading)
+                self.course = .degrees(-(map?.heading ?? 0))
             }
             isCourseValid = false
         }

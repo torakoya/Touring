@@ -5,14 +5,13 @@ struct DestinationListView: View {
         private(set) var destination: Destination
     }
 
-    @Binding var list: [Destination]
     @Binding var result: Result?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(list, id: \.self) { dest in
+                ForEach(DestinationSet.current.destinations, id: \.self) { dest in
                     VStack(alignment: .leading) {
                         Text(dest.title ?? "")
                             .bold()
@@ -26,12 +25,12 @@ struct DestinationListView: View {
                     }
                 }
                 .onMove { from, to in
-                    list.move(fromOffsets: from, toOffset: to)
-                    try? Destination.save(list)
+                    DestinationSet.current.destinations.move(fromOffsets: from, toOffset: to)
+                    try? DestinationSet.saveAll()
                 }
                 .onDelete { offsets in
-                    list.remove(atOffsets: offsets)
-                    try? Destination.save(list)
+                    DestinationSet.current.destinations.remove(atOffsets: offsets)
+                    try? DestinationSet.saveAll()
                 }
             }
             .toolbar {
@@ -53,6 +52,6 @@ struct DestinationListView: View {
 
 struct DestinationListView_Previews: PreviewProvider {
     static var previews: some View {
-        DestinationListView(list: .constant([]), result: .constant(nil))
+        DestinationListView(result: .constant(nil))
     }
 }

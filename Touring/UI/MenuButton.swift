@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MenuButton: View {
     @EnvironmentObject private var vm: ContentViewModel
+    @EnvironmentObject private var map: MapViewContext
     @State private var showingPlaceSearch = false
     @State private var showingDestinationList = false
     @State private var searchResult: PlaceSearchResult?
@@ -19,7 +20,7 @@ struct MenuButton: View {
             } label: {
                 Label("Destination List", systemImage: "list.bullet")
             }
-            .disabled(vm.mapViewContext.destinations.isEmpty)
+            .disabled(DestinationSet.current.destinations.isEmpty)
 
             Divider()
 
@@ -68,18 +69,18 @@ struct MenuButton: View {
         }
 
         .sheet(isPresented: $showingPlaceSearch) {
-            PlaceSearchView(result: $searchResult, region: vm.mapViewContext.mapView?.region)
+            PlaceSearchView(result: $searchResult, region: map.mapView?.region)
         }
         .onChange(of: searchResult) {
-            if let searchResult = $0, let mapView = vm.mapViewContext.mapView {
+            if let searchResult = $0, let mapView = map.mapView {
                 mapView.setCenter(searchResult.mapItem.placemark.coordinate, animated: true)
 
                 if searchResult.action == .pin {
                     let dest = Destination()
                     dest.coordinate = searchResult.mapItem.placemark.coordinate
                     dest.title = searchResult.mapItem.name
-                    vm.mapViewContext.destinations += [dest]
-                    try? Destination.save(vm.mapViewContext.destinations)
+                    DestinationSet.current.destinations += [dest]
+                    try? DestinationSet.saveAll()
                 }
 
                 self.searchResult = nil
@@ -87,10 +88,10 @@ struct MenuButton: View {
         }
 
         .sheet(isPresented: $showingDestinationList) {
-            DestinationListView(list: $vm.mapViewContext.destinations, result: $destinationListResult)
+            DestinationListView(result: $destinationListResult)
         }
         .onChange(of: destinationListResult) {
-            if let result = $0, let mapView = vm.mapViewContext.mapView {
+            if let result = $0, let mapView = map.mapView {
                 mapView.setCenter(result.destination.coordinate, animated: true)
                 destinationListResult = nil
             }

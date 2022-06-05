@@ -1,48 +1,33 @@
 import Foundation
 import MapKit
 
-class Destination: MKPointAnnotation {
-    static var destinationFileUrl: URL {
-        FileManager.default.documentURL(of: "destinations.json")
+final class Destination: MKPointAnnotation {
+}
+
+extension Destination: Codable {
+    enum CodingKeys: String, CodingKey {
+        case title
+        case latitude
+        case longitude
     }
 
-    static func save(_ destinations: [Destination]) throws {
-        let dests = destinations.map {
-            SavedDestination(title: $0.title,
-                             latitude: $0.coordinate.latitude,
-                             longitude: $0.coordinate.longitude)
-        }
+    convenience init(from decoder: Decoder) throws {
+        self.init()
 
-        guard let json = try? JSONEncoder().encode(dests) else {
-            throw MapView.Error.jsonCodingError
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        if values.contains(.title) {
+            title = try values.decode(String.self, forKey: .title)
         }
-
-        if !FileManager.default.createFile(atPath: destinationFileUrl.path, contents: json) {
-            throw MapView.Error.fileIOError(original: nil)
-        }
+        coordinate.latitude = try values.decode(CLLocationDegrees.self, forKey: .latitude)
+        coordinate.longitude = try values.decode(CLLocationDegrees.self, forKey: .longitude)
     }
 
-    static func load() throws -> [Destination] {
-        guard let json = FileManager.default.contents(atPath: destinationFileUrl.path) else {
-            return []
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        if let title = title {
+            try container.encode(title, forKey: .title)
         }
-
-        guard let dests = try? JSONDecoder().decode([SavedDestination].self, from: json) else {
-            throw MapView.Error.jsonCodingError
-        }
-
-        return dests.map {
-            let dest = Destination()
-            dest.title = $0.title
-            dest.coordinate.latitude = $0.latitude
-            dest.coordinate.longitude = $0.longitude
-            return dest
-        }
-    }
-
-    struct SavedDestination: Codable {
-        var title: String?
-        var latitude: Double
-        var longitude: Double
+        try container.encode(coordinate.latitude, forKey: .latitude)
+        try container.encode(coordinate.longitude, forKey: .longitude)
     }
 }
