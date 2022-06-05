@@ -1,8 +1,6 @@
 import XCTest
 @testable import Touring
 
-// swiftlint:disable file_length type_body_length
-
 class DestinationSetTests: XCTestCase {
     override func setUpWithError() throws {
     }

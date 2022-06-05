@@ -1,7 +1,5 @@
 import XCTest
 
-// swiftlint:disable function_body_length
-
 class TouringUITests: BaseUITestCase {
     var backwardButton: XCUIElement { app.buttons["chevron.backward.2"] }
     var forwardButton: XCUIElement { app.buttons["chevron.forward.2"] }
