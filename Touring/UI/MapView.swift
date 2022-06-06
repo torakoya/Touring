@@ -151,9 +151,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
             }
         }()
 
-        DispatchQueue.main.async { [self] in
-            view.map.setupAnnotationView(av)
-        }
+        view.map.setupAnnotationView(av)
         return av
     }
 }

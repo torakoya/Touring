@@ -86,8 +86,6 @@ class MapViewContext: ObservableObject {
                 if $0.isEmpty {
                     originOnly = true
                 }
-
-                refreshAnnotations()
             }
             .store(in: &subcancellables)
 
@@ -160,11 +158,11 @@ class MapViewContext: ObservableObject {
 
     func refreshAnnotations() {
         if let mapView = mapView {
-            for annotation in mapView.annotations {
-                if let view = mapView.view(for: annotation) {
-                    setupAnnotationView(view)
-                }
+            let anns = mapView.annotations.filter {
+                $0 is Destination && mapView.view(for: $0) != nil
             }
+            mapView.removeAnnotations(anns)
+            mapView.addAnnotations(anns)
         }
     }
 
