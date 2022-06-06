@@ -29,6 +29,7 @@ struct DestinationPanel: View {
             .disabled(DestinationSet.current.destinations.count <= 1)
             Image(systemName: targetImageName)
                 .font(.title)
+                .foregroundColor(DestinationSet.current.destinations.isEmpty ? .gray : .primary)
             Button {
                 DestinationSet.current.goForward()
             } label: {
