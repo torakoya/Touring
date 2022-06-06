@@ -5,6 +5,8 @@ struct ContentView: View {
     @EnvironmentObject private var vm: ContentViewModel
     @EnvironmentObject private var map: MapViewContext
     @State private var showingBookmarked = false
+    @State var destinationDetail: DestinationDetail?
+    @State var showingDestinationDetail = false
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -97,24 +99,24 @@ struct ContentView: View {
 
         .onChange(of: map.selectedDestination) { newValue in
             if newValue >= 0 {
-                vm.destinationDetail = DestinationDetail(
-                    DestinationSet.current.destinations[newValue],
-                    at: newValue,
-                    onUpdate: { dest in
-                        DestinationSet.current.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
-                        try? DestinationSet.saveAll()
-                    },
-                    onRemove: { dest in
-                        DestinationSet.current.destinations.remove(at: dest.id)
-                        try? DestinationSet.saveAll()
-                    })
-                vm.showingDestinationDetail = true
+                showingDestinationDetail = true
             }
         }
-        .sheet(isPresented: $vm.showingDestinationDetail) {
+        .sheet(isPresented: $showingDestinationDetail) {
             map.selectedDestination = -1
         } content: {
-            DestinationDetailView(dest: Binding($vm.destinationDetail)!)
+            DestinationDetailView(dest: DestinationDetail(
+                DestinationSet.current.destinations[map.selectedDestination],
+                at: map.selectedDestination,
+                onUpdate: { dest in
+                    DestinationSet.current.destinations[dest.id].title = (dest.title.isEmpty ? nil : dest.title)
+                    try? DestinationSet.saveAll()
+                },
+                onRemove: { dest in
+                    DestinationSet.current.destinations.remove(at: dest.id)
+                    try? DestinationSet.saveAll()
+                })
+            )
         }
 
         .onAppear {

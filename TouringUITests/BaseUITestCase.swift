@@ -60,7 +60,7 @@ class BaseUITestCase: XCTestCase {
     }
 
     func closeDetail() {
-        app.buttons["Close"].tap()
+        app.buttons["Close"].firstMatch.tap()
         _ = app.buttons["Close"].waitForNonexistence(timeout: 2)
     }
 }

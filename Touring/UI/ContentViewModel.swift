@@ -30,9 +30,6 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
     var map: MapViewContext?
 
-    @Published var destinationDetail: DestinationDetail?
-    @Published var showingDestinationDetail = false
-
     enum DistanceUnit: Int {
         case automatic, meters, miles
     }

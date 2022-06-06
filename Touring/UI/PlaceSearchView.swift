@@ -38,22 +38,8 @@ struct PlaceSearchView: View {
                     .onChange(of: searchWord) {
                         vm.search(for: $0, in: searchesInMap ? region : nil)
                     }
-                    .overlay(alignment: .trailing) {
-                        if !searchWord.isEmpty {
-                            Button {
-                                searchWord = ""
-                                vm.results = []
-                                focused = true
-                            } label: {
-                                // "xmark.circle.fill" is generally
-                                // used, but lining up two identical
-                                // icons should be avoided.
-                                Image(systemName: "delete.left")
-                                    .foregroundColor(.secondary)
-                                    .padding(10)
-                            }
-                        }
-                    }
+                    // Use "delete.left" to avoid lining up two "xmark.circle.fill".
+                    .clearButton(text: $searchWord, focused: $focused, imageName: "delete.left")
 
                 Button {
                     dismiss()

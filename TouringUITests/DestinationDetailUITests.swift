@@ -4,7 +4,7 @@ import SwiftUI
 class DestinationDetailUITests: BaseUITestCase {
     func testTapCloseButton() throws {
         openDetail()
-        app.buttons["Close"].tap()
+        app.buttons["Close"].firstMatch.tap()
         XCTAssert(app.buttons["Close"].waitForNonexistence(timeout: 2))
     }
 

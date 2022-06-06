@@ -49,6 +49,7 @@
 		7AE1768A2831045700EC75A8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7AE176892831045700EC75A8 /* Settings.bundle */; };
 		7AF2DBD72829288A004B16D7 /* MeasureUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */; };
 		7AF5670128336CEA0011EDDD /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF5670028336CEA0011EDDD /* Route.swift */; };
+		7AFDCB88284E8C310027FFD4 /* ClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDCB87284E8C310027FFD4 /* ClearButton.swift */; };
 		7AFDD2B228279C2100711F2B /* MKCoordinateRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDD2B128279C2100711F2B /* MKCoordinateRegionTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -117,6 +118,7 @@
 		7AE176892831045700EC75A8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureUtilTests.swift; sourceTree = "<group>"; };
 		7AF5670028336CEA0011EDDD /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
+		7AFDCB87284E8C310027FFD4 /* ClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearButton.swift; sourceTree = "<group>"; };
 		7AFDD2B128279C2100711F2B /* MKCoordinateRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCoordinateRegionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -249,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				7A38C463283F872C008773CE /* AddressPanel.swift */,
+				7AFDCB87284E8C310027FFD4 /* ClearButton.swift */,
 				7A4350EB280A958500C42F62 /* ContentView.swift */,
 				7A3BCCB6280AB4390021A8BB /* ContentViewModel.swift */,
 				7A3506502822DC2C00B33B2C /* DestinationDetailView.swift */,
@@ -458,6 +461,7 @@
 				7AF5670128336CEA0011EDDD /* Route.swift in Sources */,
 				7AA6068E283A09AC000522D1 /* Panel.swift in Sources */,
 				7A94434528375E1D00F4FFDB /* PlaceSearchView.swift in Sources */,
+				7AFDCB88284E8C310027FFD4 /* ClearButton.swift in Sources */,
 				7A8BA64C283EBA66004FFED1 /* Destination.swift in Sources */,
 				7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */,
 				7A38C45C283F1F87008773CE /* MKCoordinateRegion+ex.swift in Sources */,

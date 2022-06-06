@@ -1,7 +1,7 @@
 import CoreLocation
 import SwiftUI
 
-class DestinationDetail: Identifiable {
+struct DestinationDetail: Identifiable {
     var id: Int
     var title: String
     var coordinate: CLLocationCoordinate2D
@@ -20,7 +20,7 @@ class DestinationDetail: Identifiable {
 }
 
 struct DestinationDetailView: View {
-    @Binding var dest: DestinationDetail
+    @State var dest: DestinationDetail
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
     @State private var removeButtonTapped = false
@@ -48,6 +48,7 @@ struct DestinationDetailView: View {
                                 dest.update?(dest)
                             }
                         }
+                        .clearButton(text: $dest.title, focused: $focused)
                     Text("\(dest.coordinate.latitude) \(dest.coordinate.longitude)")
                         .textSelection(.enabled)
                 }
@@ -67,6 +68,6 @@ struct DestinationDetailView: View {
 
 struct DestinationDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        DestinationDetailView(dest: .constant(DestinationDetail(Destination(), at: 0)))
+        DestinationDetailView(dest: DestinationDetail(Destination(), at: 0))
     }
 }
