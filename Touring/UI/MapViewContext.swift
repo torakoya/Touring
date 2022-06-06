@@ -122,6 +122,19 @@ class MapViewContext: ObservableObject {
         }
     }
 
+    func setCenter(_ coordinate: CLLocationCoordinate2D, animated: Bool = false) {
+        // It is difficult for mapView(regionDidChangeAnimated:) to tell
+        // scrolling by setCenter() here from scrolling on
+        // mapView(didUpdate: MKUserLocation). The former should turn
+        // off following but the latter shouldn't, so here turn off
+        // following manually.
+        if !originOnly && following {
+            following = false
+        }
+
+        mapView?.setCenter(coordinate, animated: animated)
+    }
+
     func setRegionWithDestination(animated: Bool = true) {
         if let mapView = mapView, let target = DestinationSet.current.target {
             mapView.setRegion(

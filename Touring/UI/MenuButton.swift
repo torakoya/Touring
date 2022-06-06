@@ -72,8 +72,8 @@ struct MenuButton: View {
             PlaceSearchView(result: $searchResult, region: map.mapView?.region)
         }
         .onChange(of: searchResult) {
-            if let searchResult = $0, let mapView = map.mapView {
-                mapView.setCenter(searchResult.mapItem.placemark.coordinate, animated: true)
+            if let searchResult = $0 {
+                map.setCenter(searchResult.mapItem.placemark.coordinate, animated: true)
 
                 if searchResult.action == .pin {
                     let dest = Destination()
@@ -91,8 +91,8 @@ struct MenuButton: View {
             DestinationListView(result: $destinationListResult)
         }
         .onChange(of: destinationListResult) {
-            if let result = $0, let mapView = map.mapView {
-                mapView.setCenter(result.destination.coordinate, animated: true)
+            if let result = $0 {
+                map.setCenter(result.destination.coordinate, animated: true)
                 destinationListResult = nil
             }
         }
