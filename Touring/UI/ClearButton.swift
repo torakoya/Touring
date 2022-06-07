@@ -4,6 +4,7 @@ struct ClearButton: ViewModifier {
     @Binding private var text: String
     private var focused: FocusState<Bool>.Binding?
     private var imageName: String
+    @Environment(\.isEnabled) var isEnabled
 
     init(text: Binding<String>, focused: FocusState<Bool>.Binding? = nil, imageName: String = "xmark.circle.fill") {
         self._text = text
@@ -14,7 +15,7 @@ struct ClearButton: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .trailing) {
-                if !text.isEmpty {
+                if !text.isEmpty && isEnabled {
                     Button {
                         text = ""
                         focused?.wrappedValue = true
