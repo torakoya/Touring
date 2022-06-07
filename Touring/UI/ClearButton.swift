@@ -24,6 +24,8 @@ struct ClearButton: ViewModifier {
                             .foregroundColor(.secondary)
                             .padding(10)
                     }
+                    // Make this work even in a Form
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             }
     }
