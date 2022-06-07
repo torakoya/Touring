@@ -29,5 +29,9 @@
 /* DestinationDetailView */
 "Destination %lld" = "目的地 %lld";
 
+/* DestinationListView */
+"Destination Set" = "目的地セット";
+"Destinations" = "目的地";
+
 /* PlaceSearchView */
 "Prefer This Area" = "このエリアを優先";

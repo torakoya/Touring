@@ -26,6 +26,22 @@ class DestinationListUITests: BaseUITestCase {
         XCTAssert(closeButton.waitForNonexistence(timeout: 2))
     }
 
+    func testModifyDestinationSetName() throws {
+        let name = randomName()
+
+        randomPoint().press(forDuration: 2)
+
+        openList()
+        app.buttons["Edit"].tap()
+        nameField.tap()
+        nameField.typeText(name)
+        closeButton.firstMatch.tap()
+        XCTAssert(closeButton.waitForNonexistence(timeout: 2))
+
+        openList()
+        XCTAssert(app.staticTexts[name].exists)
+    }
+
     func testNameDisplayed() throws {
         let name = randomName()
         openDetail()
