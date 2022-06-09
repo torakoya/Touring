@@ -11,6 +11,7 @@ struct DestinationListView: View {
     @State private var editMode: EditMode = .inactive
     @State private var name = DestinationSet.current.name ?? ""
     @FocusState private var focused
+    @State private var alertingDestruct = false
 
     var body: some View {
         NavigationView {
@@ -67,6 +68,15 @@ struct DestinationListView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(NavigationBarItem.TitleDisplayMode.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(role: .destructive) {
+                        alertingDestruct = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    // Button's role "destructive" doesn't work here.
+                    .accentColor(.red)
+                }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     EditButton()
 
@@ -80,6 +90,17 @@ struct DestinationListView: View {
                 }
             }
             .environment(\.editMode, $editMode)
+        }
+        .alert("destlist.destruct.title", isPresented: $alertingDestruct) {
+            Button("Delete", role: .destructive) {
+                name = ""
+                DestinationSet.current.name = nil
+                DestinationSet.current.destinations = []
+                try? DestinationSet.saveAll()
+                dismiss()
+            }
+        } message: {
+            Text("destlist.destruct.msg")
         }
     }
 }

@@ -10,3 +10,7 @@
 
 "main.logging_error.title" = "Location recording failed";
 "main.logging_error.msg" = "Your location can't be saved.";
+
+/* DestinationListView */
+"destlist.destruct.title" = "Delete this destination set";
+"destlist.destruct.msg" = "Delete the name and all the destinations in this destination set.";

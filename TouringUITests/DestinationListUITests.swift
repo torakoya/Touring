@@ -98,6 +98,35 @@ class DestinationListUITests: BaseUITestCase {
         XCTAssertGreaterThan(name1pos.screenPoint.y, name2pos.screenPoint.y)
     }
 
+    func testDestruct() throws {
+        let setname = randomName()
+        let name1 = randomName()
+        let name2 = randomName()
+
+        openDetail()
+        nameField.tap()
+        nameField.typeText(name1)
+        closeDetail()
+
+        openDetail()
+        nameField.tap()
+        nameField.typeText(name2)
+        closeDetail()
+
+        openList()
+        app.buttons["Edit"].tap()
+        nameField.tap()
+        nameField.typeText(setname)
+        app.buttons["Trash"].tap()
+        app.alerts.buttons["Delete"].tap()
+
+        randomPoint().press(forDuration: 2)
+        openList()
+        XCTAssertFalse(app.staticTexts[setname].exists)
+        XCTAssertFalse(app.staticTexts[name1].exists)
+        XCTAssertFalse(app.staticTexts[name2].exists)
+    }
+
     func testTapDestination() throws {
         let name = randomName()
         openDetail()
