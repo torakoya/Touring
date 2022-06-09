@@ -69,7 +69,7 @@ class DestinationSet: Codable {
     private func circulateTargetIndex(_ delta: Int = 0) {
         if let index = targetIndex.map({ $0 + delta }) {
             let index2 = index % (destinations.endIndex - destinations.startIndex) + destinations.startIndex
-            let index3 = (index2 >= 0) ? index2 : (destinations.endIndex - index2)
+            let index3 = (index2 >= 0) ? index2 : (destinations.endIndex + index2)
             if targetIndex != index3 {
                 targetIndex = index3
             }
