@@ -5,6 +5,7 @@ struct MenuButton: View {
     @EnvironmentObject private var map: MapViewContext
     @State private var showingPlaceSearch = false
     @State private var showingDestinationList = false
+    @State private var showingDestinationSetList = false
     @State private var searchResult: PlaceSearchResult?
     @State private var destinationListResult: DestinationListView.Result?
 
@@ -21,6 +22,12 @@ struct MenuButton: View {
                 Label("Destination List", systemImage: "list.bullet")
             }
             .disabled(DestinationSet.current.destinations.isEmpty)
+            Button {
+                showingDestinationSetList = true
+            } label: {
+                Label("Switch Destination Set", systemImage: "list.bullet.below.rectangle")
+            }
+            .disabled(DestinationSet.current.isEmpty && DestinationSet.others.isEmpty)
 
             Divider()
 
@@ -95,6 +102,10 @@ struct MenuButton: View {
                 map.setCenter(result.destination.coordinate, animated: true)
                 destinationListResult = nil
             }
+        }
+
+        .sheet(isPresented: $showingDestinationSetList) {
+            DestinationSetListView()
         }
     }
 }

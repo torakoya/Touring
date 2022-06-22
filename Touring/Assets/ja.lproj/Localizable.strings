@@ -22,6 +22,7 @@
 /* ContentView - Menu */
 "Search for Place" = "場所を検索";
 "Destination List" = "目的地の一覧";
+"Switch Destination Set" = "目的地セットの切り替え";
 "Start Location Tracking" = "位置情報の記録を開始";
 "Resume Location Tracking" = "位置情報の記録を再開";
 "Pause Location Tracking" = "位置情報の記録を一時停止";

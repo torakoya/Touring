@@ -33,6 +33,15 @@ class DestinationSet: Codable {
         }
     }
 
+    var isEmpty: Bool {
+        (name.map { $0.isEmpty } ?? true) && destinations.isEmpty
+    }
+
+    var routeSummary: String? {
+        let s = destinations.reversed().compactMap { $0.title }.joined(separator: "\u{2190}")
+        return s.isEmpty ? nil : s
+    }
+
     // MARK: - Manipulating the Target
 
     var targetIndex: Int? {
@@ -147,12 +156,26 @@ class DestinationSet: Codable {
         didSet {
             if oldValue !== current {
                 currentSubject.send(current)
+
+                // Invoke didSet.
+                current.destinations = current.destinations
+                current.targetIndex = current.targetIndex
             }
         }
     }
 
     /// All the DestinationSets except `current`.
-    static var others: [DestinationSet] = []
+    static var others: [DestinationSet] = [] {
+        // This is only required to determine whether the menu item
+        // [Switch Destination Set] should be enabled. And it would be
+        // better to use the existing property currentPublisher rather
+        // than create a new property like othersPublisher.
+        didSet {
+            if oldValue != others {
+                currentSubject.send(current)
+            }
+        }
+    }
 
     static var all: [DestinationSet] {
         [current] + others
@@ -178,8 +201,39 @@ class DestinationSet: Codable {
             current = DestinationSet()
             others = []
         }
+    }
 
-        // Invoke current.destinations' didSet.
-        current.destinations = current.destinations
+    /// Assigns the destination set in `others` to `current`.
+    @discardableResult
+    static func select(_ destset: DestinationSet) -> Bool {
+        if let index = DestinationSet.others.firstIndex(of: destset) {
+            select(at: index)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    /// Assigns the destination set in `others` at the specified position to `current`.
+    static func select(at: Int) {
+        let newCurrent = DestinationSet.others[at]
+        DestinationSet.others.remove(at: at)
+        if !DestinationSet.current.isEmpty {
+            DestinationSet.others.insert(DestinationSet.current, at: 0)
+        }
+        DestinationSet.current = newCurrent
+    }
+}
+
+// MARK: - Conforming to Hashable
+
+extension DestinationSet: Hashable {
+    static func == (lhs: DestinationSet, rhs: DestinationSet) -> Bool {
+        lhs === rhs
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(destinations)
     }
 }

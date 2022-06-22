@@ -112,6 +112,73 @@ class DestinationSetTests: XCTestCase {
         XCTAssertEqual(destset.target, dest1)
     }
 
+    func testIsEmpty() throws {
+        let destset = DestinationSet()
+
+        XCTAssert(destset.isEmpty)
+    }
+
+    func testIsEmptyWithEmptyName() throws {
+        let destset = DestinationSet()
+
+        destset.name = ""
+        XCTAssert(destset.isEmpty)
+    }
+
+    func testIsEmptyWithName() throws {
+        let destset = DestinationSet()
+
+        destset.name = "foo"
+        XCTAssertFalse(destset.isEmpty)
+    }
+
+    func testIsEmptyWithDestination() throws {
+        let destset = DestinationSet()
+
+        destset.destinations = [Destination()]
+        XCTAssertFalse(destset.isEmpty)
+    }
+
+    func testRouteSummaryWithZeroDestinations() throws {
+        let destset = DestinationSet()
+
+        XCTAssertNil(destset.routeSummary)
+    }
+
+    func testRouteSummaryWithNonameDestinations() throws {
+        let destset = DestinationSet()
+
+        destset.destinations = [Destination(), Destination(), Destination()]
+        XCTAssertNil(destset.routeSummary)
+    }
+
+    func testRouteSummaryWithOneNamedDestinationAndOthers() throws {
+        let destset = DestinationSet()
+
+        destset.destinations = [Destination(), Destination(), Destination()]
+        destset.destinations[1].title = "dest1"
+        XCTAssertEqual(destset.routeSummary, "dest1")
+    }
+
+    func testRouteSummaryWithSomeNamedDestinationsAndOthers() throws {
+        let destset = DestinationSet()
+
+        destset.destinations = [Destination(), Destination(), Destination()]
+        destset.destinations[0].title = "dest1"
+        destset.destinations[2].title = "dest2"
+        XCTAssertEqual(destset.routeSummary, "dest2\u{2190}dest1")
+    }
+
+    func testRouteSummaryWithNamedDestinations() throws {
+        let destset = DestinationSet()
+
+        destset.destinations = [Destination(), Destination(), Destination()]
+        destset.destinations[0].title = "dest1"
+        destset.destinations[1].title = "dest2"
+        destset.destinations[2].title = "dest3"
+        XCTAssertEqual(destset.routeSummary, "dest3\u{2190}dest2\u{2190}dest1")
+    }
+
     func testGoForwardWithEmptyDestination() throws {
         let destset = DestinationSet()
 
@@ -401,6 +468,7 @@ class DestinationSetTests: XCTestCase {
         destset1.destinations[1].coordinate.latitude = 3
         destset1.destinations[1].coordinate.longitude = 4
         DestinationSet.current = destset1
+        DestinationSet.others = []
 
         try? DestinationSet.saveAll()
         try? DestinationSet.loadAll()
@@ -438,6 +506,143 @@ class DestinationSetTests: XCTestCase {
 
         XCTAssertEqual(DestinationSet.current, destset1)
         XCTAssertEqual(DestinationSet.others, [destset2])
+    }
+
+    func testSelectAtWithSingleOthers() throws {
+        let destset1 = DestinationSet()
+        destset1.name = "destset1"
+
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2]
+
+        DestinationSet.select(at: 0)
+        XCTAssertEqual(DestinationSet.current, destset2)
+        XCTAssertEqual(DestinationSet.others, [destset1])
+    }
+
+    func testSelectAtWithEmptyCurrentAndSingleOthers() throws {
+        let destset1 = DestinationSet()
+
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2]
+
+        DestinationSet.select(at: 0)
+        XCTAssertEqual(DestinationSet.current, destset2)
+        XCTAssertEqual(DestinationSet.others, [])
+    }
+
+    func testSelectAtWithSomeOthersAndSelectFirst() throws {
+        let destset1 = DestinationSet()
+        destset1.name = "destset1"
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        DestinationSet.select(at: 0)
+        XCTAssertEqual(DestinationSet.current, destset2)
+        XCTAssertEqual(DestinationSet.others, [destset1, destset3, destset4])
+    }
+
+    func testSelectAtWithEmptyCurrentAndSomeOthersAndSelectFirst() throws {
+        let destset1 = DestinationSet()
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        DestinationSet.select(at: 0)
+        XCTAssertEqual(DestinationSet.current, destset2)
+        XCTAssertEqual(DestinationSet.others, [destset3, destset4])
+    }
+
+    func testSelectAtWithSomeOthersAndSelectMiddle() throws {
+        let destset1 = DestinationSet()
+        destset1.name = "destset1"
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        DestinationSet.select(at: 1)
+        XCTAssertEqual(DestinationSet.current, destset3)
+        XCTAssertEqual(DestinationSet.others, [destset1, destset2, destset4])
+    }
+
+    func testSelectAtWithEmptyCurrentAndSomeOthersAndSelectMiddle() throws {
+        let destset1 = DestinationSet()
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        DestinationSet.select(at: 1)
+        XCTAssertEqual(DestinationSet.current, destset3)
+        XCTAssertEqual(DestinationSet.others, [destset2, destset4])
+    }
+
+    func testSelect() throws {
+        let destset1 = DestinationSet()
+        destset1.name = "destset1"
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        XCTAssert(DestinationSet.select(destset3))
+        XCTAssertEqual(DestinationSet.current, destset3)
+        XCTAssertEqual(DestinationSet.others, [destset1, destset2, destset4])
+    }
+
+    func testSelectWithMissing() throws {
+        let destset1 = DestinationSet()
+        destset1.name = "destset1"
+        let destset2 = DestinationSet()
+        destset2.name = "destset2"
+        let destset3 = DestinationSet()
+        destset3.name = "destset3"
+        let destset4 = DestinationSet()
+        destset4.name = "destset4"
+
+        DestinationSet.current = destset1
+        DestinationSet.others = [destset2, destset3, destset4]
+
+        let oldCurrent = DestinationSet.current
+        let oldOthers = DestinationSet.others
+        XCTAssertFalse(DestinationSet.select(DestinationSet()))
+        XCTAssertEqual(DestinationSet.current, oldCurrent)
+        XCTAssertEqual(DestinationSet.others, oldOthers)
     }
 }
 
