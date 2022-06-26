@@ -153,13 +153,17 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
         if let mapView = sender.view as? MKMapView, sender.state == .began,
            mapView.selectedAnnotations.isEmpty {
             let cgpoint = sender.location(in: mapView)
-            let coord = mapView.convert(cgpoint, toCoordinateFrom: mapView)
-            let dest = Destination()
-            dest.coordinate = coord
-            DestinationSet.current.destinations += [dest]
-            try? DestinationSet.saveAll()
 
-            mapView.selectAnnotation(dest, animated: true)
+            if mapView.tappedAnnotations(at: cgpoint).isEmpty {
+                let coord = mapView.convert(cgpoint, toCoordinateFrom: mapView)
+
+                let dest = Destination()
+                dest.coordinate = coord
+                DestinationSet.current.destinations += [dest]
+                try? DestinationSet.saveAll()
+
+                mapView.selectAnnotation(dest, animated: true)
+            }
         }
     }
 }

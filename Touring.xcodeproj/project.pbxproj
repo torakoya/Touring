@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7A017AC128410A8B000442A2 /* DestinationSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A017AC028410A8B000442A2 /* DestinationSet.swift */; };
 		7A08F660286899BF006800F2 /* GPXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A08F65F286899BF006800F2 /* GPXTests.swift */; };
+		7A08F6622868A0AC006800F2 /* MKMapView+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A08F6612868A0AC006800F2 /* MKMapView+ex.swift */; };
 		7A100CC22839AF6E00251D89 /* UIApplication+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */; };
 		7A121BD328170894006CC6C7 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A121BD228170894006CC6C7 /* MapView.swift */; };
 		7A1454F1283D280500DC6A76 /* DestinationListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1454F0283D280500DC6A76 /* DestinationListUITests.swift */; };
@@ -80,6 +81,7 @@
 /* Begin PBXFileReference section */
 		7A017AC028410A8B000442A2 /* DestinationSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationSet.swift; sourceTree = "<group>"; };
 		7A08F65F286899BF006800F2 /* GPXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXTests.swift; sourceTree = "<group>"; };
+		7A08F6612868A0AC006800F2 /* MKMapView+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MKMapView+ex.swift"; sourceTree = "<group>"; };
 		7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+ex.swift"; sourceTree = "<group>"; };
 		7A121BD228170894006CC6C7 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		7A1454F0283D280500DC6A76 /* DestinationListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationListUITests.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 				7A17A46C281283F700F88063 /* LocationLogger.swift */,
 				7A3258502829003500EBA518 /* MeasureUtil.swift */,
 				7A38C45B283F1F87008773CE /* MKCoordinateRegion+ex.swift */,
+				7A08F6612868A0AC006800F2 /* MKMapView+ex.swift */,
 				7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */,
 			);
 			path = Helpers;
@@ -479,6 +482,7 @@
 				7A38C460283F5583008773CE /* MenuButton.swift in Sources */,
 				7A121BD328170894006CC6C7 /* MapView.swift in Sources */,
 				7AC608922863C00C00F4672D /* Array+ex.swift in Sources */,
+				7A08F6622868A0AC006800F2 /* MKMapView+ex.swift in Sources */,
 				7A5426162831FF28003813F7 /* MapViewContext.swift in Sources */,
 				7A8B58512839D9330087AB05 /* FileManager+ex.swift in Sources */,
 				7AF5670128336CEA0011EDDD /* Route.swift in Sources */,
