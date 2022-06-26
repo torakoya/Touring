@@ -56,6 +56,9 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
         loadSettings()
 
+        // In case the app was closed unexpectedly without finalize().
+        location.logger.finalize()
+
         updateSpeedNumber()
         updateCourse()
         loggingStateChanged()

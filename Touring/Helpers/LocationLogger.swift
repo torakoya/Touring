@@ -79,6 +79,8 @@ class LocationLogger {
         manager.allowsBackgroundLocationUpdates = false
 
         delegate?.loggingStateChanged()
+
+        finalize()
     }
 
     func save(_ locations: [CLLocation], to path: String? = nil) {
@@ -121,6 +123,59 @@ class LocationLogger {
         }
 
         file.closeFile()
+    }
+
+    func finalize() {
+        if !isLogging, let csvs = try? shouldFinalized() {
+            Task.detached {
+                for csv in csvs {
+                    do {
+                        try Self.convert(csv)
+                    } catch {
+                        // The error should be notified to the user if possible.
+                    }
+                }
+            }
+        }
+    }
+
+    func shouldFinalized() throws -> [String] {
+        let files = try FileManager.default.contentsOfDirectory(atPath: FileManager.default.documentURL().path)
+        let locations = files.filter { $0.hasPrefix("locations-") }
+        let csvs = locations.filter { $0.hasSuffix(".csv") }
+        let gpxs = locations.filter { $0.hasSuffix(".gpx") }.map { String($0.dropLast(3)) + "csv" }
+        return csvs.subtracting(gpxs)
+    }
+
+    static func convert(_ name: String) throws {
+        let outname2 = (!name.hasSuffix(".csv") ? name : String(name.dropLast(4))) + ".gpx"
+        let outurl = FileManager.default.documentURL(of: outname2 + ".temp")
+        let outurl2 = FileManager.default.documentURL(of: outname2)
+
+        // If outurl already exists, createFile() will truncate it.
+        if !FileManager.default.createFile(atPath: outurl.path, contents: nil) {
+            throw Error.fileIOError(original: nil)
+        }
+
+        let inurl = FileManager.default.documentURL(of: name)
+        let gpxwriter = try GPXTrackWriter(FileHandle(forWritingTo: outurl))
+
+        try CSVReader.read(inurl) {
+            var location = $0
+
+            if let time = location["time"],
+               let date = Self.logTimeFormatter.date(from: time) {
+                location["time"] = date.formatted(.iso8601)
+            } else {
+                location.removeValue(forKey: "time")
+            }
+
+            try gpxwriter.writeLocation(location)
+        }
+
+        try gpxwriter.close(all: true)
+
+        try FileManager.default.moveItem(at: outurl, to: outurl2)
     }
 }
 
