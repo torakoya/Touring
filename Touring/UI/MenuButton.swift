@@ -6,6 +6,7 @@ struct MenuButton: View {
     @State private var showingPlaceSearch = false
     @State private var showingDestinationList = false
     @State private var showingDestinationSetList = false
+    @State private var showingHelp = false
     @State private var searchResult: PlaceSearchResult?
     @State private var destinationListResult: DestinationListView.Result?
 
@@ -66,6 +67,7 @@ struct MenuButton: View {
                 Label("Settings", systemImage: "gearshape")
             }
             Button {
+                showingHelp = true
             } label: {
                 Label("Help", systemImage: "questionmark")
             }
@@ -106,6 +108,9 @@ struct MenuButton: View {
 
         .sheet(isPresented: $showingDestinationSetList) {
             DestinationSetListView()
+        }
+        .sheet(isPresented: $showingHelp) {
+            HelpView()
         }
     }
 }

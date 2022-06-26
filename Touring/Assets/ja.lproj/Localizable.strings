@@ -39,3 +39,10 @@
 
 /* PlaceSearchView */
 "Prefer This Area" = "このエリアを優先";
+
+/* HelpView */
+"Quick Start" = "かんたんな使いかた";
+"Plan a Route" = "経路を設計する";
+"Run" = "走る";
+"See the Records" = "記録を見る";
+"Transfer Your Data to Another Device" = "ほかの端末にデータを引き継ぐ";
