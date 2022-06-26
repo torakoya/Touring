@@ -106,11 +106,8 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testPutDestinations() throws {
-        let oldCount = app.otherElements.count
-        let point = app.coordinate(withNormalizedOffset: CGVector(
-            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
-        point.press(forDuration: 2)
-        XCTAssertGreaterThan(app.otherElements.count, oldCount)
+        putDestination()
+        XCTAssert(app.otherElements["Map pin"].exists)
     }
 
     func testSwitchFollowing() throws {
@@ -124,8 +121,7 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testSwitchMapMode() throws {
-        let point = randomPoint()
-        point.press(forDuration: 2)
+        putDestination()
 
         app.buttons["location.square.fill"].tap()
         XCTAssert(app.buttons["mappin.square.fill"].exists)
@@ -135,13 +131,8 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testChangeTarget() throws {
-        let point1 = app.coordinate(withNormalizedOffset: CGVector(
-            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
-        point1.press(forDuration: 2)
-
-        let point2 = app.coordinate(withNormalizedOffset: CGVector(
-            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
-        point2.press(forDuration: 2)
+        putDestination()
+        putDestination()
 
         XCTAssert(app.images["1.circle"].exists)
 
@@ -156,18 +147,14 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testRoutes() throws {
-        let point1 = app.coordinate(withNormalizedOffset: CGVector(
-            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
-        point1.press(forDuration: 2)
+        putDestination()
 
         backwardButton.tap()
         app.buttons["Hide"].tap()
         let query = app.staticTexts.containing(NSPredicate(format: "label matches '[0-9]h [0-9]+m'"))
         XCTAssert(query.element.waitForExistence(timeout: 5))
 
-        let point2 = app.coordinate(withNormalizedOffset: CGVector(
-            dx: Double.random(in: 0.2...0.8), dy: Double.random(in: 0.2...0.8)))
-        point2.press(forDuration: 2)
+        putDestination()
 
         forwardButton.tap()
         XCTAssert(query.element.waitForExistence(timeout: 8))

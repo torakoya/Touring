@@ -51,10 +51,11 @@ class BaseUITestCase: XCTestCase {
     @discardableResult
     func openDetail(at point: XCUICoordinate? = nil, ofExisting: Bool = false) -> XCUICoordinate {
         let point = point ?? randomPoint()
-        if !ofExisting {
+        if ofExisting {
+            point.tap()
+        } else {
             point.press(forDuration: 2)
         }
-        point.tap()
         _ = app.buttons["Close"].waitForExistence(timeout: 2)
         return point
     }
@@ -62,6 +63,13 @@ class BaseUITestCase: XCTestCase {
     func closeDetail() {
         app.buttons["Close"].firstMatch.tap()
         _ = app.buttons["Close"].waitForNonexistence(timeout: 2)
+    }
+
+    @discardableResult
+    func putDestination(at point: XCUICoordinate? = nil) -> XCUICoordinate {
+        let point = openDetail(at: point)
+        closeDetail()
+        return point
     }
 }
 

@@ -21,7 +21,7 @@ class DestinationSetListUITests: BaseUITestCase {
     }
 
     func testMenuItemEnabled() throws {
-        randomPoint().press(forDuration: 2)
+        putDestination()
         openList()
         XCTAssert(closeButton.waitForExistence(timeout: 2))
     }

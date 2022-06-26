@@ -66,23 +66,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
         if let ann = view.annotation as? Destination,
             let index = DestinationSet.current.destinations.firstIndex(of: ann) {
             self.view.map.selectedDestination = index
-
-            // Wait for long-press gesture deadline and deselect the
-            // annotation.
-            //
-            // * The reason for deselecting is: if the annotation is
-            //   left selected, tapping it won't open its detail sheet
-            //   until it is deselected.
-            //
-            // * The reason for waiting is: if the annotation is
-            //   deselected immediately, and the user long-presses it,
-            //   then not only will its detail sheet be opened but
-            //   also another annotation will be created.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak ann] in
-                if let ann = ann {
-                    mapView.deselectAnnotation(ann, animated: false)
-                }
-            }
+            mapView.deselectAnnotation(ann, animated: false)
         }
     }
 
@@ -174,6 +158,8 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
             dest.coordinate = coord
             DestinationSet.current.destinations += [dest]
             try? DestinationSet.saveAll()
+
+            mapView.selectAnnotation(dest, animated: true)
         }
     }
 }

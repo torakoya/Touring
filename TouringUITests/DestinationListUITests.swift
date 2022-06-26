@@ -29,7 +29,7 @@ class DestinationListUITests: BaseUITestCase {
     func testModifyDestinationSetName() throws {
         let name = randomName()
 
-        randomPoint().press(forDuration: 2)
+        putDestination()
 
         openList()
         app.buttons["Edit"].tap()
@@ -120,7 +120,7 @@ class DestinationListUITests: BaseUITestCase {
         app.buttons["Trash"].tap()
         app.alerts.buttons["Delete"].tap()
 
-        randomPoint().press(forDuration: 2)
+        putDestination()
         openList()
         XCTAssertFalse(app.staticTexts[setname].exists)
         XCTAssertFalse(app.staticTexts[name1].exists)
