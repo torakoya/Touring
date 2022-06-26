@@ -28,6 +28,7 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: MKMapView, context: Context) {
+        context.coordinator.drawScopes(uiView)
     }
 
     func makeCoordinator() -> MapViewCoordinator {
@@ -37,6 +38,9 @@ struct MapView: UIViewRepresentable {
 
 class MapViewCoordinator: NSObject {
     private let view: MapView
+
+    private var userScopeImage: UIImageView?
+    private var targetScopeImage: UIImageView?
 
     init(_ view: MapView) {
         self.view = view
@@ -60,6 +64,56 @@ extension MapViewCoordinator: MKMapViewDelegate {
         view.map.heading = mapView.camera.heading
 
         view.map.addTargetLine()
+        drawScopes(mapView)
+    }
+
+    private func createScopeImage(color: UIColor) -> UIImageView? {
+        if let scopeImage = UIImage(
+            systemName: "scope",
+            withConfiguration: UIImage.SymbolConfiguration(weight: .ultraLight))?
+            .withTintColor(color, renderingMode: .alwaysOriginal) {
+            let imageView = UIImageView(image: scopeImage)
+            imageView.frame.size = CGSize(width: 150, height: 150)
+            imageView.isHidden = true
+            return imageView
+        } else {
+            return nil
+        }
+    }
+
+    private func drawScope(_ mapView: MKMapView, image: UIImageView, at coordinate: CLLocationCoordinate2D?) {
+        image.isHidden = true
+        if let coordinate = coordinate, let window = UIApplication.shared.keyWindow {
+            let cgpoint = mapView.convert(coordinate, toPointTo: nil)
+            if window.frame.contains(cgpoint) {
+                image.center = cgpoint
+                image.isHidden = mapView.upperViews.filter {
+                    // Ignore large views, as they are probably dialogs.
+                    $0.frame.height < window.frame.height / 2 &&
+                    $0.frame.contains(cgpoint)
+                }.isEmpty
+            }
+        }
+    }
+
+    func drawScopes(_ mapView: MKMapView) {
+        if userScopeImage == nil {
+            userScopeImage = createScopeImage(color: .systemBlue)
+            userScopeImage.map { mapView.addSubview($0) }
+        }
+        if let userScopeImage = userScopeImage {
+            drawScope(mapView, image: userScopeImage, at: mapView.userLocation.location?.coordinate)
+        }
+
+        if let target = DestinationSet.current.target {
+            if targetScopeImage == nil {
+                targetScopeImage = createScopeImage(color: .systemPurple)
+                targetScopeImage.map { mapView.addSubview($0) }
+            }
+            if let targetScopeImage = targetScopeImage {
+                drawScope(mapView, image: targetScopeImage, at: target.coordinate)
+            }
+        }
     }
 
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -92,6 +146,8 @@ extension MapViewCoordinator: MKMapViewDelegate {
         if view.map.showsAddress {
             view.map.fetchAddress()
         }
+
+        drawScopes(mapView)
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
