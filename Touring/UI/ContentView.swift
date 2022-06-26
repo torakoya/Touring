@@ -30,6 +30,11 @@ struct ContentView: View {
                 SpeedPanel()
                     .padding([.top, .leading, .trailing])
 
+                if map.showsAddress {
+                    AddressPanel()
+                        .padding([.leading, .trailing])
+                }
+
                 HStack {
                     RouteButton()
                         .panel(padding: 0)
@@ -56,11 +61,6 @@ struct ContentView: View {
                 }
 
                 Spacer()
-
-                if map.showsAddress {
-                    AddressPanel()
-                        .padding([.leading, .trailing])
-                }
 
                 DestinationPanel()
                     .padding([.leading, .trailing, .bottom])
