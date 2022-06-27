@@ -27,6 +27,7 @@
 "Resume Location Tracking" = "位置情報の記録を再開";
 "Pause Location Tracking" = "位置情報の記録を一時停止";
 "Stop Location Tracking" = "位置情報の記録を終了";
+"Contact (Email)" = "問い合わせ (メール)";
 
 /* DestinationDetailView */
 "Destination %lld" = "目的地 %lld";
@@ -46,3 +47,6 @@
 "Run" = "走る";
 "See the Records" = "記録を見る";
 "Transfer Your Data to Another Device" = "ほかの端末にデータを引き継ぐ";
+
+/* Contact */
+"contact.info.note" = "以下の情報は有益ですが、一部またはすべてを削除してもかまいません。";

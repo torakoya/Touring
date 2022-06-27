@@ -14,3 +14,6 @@
 /* DestinationListView */
 "destlist.destruct.title" = "Delete this destination set";
 "destlist.destruct.msg" = "Delete the name and all the destinations in this destination set.";
+
+/* Contact */
+"contact.info.note" = "The following information may be helpful but you can delete some or all of it.";

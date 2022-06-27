@@ -9,6 +9,7 @@ struct MenuButton: View {
     @State private var showingHelp = false
     @State private var searchResult: PlaceSearchResult?
     @State private var destinationListResult: DestinationListView.Result?
+    private let contactMailaddr = Bundle.main.object(forInfoDictionaryKey: "CONTACT_MAILADDR") as? String
 
     var body: some View {
         Menu {
@@ -70,6 +71,27 @@ struct MenuButton: View {
                 showingHelp = true
             } label: {
                 Label("Help", systemImage: "questionmark")
+            }
+            if let contactMailaddr = contactMailaddr, !contactMailaddr.isEmpty {
+                Button {
+                    let note = String(localized: "contact.info.note")
+                    // Line breaks in a body must be CR+LF (RFC 2368).
+                    let body = """
+                        ---\r
+                        \(note)\r
+                        app: \(Bundle.main.name ?? "-")\r
+                        ver: \(Bundle.main.fullVersion ?? "-")\r
+                        device: \(UIDevice.current.machine)\r
+                        system: \(UIDevice.current.systemVersion)\r
+                        ---\r
+                        \r\n
+                        """.addingPercentEncoding(withAllowedCharacters: .urlQueryDataAllowed)
+                    if let url = URL(string: "mailto:\(contactMailaddr)?body=\(body ?? "")") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: {
+                    Label("Contact (Email)", systemImage: "envelope")
+                }
             }
         } label: {
             Image(systemName: "ellipsis.circle")
