@@ -1,1 +1,3 @@
 xcuserdata/
+/.env*
+!/.env.example

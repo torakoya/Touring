@@ -119,6 +119,8 @@
 		7A435104280A958700C42F62 /* TouringUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouringUITests.swift; sourceTree = "<group>"; };
 		7A435106280A958700C42F62 /* TouringUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouringUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		7A4978A12826BC8700313F45 /* MapViewContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewContextTests.swift; sourceTree = "<group>"; };
+		7A4AB6D3286972800081CD8D /* Config-debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Config-debug.xcconfig"; sourceTree = "<group>"; };
+		7A4AB6D4286972910081CD8D /* Config-release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Config-release.xcconfig"; sourceTree = "<group>"; };
 		7A4D72D028239A90003643BA /* DestinationDetailUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailUITests.swift; sourceTree = "<group>"; };
 		7A4D72D22823A0CC003643BA /* BaseUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseUITestCase.swift; sourceTree = "<group>"; };
 		7A5130742850503A00F7B465 /* DestinationSetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationSetListView.swift; sourceTree = "<group>"; };
@@ -239,6 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				7A4350ED280A958700C42F62 /* Assets.xcassets */,
+				7A4AB6D3286972800081CD8D /* Config-debug.xcconfig */,
+				7A4AB6D4286972910081CD8D /* Config-release.xcconfig */,
 				7A17A46E2812986F00F88063 /* Info.plist */,
 				7A31F517280D78C000CCB90A /* InfoPlist.strings */,
 				7A31F506280D63F000CCB90A /* Localizable.strings */,
@@ -594,6 +598,7 @@
 /* Begin XCBuildConfiguration section */
 		7A435108280A958700C42F62 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A4AB6D3286972800081CD8D /* Config-debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -655,6 +660,7 @@
 		};
 		7A435109280A958700C42F62 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A4AB6D4286972910081CD8D /* Config-release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
