@@ -137,12 +137,37 @@ class MapViewContext: ObservableObject {
     }
 
     func setRegionWithDestination(animated: Bool = true) {
-        if let mapView = mapView, let target = DestinationSet.current.target {
-            mapView.setRegion(
-                MKCoordinateRegion.contains(
-                    [mapView.userLocation.coordinate,
-                     target.coordinate]),
-                animated: animated)
+        if let mapView = mapView, let target = DestinationSet.current.target, let user = mapView.userLocation.location {
+            // We'll use MKMapView#setCamera(). MKMapView#setRegion()
+            // and MKMapView#showAnnotations() don't keep the map
+            // orientation, MKMapView#camera.heading, but
+            // MKMapView#setCamera() does.
+
+            let padding = 0.15
+
+            // Minimum camera coverage, in meters.
+            let mincov = 100.0
+            let mincamdist = (mincov / 2) / tan(15.0 * .pi / 180)
+
+            let center = CLLocationCoordinate2D(
+                latitude: (user.coordinate.latitude + target.coordinate.latitude) / 2,
+                longitude: (user.coordinate.longitude + target.coordinate.longitude) / 2)
+
+            // Temporarily convert the coordinates to CGPoint, since
+            // MKMapView#convert(_:toPointTo:) considers the map
+            // orientation.
+            let point1 = mapView.convert(user.coordinate, toPointTo: mapView)
+            let point2 = mapView.convert(target.coordinate, toPointTo: mapView)
+            let width = abs(point1.x - point2.x) * (1.0 + padding * 2)
+            let height = abs(point1.y - point2.y) * (1.0 + padding * 2)
+            let xzoom = width / mapView.bounds.width
+            let yzoom = height / mapView.bounds.height
+            let camdist = max(mincamdist, mapView.camera.centerCoordinateDistance * max(xzoom, yzoom))
+
+            let camera = MKMapCamera(
+                lookingAtCenter: center, fromDistance: camdist,
+                pitch: mapView.camera.pitch, heading: mapView.camera.heading)
+            mapView.setCamera(camera, animated: animated)
         }
     }
 

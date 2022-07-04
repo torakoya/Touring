@@ -22,7 +22,6 @@
 		7A31F515280D78C000CCB90A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7A31F517280D78C000CCB90A /* InfoPlist.strings */; };
 		7A3258512829003500EBA518 /* MeasureUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3258502829003500EBA518 /* MeasureUtil.swift */; };
 		7A3506512822DC2C00B33B2C /* DestinationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A3506502822DC2C00B33B2C /* DestinationDetailView.swift */; };
-		7A38C45C283F1F87008773CE /* MKCoordinateRegion+ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38C45B283F1F87008773CE /* MKCoordinateRegion+ex.swift */; };
 		7A38C45E283F53DA008773CE /* SpeedPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38C45D283F53DA008773CE /* SpeedPanel.swift */; };
 		7A38C460283F5583008773CE /* MenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38C45F283F5583008773CE /* MenuButton.swift */; };
 		7A38C462283F56DA008773CE /* DestinationPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A38C461283F56DA008773CE /* DestinationPanel.swift */; };
@@ -65,7 +64,6 @@
 		7AF2DBD72829288A004B16D7 /* MeasureUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */; };
 		7AF5670128336CEA0011EDDD /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF5670028336CEA0011EDDD /* Route.swift */; };
 		7AFDCB88284E8C310027FFD4 /* ClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDCB87284E8C310027FFD4 /* ClearButton.swift */; };
-		7AFDD2B228279C2100711F2B /* MKCoordinateRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AFDD2B128279C2100711F2B /* MKCoordinateRegionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,7 +101,6 @@
 		7A31F516280D78C000CCB90A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7A3258502829003500EBA518 /* MeasureUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureUtil.swift; sourceTree = "<group>"; };
 		7A3506502822DC2C00B33B2C /* DestinationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailView.swift; sourceTree = "<group>"; };
-		7A38C45B283F1F87008773CE /* MKCoordinateRegion+ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MKCoordinateRegion+ex.swift"; sourceTree = "<group>"; };
 		7A38C45D283F53DA008773CE /* SpeedPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedPanel.swift; sourceTree = "<group>"; };
 		7A38C45F283F5583008773CE /* MenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButton.swift; sourceTree = "<group>"; };
 		7A38C461283F56DA008773CE /* DestinationPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationPanel.swift; sourceTree = "<group>"; };
@@ -151,7 +148,6 @@
 		7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureUtilTests.swift; sourceTree = "<group>"; };
 		7AF5670028336CEA0011EDDD /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		7AFDCB87284E8C310027FFD4 /* ClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearButton.swift; sourceTree = "<group>"; };
-		7AFDD2B128279C2100711F2B /* MKCoordinateRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCoordinateRegionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -283,7 +279,6 @@
 				7A3BCCB4280AAA190021A8BB /* Location.swift */,
 				7A17A46C281283F700F88063 /* LocationLogger.swift */,
 				7A3258502829003500EBA518 /* MeasureUtil.swift */,
-				7A38C45B283F1F87008773CE /* MKCoordinateRegion+ex.swift */,
 				7A08F6612868A0AC006800F2 /* MKMapView+ex.swift */,
 				7A08F6652868AFCF006800F2 /* StructuredText.swift */,
 				7A100CC12839AF6E00251D89 /* UIApplication+ex.swift */,
@@ -325,7 +320,6 @@
 				7A08F65F286899BF006800F2 /* GPXTests.swift */,
 				7A9EB4FE283034D20044CB92 /* LocationTests.swift */,
 				7AF2DBD628292889004B16D7 /* MeasureUtilTests.swift */,
-				7AFDD2B128279C2100711F2B /* MKCoordinateRegionTests.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -520,7 +514,6 @@
 				7AFDCB88284E8C310027FFD4 /* ClearButton.swift in Sources */,
 				7A8BA64C283EBA66004FFED1 /* Destination.swift in Sources */,
 				7A17A46D281283F700F88063 /* LocationLogger.swift in Sources */,
-				7A38C45C283F1F87008773CE /* MKCoordinateRegion+ex.swift in Sources */,
 				7A3506512822DC2C00B33B2C /* DestinationDetailView.swift in Sources */,
 				7A38C45E283F53DA008773CE /* SpeedPanel.swift in Sources */,
 				7A54261A28320539003813F7 /* CLLocation+ex.swift in Sources */,
@@ -547,7 +540,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AF2DBD72829288A004B16D7 /* MeasureUtilTests.swift in Sources */,
-				7AFDD2B228279C2100711F2B /* MKCoordinateRegionTests.swift in Sources */,
 				7AC2A2DE2848CB89006D308E /* DestinationSetTests.swift in Sources */,
 				7A08F660286899BF006800F2 /* GPXTests.swift in Sources */,
 				7A9EB4FF283034D20044CB92 /* LocationTests.swift in Sources */,

@@ -61,10 +61,18 @@ class MapViewCoordinator: NSObject {
 
 extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        view.map.heading = mapView.camera.heading
-
         view.map.addTargetLine()
         drawScopes(mapView)
+
+        if view.map.heading != mapView.camera.heading {
+            view.map.heading = mapView.camera.heading
+
+            if !view.map.originOnly && view.map.following {
+                DispatchQueue.main.async { [self] in
+                    view.map.setRegionWithDestination(animated: true)
+                }
+            }
+        }
     }
 
     private func createScopeImage(color: UIColor) -> UIImageView? {
