@@ -1,4 +1,3 @@
-import MapKit
 import SwiftUI
 
 struct ContentView: View {
@@ -27,44 +26,75 @@ struct ContentView: View {
             }
 
             VStack(alignment: .leading) {
-                SpeedPanel()
-                    .padding([.top, .leading, .trailing])
+                if !(vm.map?.movingDestination ?? false) {
+                    SpeedPanel()
+                        .padding([.top, .leading, .trailing])
 
-                if map.showsAddress {
-                    AddressPanel()
-                        .padding([.leading, .trailing])
-                }
+                    if map.showsAddress {
+                        AddressPanel()
+                            .padding([.leading, .trailing])
+                    }
 
-                HStack {
-                    RouteButton()
+                    HStack {
+                        RouteButton()
+                            .panel(padding: 0)
+                            .padding([.leading, .trailing, .bottom])
+
+                        Spacer()
+
+                        Button {
+                            if !showingBookmarked {
+                                showingBookmarked = true
+                                vm.location.bookmarkLastLocation()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    showingBookmarked = false
+                                }
+                            }
+                        } label: {
+                            Image(systemName: showingBookmarked ? "star.fill" : "star")
+                                .font(.largeTitle)
+                                .padding()
+                        }
+                        .disabled(vm.location.last == nil)
                         .panel(padding: 0)
                         .padding([.leading, .trailing, .bottom])
-
-                    Spacer()
-
-                    Button {
-                        if !showingBookmarked {
-                            showingBookmarked = true
-                            vm.location.bookmarkLastLocation()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                showingBookmarked = false
-                            }
-                        }
-                    } label: {
-                        Image(systemName: showingBookmarked ? "star.fill" : "star")
-                            .font(.largeTitle)
-                            .padding()
                     }
-                    .disabled(vm.location.last == nil)
-                    .panel(padding: 0)
-                    .padding([.leading, .trailing, .bottom])
                 }
 
                 Spacer()
 
-                DestinationPanel()
-                    .padding([.leading, .trailing, .bottom])
+                if vm.map?.movingDestination ?? false {
+                    HStack {
+                        Button("Cancel") {
+                            vm.map?.endMovingDestination()
+                        }
+                        .padding(.trailing)
+                        Button("Move") {
+                            vm.map?.moveDestination()
+                            try? DestinationSet.saveAll()
+                            vm.map?.endMovingDestination()
+                        }
+                        Spacer()
+                        Button("Satellite") {
+                            if let mapView = vm.map?.mapView {
+                                if mapView.mapType == .standard {
+                                    mapView.mapType = .hybrid
+                                } else {
+                                    mapView.mapType = .standard
+                                }
+                                vm.objectWillChange.send()
+                            }
+                        }
+                        .font(.body.weight(vm.map?.mapView?.mapType == .hybrid ? .bold : .regular))
+                    }
+                    .panel()
+                    .padding()
                     .padding(.bottom, 10) // Avoid covering MKmapView's legal label
+                } else {
+                    DestinationPanel()
+                        .padding([.leading, .trailing, .bottom])
+                        .padding(.bottom, 10) // Avoid covering MKmapView's legal label
+                }
             }
         }
 
@@ -115,6 +145,9 @@ struct ContentView: View {
                 onRemove: { dest in
                     DestinationSet.current.destinations.remove(at: dest.id)
                     try? DestinationSet.saveAll()
+                },
+                onMove: { dest in
+                    vm.map?.startMovingDestination(at: dest.id)
                 })
             )
         }

@@ -127,7 +127,9 @@ extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let ann = view.annotation as? Destination,
             let index = DestinationSet.current.destinations.firstIndex(of: ann) {
-            self.view.map.selectedDestination = index
+            if !self.view.map.movingDestination {
+                self.view.map.selectedDestination = index
+            }
             mapView.deselectAnnotation(ann, animated: false)
         }
     }
@@ -215,7 +217,7 @@ extension MapViewCoordinator: UIGestureRecognizerDelegate {
 
     @IBAction func longPressed(_ sender: UIGestureRecognizer) {
         if let mapView = sender.view as? MKMapView, sender.state == .began,
-           mapView.selectedAnnotations.isEmpty {
+           mapView.selectedAnnotations.isEmpty && !view.map.movingDestination {
             let cgpoint = sender.location(in: mapView)
 
             if mapView.tappedAnnotations(at: cgpoint).isEmpty {

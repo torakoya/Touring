@@ -32,6 +32,11 @@
 /* DestinationDetailView */
 "Destination %lld" = "目的地 %lld";
 
+/* MovingDestination */
+"Cancel" = "キャンセル";
+"Move" = "移動";
+"Satellite" = "写真";
+
 /* DestinationListView */
 "Destination Set" = "目的地セット";
 "Destinations" = "目的地";

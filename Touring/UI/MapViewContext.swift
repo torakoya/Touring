@@ -258,4 +258,84 @@ class MapViewContext: ObservableObject {
             }
         }
     }
+
+    // MARK: - Moving a Destination
+    private var movingDestinationIndex: Int?
+    private var savedFollowing: Bool?
+    private var savedCamera: MKMapCamera?
+    private var movingFinderImage: UIImageView?
+
+    var movingDestination: Bool {
+        movingDestinationIndex != nil
+    }
+
+    func startMovingDestination(at index: Int) {
+        if !movingDestination {
+            movingDestinationIndex = index
+            savedFollowing = following
+            savedCamera = mapView?.camera.copy() as? MKMapCamera
+        }
+        if let mapView = mapView {
+            let region = MKCoordinateRegion(
+                center: DestinationSet.current.destinations[index].coordinate,
+                latitudinalMeters: 30, longitudinalMeters: 30)
+            mapView.setRegion(region, animated: false)
+        }
+
+        drawMovingFinder()
+    }
+
+    func moveDestination(to coord: CLLocationCoordinate2D? = nil) {
+        if let index = movingDestinationIndex, let coord = (coord ?? mapView?.region.center) {
+            DestinationSet.current.destinations[index].coordinate = coord
+        }
+    }
+
+    func endMovingDestination() {
+        if let savedFollowing = savedFollowing {
+            following = savedFollowing
+            self.savedFollowing = nil
+        }
+        if let savedCamera = savedCamera {
+            mapView?.camera = savedCamera
+            self.savedCamera = nil
+        }
+        movingDestinationIndex = nil
+        mapView?.mapType = .standard
+
+        movingFinderImage.map { $0.removeFromSuperview() }
+        movingFinderImage = nil
+    }
+
+    private func drawMovingFinder() {
+        if let mapView = mapView {
+            if movingFinderImage == nil {
+                let size = 50
+                let renderer = UIGraphicsImageRenderer(size: CGSize(width: size, height: size))
+                let img = renderer.image { ctx in
+                    // It would be unnecessary to respond to changes of
+                    // the light/dark appearance, since the color
+                    // mismatch will last only during moving a
+                    // destination.
+                    ctx.cgContext.setStrokeColor(UIColor.systemBackground.cgColor)
+                    ctx.cgContext.setLineWidth(3)
+                    ctx.cgContext.strokeLineSegments(between: [
+                        CGPoint(x: 0, y: size / 2), CGPoint(x: size - 1, y: size / 2),
+                        CGPoint(x: size / 2, y: 0), CGPoint(x: size / 2, y: size - 1)
+                    ])
+
+                    ctx.cgContext.setStrokeColor(UIColor.label.cgColor)
+                    ctx.cgContext.setLineWidth(1)
+                    ctx.cgContext.strokeLineSegments(between: [
+                        CGPoint(x: 1, y: size / 2), CGPoint(x: size - 2, y: size / 2),
+                        CGPoint(x: size / 2, y: 1), CGPoint(x: size / 2, y: size - 2)
+                    ])
+                }
+                let imageView = UIImageView(image: img)
+                imageView.center = mapView.center
+                movingFinderImage = imageView
+            }
+            movingFinderImage.map { mapView.addSubview($0) }
+        }
+    }
 }

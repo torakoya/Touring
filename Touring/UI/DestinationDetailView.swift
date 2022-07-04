@@ -7,15 +7,18 @@ struct DestinationDetail: Identifiable {
     var coordinate: CLLocationCoordinate2D
     var update: ((DestinationDetail) -> Void)?
     var remove: ((DestinationDetail) -> Void)?
+    var move: ((DestinationDetail) -> Void)?
 
     init(_ destination: Destination, at id: Int,
          onUpdate: ((DestinationDetail) -> Void)? = nil,
-         onRemove: ((DestinationDetail) -> Void)? = nil) {
+         onRemove: ((DestinationDetail) -> Void)? = nil,
+         onMove: ((DestinationDetail) -> Void)? = nil) {
         self.title = destination.title ?? ""
         self.coordinate = destination.coordinate
         self.id = id
         self.update = onUpdate
         self.remove = onRemove
+        self.move = onMove
     }
 }
 
@@ -51,6 +54,14 @@ struct DestinationDetailView: View {
                         .clearButton(text: $dest.title, focused: $focused)
                     Text("\(dest.coordinate.latitude) \(dest.coordinate.longitude)")
                         .textSelection(.enabled)
+                }
+                Section {
+                    Button {
+                        dest.move?(dest)
+                        dismiss()
+                    } label: {
+                        Label("Move", systemImage: "mappin.and.ellipse")
+                    }
                 }
                 Section {
                     Button(role: .destructive) {
