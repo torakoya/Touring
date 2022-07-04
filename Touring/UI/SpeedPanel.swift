@@ -8,7 +8,7 @@ struct SpeedPanel: View {
             HStack(alignment: .lastTextBaseline) {
                 Text(vm.speedNumber)
                     .font(.largeTitle.bold())
-                    .foregroundColor(vm.isSpeedValid ? Color(uiColor: .label) : .gray)
+                    .foregroundColor(vm.isSpeedValid ? .primary : .gray)
                 Text(vm.speedUnit)
                     .font(.footnote)
             }
@@ -16,7 +16,7 @@ struct SpeedPanel: View {
             Image(systemName: vm.compassType == .north ? "location.north.circle" : "arrow.up.circle")
                 .font(.largeTitle)
                 .rotationEffect(vm.course)
-                .foregroundColor(vm.isCourseValid ? Color(uiColor: .label) : .gray)
+                .foregroundColor(vm.isCourseValid ? .primary : .gray)
                 .padding(.trailing)
 
             VStack(spacing: 0) {
