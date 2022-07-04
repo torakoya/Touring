@@ -37,12 +37,13 @@ class MapViewContext: ObservableObject {
     }
 
     var targetDistance: CLLocationDistance? {
-        if let mapView = mapView, let target = DestinationSet.current.target {
-            let user = mapView.userLocation.coordinate
-            let dest = target.coordinate
-            let userloc = CLLocation(latitude: user.latitude, longitude: user.longitude)
-            let destloc = CLLocation(latitude: dest.latitude, longitude: dest.longitude)
-            return MeasureUtil.distance(from: userloc, to: destloc)
+        if let mapView = mapView,
+            let user = mapView.userLocation.location,
+            let target = DestinationSet.current.target {
+            let dest = CLLocation(
+                latitude: target.coordinate.latitude,
+                longitude: target.coordinate.longitude)
+            return MeasureUtil.distance(from: user, to: dest)
         }
         return nil
     }
@@ -176,14 +177,13 @@ class MapViewContext: ObservableObject {
         if let mapView = mapView {
             DispatchQueue.main.async { [self] in
                 mapView.removeOverlays(mapView.overlays.filter { !($0 is Route.Polyline) })
-                if let target = DestinationSet.current.target {
-                    let user = mapView.userLocation
-                    if !visible(target.coordinate, in: mapView) ||
-                        !visible(user.coordinate, in: mapView) {
-                        let coords = [user.coordinate, target.coordinate]
-                        let overlay = MKPolyline(coordinates: coords, count: coords.count)
-                        mapView.addOverlay(overlay, level: .aboveRoads)
-                    }
+                if let user = mapView.userLocation.location,
+                    let target = DestinationSet.current.target,
+                    !visible(target.coordinate, in: mapView) ||
+                    !visible(user.coordinate, in: mapView) {
+                    let coords = [user.coordinate, target.coordinate]
+                    let overlay = MKPolyline(coordinates: coords, count: coords.count)
+                    mapView.addOverlay(overlay, level: .aboveRoads)
                 }
             }
         }
