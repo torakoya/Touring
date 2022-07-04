@@ -6,7 +6,7 @@ struct DestinationPanel: View {
     @EnvironmentObject private var map: MapViewContext
 
     var targetImageName: String {
-        if let targetIndex = DestinationSet.current.targetIndex, targetIndex < 40 {
+        if let targetIndex = DestinationSet.current.targetIndex, targetIndex < 50 {
             return "\(targetIndex + 1).circle"
         } else {
             return "circle"
