@@ -180,7 +180,7 @@ class GPXTests: XCTestCase {
         var location = [String: String]()
         location["latitude"] = "1"
         location["longitude"] = "2"
-        location["time"] = ""
+        location["timestamp"] = ""
         try gpx.writeLocation(location)
         try gpx.close(all: true)
 
@@ -192,7 +192,7 @@ class GPXTests: XCTestCase {
         var location = [String: String]()
         location["latitude"] = "1"
         location["longitude"] = "2"
-        location["time"] = "2021-06-21T21:10:15Z"
+        location["timestamp"] = "2021-06-21T21:10:15Z"
         try gpx.writeLocation(location)
         try gpx.close(all: true)
 
@@ -478,7 +478,7 @@ class GPXTests: XCTestCase {
     // Although convert() isn't in GPXWriter, test it here.
     func testConvertWithValidTime() throws {
         let csv = """
-        time,latitude,longitude\r
+        timestamp,latitude,longitude\r
         2021-06-22 06:10:15 +09:00,1,2\r\n
         """
 
@@ -492,7 +492,7 @@ class GPXTests: XCTestCase {
 
     func testConvertWithInvalidTime() throws {
         let csv = """
-        time,latitude,longitude\r
+        timestamp,latitude,longitude\r
         2021-06-22 06:10:15,1,2\r\n
         """
 

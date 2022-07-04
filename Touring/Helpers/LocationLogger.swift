@@ -89,7 +89,7 @@ class LocationLogger {
         let url = FileManager.default.documentURL(of: path)
 
         if !FileManager.default.fileExists(atPath: url.path) {
-            let header = "time,latitude,longitude,horizontalAccuracy," +
+            let header = "timestamp,latitude,longitude,horizontalAccuracy," +
             "speed,speedAccuracy,course,courseAccuracy,altitude,verticalAccuracy\r\n"
             FileManager.default.createFile(atPath: url.path, contents: header.data(using: .utf8)!)
         }
@@ -163,11 +163,11 @@ class LocationLogger {
         try CSVReader.read(inurl) {
             var location = $0
 
-            if let time = location["time"],
+            if let time = location["timestamp"],
                let date = Self.logTimeFormatter.date(from: time) {
-                location["time"] = date.formatted(.iso8601)
+                location["timestamp"] = date.formatted(.iso8601)
             } else {
-                location.removeValue(forKey: "time")
+                location.removeValue(forKey: "timestamp")
             }
 
             try gpxwriter.writeLocation(location)

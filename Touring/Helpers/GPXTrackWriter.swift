@@ -81,7 +81,7 @@ class GPXTrackWriter {
         try writeLine(i(3) + "<trkpt lat=\"\(lat)\" lon=\"\(lon)\">")
 
         try writeValue(4, "ele", location["altitude"])
-        try writeValue(4, "time", location["time"])
+        try writeValue(4, "time", location["timestamp"])
 
         var gpxtpx = [(key: String, value: String)]()
 
