@@ -24,8 +24,10 @@ struct DestinationPanel: View {
                 DestinationSet.current.goBackward()
             } label: {
                 Image(systemName: "chevron.backward.2")
-                    .font(.title)
+                    .font(.largeTitle)
+                    .padding(15) // Expand the hittable area.
             }
+            .padding(-15) // Shrink to the original size.
             .disabled(DestinationSet.current.destinations.count <= 1)
             Image(systemName: targetImageName)
                 .font(.title)
@@ -34,8 +36,10 @@ struct DestinationPanel: View {
                 DestinationSet.current.goForward()
             } label: {
                 Image(systemName: "chevron.forward.2")
-                    .font(.title)
+                    .font(.largeTitle)
+                    .padding(15)
             }
+            .padding(-15)
             .disabled(DestinationSet.current.destinations.count <= 1)
             .padding(.trailing, 10)
 
@@ -52,7 +56,9 @@ struct DestinationPanel: View {
             } label: {
                 Image(systemName: mapModeImageName)
                     .font(.largeTitle)
+                    .padding(15)
             }
+            .padding(-15)
 
             if let dist = map.targetDistance {
                 let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
