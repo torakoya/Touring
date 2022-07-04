@@ -36,18 +36,6 @@ class MapViewContext: ObservableObject {
         }
     }
 
-    var targetDistance: CLLocationDistance? {
-        if let mapView = mapView,
-            let user = mapView.userLocation.location,
-            let target = DestinationSet.current.target {
-            let dest = CLLocation(
-                latitude: target.coordinate.latitude,
-                longitude: target.coordinate.longitude)
-            return MeasureUtil.distance(from: user, to: dest)
-        }
-        return nil
-    }
-
     @Published var routes: Route.Result? {
         didSet {
             showRoutes()

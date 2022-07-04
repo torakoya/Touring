@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 struct DestinationPanel: View {
@@ -16,6 +17,17 @@ struct DestinationPanel: View {
         map.originOnly ?
             (map.following ? "location.square.fill" : "location.square") :
             (map.following ? "mappin.square.fill" : "mappin.square")
+    }
+
+    var targetDistance: CLLocationDistance? {
+        if let user = vm.location.last,
+            let target = DestinationSet.current.target {
+            let dest = CLLocation(
+                latitude: target.coordinate.latitude,
+                longitude: target.coordinate.longitude)
+            return MeasureUtil.distance(from: user, to: dest)
+        }
+        return nil
     }
 
     var body: some View {
@@ -60,7 +72,7 @@ struct DestinationPanel: View {
             }
             .padding(-15)
 
-            if let dist = map.targetDistance {
+            if let dist = targetDistance {
                 let diststr = MeasureUtil.distanceString(meters: dist, prefersMile: vm.prefersMile)
                 Text(diststr[0]).bold() + Text(diststr[1]).font(.footnote)
             }
