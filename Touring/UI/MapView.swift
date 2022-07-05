@@ -217,6 +217,15 @@ extension MapViewCoordinator: MKMapViewDelegate {
         view.map.setupAnnotationView(av)
         return av
     }
+
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        // Disable the user location to be selected.
+        // `av is MKUserLocationView` won't work because the view
+        // isn't MKUserLocationView nor its subclass.
+        for av in views where av.annotation is MKUserLocation {
+            av.isEnabled = false
+        }
+    }
 }
 
 extension MapViewCoordinator: UIGestureRecognizerDelegate {
