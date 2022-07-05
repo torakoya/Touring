@@ -75,6 +75,8 @@ class MapViewContext: ObservableObject {
                 if $0.isEmpty {
                     originOnly = true
                     showingRoutes = false
+                } else {
+                    refreshAnnotations()
                 }
             }
             .store(in: &subcancellables)
