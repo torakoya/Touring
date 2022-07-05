@@ -170,7 +170,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
             view.map.fetchAddress()
         }
 
-        drawScopes(mapView)
+        view.map.objectWillChange.send()
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
