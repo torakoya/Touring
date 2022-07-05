@@ -22,6 +22,8 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         }
     }
 
+    @Published var showsRecordButton = false
+
     @Published var alertingLocationAuthorizationRestricted = false
     @Published var alertingLocationAuthorizationDenied = false
     @Published var alertingLocationAccuracy = false
@@ -94,6 +96,8 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
         compassType = CompassType(rawValue: UserDefaults.standard.integer(forKey: "compass_type")) ?? .heading
 
         map?.showsAddress = (UserDefaults.standard.object(forKey: "show_address") as? Int ?? 1) != 0
+
+        showsRecordButton = UserDefaults.standard.bool(forKey: "show_record_button")
     }
 
     func locationDidChangeAuthorization(_ location: Location) {

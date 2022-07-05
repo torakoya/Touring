@@ -9,3 +9,7 @@
 "The North" = "北";
 
 "Show Address" = "住所を表示";
+
+"Record Button" = "記録ボタン";
+"Show Record Button" = "記録ボタンを表示";
+"This will remind you to start location tracking." = "位置情報の記録の開始し忘れを防ぎます。";

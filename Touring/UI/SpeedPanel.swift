@@ -26,6 +26,16 @@ struct SpeedPanel: View {
 
                 MenuButton()
             }
+
+            if vm.showsRecordButton && vm.loggingState != .started {
+                Button(role: .destructive) {
+                    vm.location.logger.start()
+                } label: {
+                    Image(systemName: "record.circle.fill")
+                        .font(.title)
+                }
+                .padding(.leading)
+            }
         }
         .panel()
     }
