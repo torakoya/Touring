@@ -10,20 +10,11 @@ struct ContentView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            GeometryReader { geom in
-                MapView()
-                    .ignoresSafeArea()
-                    .onChange(of: map.heading) { _ in
-                        vm.updateCourse()
-                    }
-                    .onChange(of: geom.size) { _ in
-                        if !map.originOnly && map.following {
-                            DispatchQueue.main.async {
-                                map.setRegionWithDestination(animated: true)
-                            }
-                        }
-                    }
-            }
+            MapView()
+                .ignoresSafeArea()
+                .onChange(of: map.heading) { _ in
+                    vm.updateCourse()
+                }
 
             VStack(alignment: .leading) {
                 if !(vm.map?.movingDestination ?? false) {

@@ -42,6 +42,11 @@ class MapViewCoordinator: NSObject {
     private var userScopeImage: UIImageView?
     private var targetScopeImage: UIImageView?
 
+    // The previously-recognized MKMapView bounds, used for redrawing on
+    // its resizing. GeometryReader won't work well when its
+    // onChange(of:) fires during the MKMapView refreshing.
+    private var oldBounds: CGRect?
+
     init(_ view: MapView) {
         self.view = view
     }
@@ -61,14 +66,22 @@ class MapViewCoordinator: NSObject {
 
 extension MapViewCoordinator: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        var shouldSetRegion = false
+
         view.map.addTargetLine()
         drawScopes(mapView)
 
         if view.map.heading != mapView.camera.heading {
             view.map.heading = mapView.camera.heading
-
-            if !view.map.originOnly && view.map.following {
-                DispatchQueue.main.async { [self] in
+            shouldSetRegion = true
+        }
+        if mapView.bounds != oldBounds {
+            oldBounds = mapView.bounds
+            shouldSetRegion = true
+        }
+        if shouldSetRegion {
+            DispatchQueue.main.async { [self] in
+                if !view.map.originOnly && view.map.following {
                     view.map.setRegionWithDestination(animated: true)
                 }
             }
