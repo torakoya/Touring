@@ -182,7 +182,7 @@ class MapViewContext: ObservableObject {
     /// Returns whether the coordinate can currently be seen in the map view.
     func visible(_ coordinate: CLLocationCoordinate2D, in mapView: MKMapView) -> Bool {
         let cgpoint = mapView.convert(coordinate, toPointTo: mapView)
-        return mapView.frame.contains(cgpoint)
+        return mapView.bounds.contains(cgpoint)
     }
 
     func refreshAnnotations() {

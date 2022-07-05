@@ -106,11 +106,11 @@ extension MapViewCoordinator: MKMapViewDelegate {
         image.isHidden = true
         if let coordinate = coordinate, let window = UIApplication.shared.keyWindow {
             let cgpoint = mapView.convert(coordinate, toPointTo: nil)
-            if window.frame.contains(cgpoint) {
+            if window.bounds.contains(cgpoint) {
                 image.center = cgpoint
                 image.isHidden = mapView.upperViews.filter {
                     // Ignore large views, as they are probably dialogs.
-                    $0.frame.height < window.frame.height / 2 &&
+                    $0.frame.height < window.bounds.height / 2 &&
                     $0.frame.contains(cgpoint)
                 }.isEmpty
             }
