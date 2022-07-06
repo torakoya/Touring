@@ -146,6 +146,13 @@ struct DestinationSetListDetailView: View {
             } header: {
                 Text("Destinations")
             }
+            Section {
+                Text(destset.note ?? "")
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineSpacing(10)
+            } header: {
+                Text("Note")
+            }
         }
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {

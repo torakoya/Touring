@@ -132,6 +132,20 @@ class DestinationSetTests: XCTestCase {
         XCTAssertFalse(destset.isEmpty)
     }
 
+    func testIsEmptyWithEmptyNote() throws {
+        let destset = DestinationSet()
+
+        destset.note = ""
+        XCTAssert(destset.isEmpty)
+    }
+
+    func testIsEmptyWithNote() throws {
+        let destset = DestinationSet()
+
+        destset.note = "foo"
+        XCTAssertFalse(destset.isEmpty)
+    }
+
     func testIsEmptyWithDestination() throws {
         let destset = DestinationSet()
 
@@ -437,6 +451,7 @@ class DestinationSetTests: XCTestCase {
 
     func testCurrentWithInitialState() throws {
         XCTAssertNil(DestinationSet.current.name)
+        XCTAssertNil(DestinationSet.current.note)
         XCTAssert(DestinationSet.current.destinations.isEmpty)
         XCTAssertNil(DestinationSet.current.targetIndex)
         XCTAssertNil(DestinationSet.current.target)
@@ -460,6 +475,7 @@ class DestinationSetTests: XCTestCase {
     func testSaveAndLoadWithSingleDestinationSet() throws {
         let destset1 = DestinationSet()
         destset1.name = "destset1"
+        destset1.note = "destset1note"
         destset1.destinations = [Destination(), Destination()]
         destset1.destinations[0].title = "dest1"
         destset1.destinations[0].coordinate.latitude = 1
@@ -480,6 +496,7 @@ class DestinationSetTests: XCTestCase {
     func testSaveAndLoadWithTwoDestinationSets() throws {
         let destset1 = DestinationSet()
         destset1.name = "destset1"
+        destset1.note = "destset1note"
         destset1.destinations = [Destination(), Destination()]
         destset1.destinations[0].title = "dest1"
         destset1.destinations[0].coordinate.latitude = 1
@@ -490,6 +507,7 @@ class DestinationSetTests: XCTestCase {
 
         let destset2 = DestinationSet()
         destset2.name = "destset2"
+        destset2.note = "destset2note"
         destset2.destinations = [Destination(), Destination()]
         destset2.destinations[0].title = "dest2-1"
         destset2.destinations[0].coordinate.latitude = 5
@@ -704,6 +722,7 @@ rethrows {
     let destset1 = try expression1()
     let destset2 = try expression2()
     XCTAssertEqual(destset1.name, destset2.name, message(), file: file, line: line)
+    XCTAssertEqual(destset1.note, destset2.note, message(), file: file, line: line)
     XCTAssertEqual(destset1.destinations, destset2.destinations, message(), file: file, line: line)
 }
 

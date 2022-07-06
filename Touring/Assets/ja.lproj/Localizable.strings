@@ -40,6 +40,7 @@
 /* DestinationListView */
 "Destination Set" = "目的地セット";
 "Destinations" = "目的地";
+"Note" = "メモ";
 "destlist.destruct.title" = "この目的地セットを削除します";
 "destlist.destruct.msg" = "この目的地セットの名前とすべての目的地を削除します。";
 

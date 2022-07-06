@@ -4,6 +4,7 @@ import SwiftUI
 class DestinationListUITests: BaseUITestCase {
     var closeButton: XCUIElement { app.buttons["Close"] }
     var nameField: XCUIElement { app.textFields["Name"] }
+    var noteField: XCUIElement { app.textViews.firstMatch }
 
     func openList() {
         menuButton.tap()
@@ -28,6 +29,7 @@ class DestinationListUITests: BaseUITestCase {
 
     func testModifyDestinationSetName() throws {
         let name = randomName()
+        let note = randomName()
 
         putDestination()
 
@@ -35,11 +37,14 @@ class DestinationListUITests: BaseUITestCase {
         app.buttons["Edit"].tap()
         nameField.tap()
         nameField.typeText(name)
+        noteField.tap()
+        noteField.typeText(note)
         closeButton.firstMatch.tap()
         XCTAssert(closeButton.waitForNonexistence(timeout: 2))
 
         openList()
         XCTAssert(app.staticTexts[name].exists)
+        XCTAssert(app.staticTexts[note].exists)
     }
 
     func testNameDisplayed() throws {
@@ -100,6 +105,7 @@ class DestinationListUITests: BaseUITestCase {
 
     func testDestruct() throws {
         let setname = randomName()
+        let setnote = randomName()
         let name1 = randomName()
         let name2 = randomName()
 
@@ -117,12 +123,16 @@ class DestinationListUITests: BaseUITestCase {
         app.buttons["Edit"].tap()
         nameField.tap()
         nameField.typeText(setname)
+        noteField.tap()
+        noteField.typeText(setnote)
         app.buttons["Trash"].tap()
         app.alerts.buttons["Delete"].tap()
+        _ = closeButton.waitForNonexistence(timeout: 2)
 
         putDestination()
         openList()
         XCTAssertFalse(app.staticTexts[setname].exists)
+        XCTAssertFalse(app.staticTexts[setnote].exists)
         XCTAssertFalse(app.staticTexts[name1].exists)
         XCTAssertFalse(app.staticTexts[name2].exists)
     }

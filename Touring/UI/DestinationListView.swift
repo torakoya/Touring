@@ -10,6 +10,7 @@ struct DestinationListView: View {
     // To avoid intermittent edit mode, give this view its own EditMode variable.
     @State private var editMode: EditMode = .inactive
     @State private var name = DestinationSet.current.name ?? ""
+    @State private var note = DestinationSet.current.note ?? ""
     @FocusState private var focused
     @State private var alertingDestruct = false
 
@@ -64,6 +65,28 @@ struct DestinationListView: View {
                 } header: {
                     Text("Destinations")
                 }
+
+                Section {
+                    if editMode != .active {
+                        Text(note)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineSpacing(10)
+                    } else {
+                        TextEditor(text: $note)
+                            .submitLabel(.done)
+                            .frame(height: 100)
+                            .lineSpacing(10)
+                    }
+                } header: {
+                    Text("Note")
+                }
+                .onDisappear {
+                    let note = note.isEmpty ? nil : note
+                    if note != DestinationSet.current.note {
+                        DestinationSet.current.note = note
+                        try? DestinationSet.saveAll()
+                    }
+                }
             }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(NavigationBarItem.TitleDisplayMode.inline)
@@ -94,7 +117,9 @@ struct DestinationListView: View {
         .alert("destlist.destruct.title", isPresented: $alertingDestruct) {
             Button("Delete", role: .destructive) {
                 name = ""
+                note = ""
                 DestinationSet.current.name = nil
+                DestinationSet.current.note = nil
                 DestinationSet.current.destinations = []
                 try? DestinationSet.saveAll()
                 dismiss()

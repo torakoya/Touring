@@ -4,6 +4,8 @@ import Foundation
 class DestinationSet: Codable {
     var name: String?
 
+    var note: String?
+
     var destinations: [Destination] = [] {
         didSet {
             let oldTarget = targetIndex.map { oldValue[$0] }
@@ -34,7 +36,9 @@ class DestinationSet: Codable {
     }
 
     var isEmpty: Bool {
-        (name.map { $0.isEmpty } ?? true) && destinations.isEmpty
+        (name.map { $0.isEmpty } ?? true) &&
+        (note.map { $0.isEmpty } ?? true) &&
+        destinations.isEmpty
     }
 
     var routeSummary: String? {
@@ -115,6 +119,7 @@ class DestinationSet: Codable {
 
     enum CodingKeys: String, CodingKey {
         case name
+        case note
         case destinations
     }
 
@@ -234,6 +239,7 @@ extension DestinationSet: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
+        hasher.combine(note)
         hasher.combine(destinations)
     }
 }
