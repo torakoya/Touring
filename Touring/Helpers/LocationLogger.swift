@@ -105,13 +105,13 @@ class LocationLogger {
             let timestamp = Self.logTimeFormatter.string(from: location.timestamp)
             let latitude = location.validLatitude.map { "\($0)" } ?? ""
             let longitude = location.validLongitude.map { "\($0)" } ?? ""
-            let hacc = "\(location.horizontalAccuracy)"
+            let hacc = location.validHorizontalAccuracy.map { "\($0)" } ?? ""
             let speed = location.validSpeed.map { "\($0)" } ?? ""
-            let sacc = "\(location.speedAccuracy)"
+            let sacc = location.validSpeedAccuracy.map { "\($0)" } ?? ""
             let course = location.validCourse.map { "\($0)" } ?? ""
-            let cacc = "\(location.courseAccuracy)"
+            let cacc = location.validCourseAccuracy.map { "\($0)" } ?? ""
             let altitude = location.validAltitude.map { "\($0)" } ?? ""
-            let vacc = "\(location.verticalAccuracy)"
+            let vacc = location.validVerticalAccuracy.map { "\($0)" } ?? ""
 
             let s = "\(timestamp),\(latitude),\(longitude),\(hacc)," +
             "\(speed),\(sacc),\(course),\(cacc),\(altitude),\(vacc)\r\n"

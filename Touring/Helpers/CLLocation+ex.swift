@@ -1,23 +1,39 @@
 import CoreLocation
 
 extension CLLocation {
+    var validHorizontalAccuracy: CLLocationAccuracy? {
+        horizontalAccuracy < 0 ? nil : horizontalAccuracy
+    }
+
     var validLatitude: CLLocationDegrees? {
-        horizontalAccuracy < 0 ? nil : coordinate.latitude
+        validHorizontalAccuracy == nil ? nil : coordinate.latitude
     }
 
     var validLongitude: CLLocationDegrees? {
-        horizontalAccuracy < 0 ? nil : coordinate.longitude
+        validHorizontalAccuracy == nil ? nil : coordinate.longitude
+    }
+
+    var validSpeedAccuracy: CLLocationSpeedAccuracy? {
+        speedAccuracy < 0 ? nil : speedAccuracy
     }
 
     var validSpeed: CLLocationSpeed? {
-        speedAccuracy < 0 || speed < 0 ? nil : speed
+        validSpeedAccuracy == nil || speed < 0 ? nil : speed
+    }
+
+    var validCourseAccuracy: CLLocationDirectionAccuracy? {
+        courseAccuracy < 0 ? nil : courseAccuracy
     }
 
     var validCourse: CLLocationDirection? {
-        courseAccuracy < 0 || course < 0 ? nil : course
+        validCourseAccuracy == nil || course < 0 ? nil : course
+    }
+
+    var validVerticalAccuracy: CLLocationAccuracy? {
+        verticalAccuracy <= 0 ? nil: verticalAccuracy
     }
 
     var validAltitude: CLLocationDistance? {
-        verticalAccuracy <= 0 ? nil : altitude
+        validVerticalAccuracy == nil ? nil : altitude
     }
 }

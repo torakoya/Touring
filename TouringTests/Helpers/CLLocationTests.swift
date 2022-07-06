@@ -13,6 +13,7 @@ class CLLocationTests: XCTestCase {
         let location = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 0, timestamp: Date())
+        XCTAssertEqual(location.validHorizontalAccuracy, 1)
         XCTAssertEqual(location.validLatitude, 45)
         XCTAssertEqual(location.validLongitude, 90)
     }
@@ -21,6 +22,7 @@ class CLLocationTests: XCTestCase {
         let location = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 0, verticalAccuracy: 0, timestamp: Date())
+        XCTAssertEqual(location.validHorizontalAccuracy, 0)
         XCTAssertEqual(location.validLatitude, 45)
         XCTAssertEqual(location.validLongitude, 90)
     }
@@ -29,6 +31,7 @@ class CLLocationTests: XCTestCase {
         let location = CLLocation(
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: -1, verticalAccuracy: 0, timestamp: Date())
+        XCTAssertNil(location.validHorizontalAccuracy)
         XCTAssertNil(location.validLatitude)
         XCTAssertNil(location.validLongitude)
     }
@@ -38,6 +41,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 123, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validSpeedAccuracy, 1)
         XCTAssertEqual(location.validSpeed, 123)
     }
 
@@ -46,6 +50,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validSpeedAccuracy, 1)
         XCTAssertEqual(location.validSpeed, 0)
     }
 
@@ -54,6 +59,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: -1, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validSpeedAccuracy, 1)
         XCTAssertNil(location.validSpeed)
     }
 
@@ -62,6 +68,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 123, speedAccuracy: 0, timestamp: Date())
+        XCTAssertEqual(location.validSpeedAccuracy, 0)
         XCTAssertEqual(location.validSpeed, 123)
     }
 
@@ -70,6 +77,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 123, speedAccuracy: -1, timestamp: Date())
+        XCTAssertNil(location.validSpeedAccuracy)
         XCTAssertNil(location.validSpeed)
     }
 
@@ -78,6 +86,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 123, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validCourseAccuracy, 1)
         XCTAssertEqual(location.validCourse, 123)
     }
 
@@ -86,6 +95,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validCourseAccuracy, 1)
         XCTAssertEqual(location.validCourse, 0)
     }
 
@@ -94,6 +104,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: -1, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validCourseAccuracy, 1)
         XCTAssertNil(location.validCourse)
     }
 
@@ -102,6 +113,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 123, courseAccuracy: 0, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validCourseAccuracy, 0)
         XCTAssertEqual(location.validCourse, 123)
     }
 
@@ -110,6 +122,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 0, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 123, courseAccuracy: -1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertNil(location.validCourseAccuracy)
         XCTAssertNil(location.validCourse)
     }
 
@@ -118,6 +131,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 123, horizontalAccuracy: 1, verticalAccuracy: 1,
             course: 0, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertEqual(location.validVerticalAccuracy, 1)
         XCTAssertEqual(location.validAltitude, 123)
     }
 
@@ -126,6 +140,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 123, horizontalAccuracy: 1, verticalAccuracy: 0,
             course: 0, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertNil(location.validVerticalAccuracy)
         XCTAssertNil(location.validAltitude)
     }
 
@@ -134,6 +149,7 @@ class CLLocationTests: XCTestCase {
             coordinate: CLLocationCoordinate2D(latitude: 45, longitude: 90),
             altitude: 123, horizontalAccuracy: 1, verticalAccuracy: -1,
             course: 0, courseAccuracy: 1, speed: 0, speedAccuracy: 1, timestamp: Date())
+        XCTAssertNil(location.validVerticalAccuracy)
         XCTAssertNil(location.validAltitude)
     }
 }
