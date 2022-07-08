@@ -4,6 +4,8 @@
 <dict>
 	<key>CONTACT_MAILADDR</key>
 	<string>$(CONTACT_MAILADDR)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
