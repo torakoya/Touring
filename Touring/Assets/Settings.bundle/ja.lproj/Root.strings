@@ -1,4 +1,7 @@
 "Basic Settings" = "基本設定";
+"Travel Type" = "移動手段";
+"Riding/Driving" = "バイクかクルマ";
+"Walking" = "徒歩";
 "Distance Unit" = "距離の単位";
 "Automatic" = "自動";
 "Meters" = "メートル";

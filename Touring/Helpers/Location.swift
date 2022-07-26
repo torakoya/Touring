@@ -3,6 +3,10 @@ import Foundation
 
 /// The location manager.
 class Location: NSObject {
+    enum TravelType: Int {
+        case automobile, walking
+    }
+
     /// The last location data.
     private(set) var last: CLLocation?
 
@@ -15,10 +19,20 @@ class Location: NSObject {
     override init() {
         super.init()
 
-        manager.activityType = .automotiveNavigation
-        manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        setTravelType(.automobile)
         manager.pausesLocationUpdatesAutomatically = false
         manager.delegate = self
+    }
+
+    func setTravelType(_ travelType: TravelType) {
+        switch travelType {
+        case .automobile:
+            manager.activityType = .automotiveNavigation
+            manager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        case .walking:
+            manager.activityType = .fitness
+            manager.desiredAccuracy = kCLLocationAccuracyBest
+        }
     }
 
     func bookmarkLastLocation() {

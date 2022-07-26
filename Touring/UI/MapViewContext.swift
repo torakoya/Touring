@@ -41,6 +41,13 @@ class MapViewContext: ObservableObject {
             showRoutes()
         }
     }
+    @Published var travelType: Location.TravelType = .automobile {
+        didSet {
+            if travelType != oldValue && showingRoutes {
+                fetchRoutes(byForce: true)
+            }
+        }
+    }
     @Published var showingRoutes = false {
         didSet {
             if showingRoutes {
@@ -224,7 +231,7 @@ class MapViewContext: ObservableObject {
                 }
 
                 do {
-                    let result = try await Route.fetch(from: userloc, to: targetloc, byForce: byForce)
+                    let result = try await Route.fetch(from: userloc, to: targetloc, by: travelType, byForce: byForce)
                     if DestinationSet.current.target == target {
                         routes = result
                     }

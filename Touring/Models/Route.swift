@@ -36,6 +36,7 @@ class Route {
     static let minimumFetchWait = 5.0
 
     private(set) static var nextFetchTime = Date(timeIntervalSince1970: 0)
+    private(set) static var currentTravelType: Location.TravelType = .automobile
 
     static func canFetch(from: CLLocation, to: CLLocation, before: Result?) -> Bool {
         return Date() >= nextFetchTime &&
@@ -47,13 +48,15 @@ class Route {
 
     private static var task: Task<Result, Swift.Error>?
 
-    static func fetch(from: CLLocation, to: CLLocation, byForce: Bool = false) async throws -> Result {
+    static func fetch(from: CLLocation, to: CLLocation,
+                      by travelType: Location.TravelType,
+                      byForce: Bool = false) async throws -> Result {
         task?.cancel()
 
         task = Task {
             do {
                 if Date() < nextFetchTime {
-                    if byForce {
+                    if byForce || travelType != currentTravelType {
                         try await Task.sleep(nanoseconds: UInt64(nextFetchTime.timeIntervalSinceNow) * 1_000_000_000)
                     } else {
                         throw Error.shortIntervalError
@@ -63,12 +66,13 @@ class Route {
                 let req = MKDirections.Request()
                 req.source = MKMapItem(placemark: MKPlacemark(coordinate: from.coordinate))
                 req.destination = MKMapItem(placemark: MKPlacemark(coordinate: to.coordinate))
-                req.transportType = .automobile
+                req.transportType = travelType == .walking ? .walking : .automobile
                 req.requestsAlternateRoutes = true
 
                 let dirs = MKDirections(request: req)
                 let response = try await dirs.calculate()
                 nextFetchTime = Date() + minimumFetchWait
+                currentTravelType = travelType
                 return Result(from: from, to: to, response: response)
             } catch {
                 throw error

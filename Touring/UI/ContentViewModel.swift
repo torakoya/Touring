@@ -30,7 +30,12 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     @Published var alertingLocationLoggingError = false
     @Published var loggingState = LocationLogger.State.stopped
 
-    var map: MapViewContext?
+    var map: MapViewContext? {
+        didSet {
+            // Make sure the settings affect the MapViewContext.
+            loadSettings()
+        }
+    }
 
     enum DistanceUnit: Int {
         case automatic, meters, miles
@@ -55,8 +60,6 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
 
         location.delegate = self
         location.logger.delegate = self
-
-        loadSettings()
 
         // In case the app was closed unexpectedly without finalize().
         location.logger.finalize()
@@ -83,6 +86,11 @@ class ContentViewModel: ObservableObject, LocationDelegate, LocationLoggerDelega
     }
 
     func loadSettings() {
+        let travelType = Location.TravelType(
+            rawValue: UserDefaults.standard.integer(forKey: "travel_type")) ?? .automobile
+        location.setTravelType(travelType)
+        map?.travelType = travelType
+
         let distanceUnit = DistanceUnit(rawValue: UserDefaults.standard.integer(forKey: "distance_unit")) ?? .automatic
         switch distanceUnit {
         case .meters:
