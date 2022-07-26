@@ -134,6 +134,8 @@ extension MapViewCoordinator: MKMapViewDelegate {
             if let targetScopeImage = targetScopeImage {
                 drawScope(mapView, image: targetScopeImage, at: target.coordinate)
             }
+        } else if let targetScopeImage = targetScopeImage {
+            targetScopeImage.isHidden = true
         }
     }
 
