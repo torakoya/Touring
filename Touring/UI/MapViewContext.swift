@@ -331,6 +331,8 @@ class MapViewContext: ObservableObject {
 
         movingFinderImage.map { $0.removeFromSuperview() }
         movingFinderImage = nil
+
+        fetchRoutes(byForce: true)
     }
 
     private func drawMovingFinder() {
