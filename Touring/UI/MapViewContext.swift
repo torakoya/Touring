@@ -300,6 +300,7 @@ class MapViewContext: ObservableObject {
             movingDestinationIndex = index
             savedFollowing = following
             savedCamera = mapView?.camera.copy() as? MKMapCamera
+            following = false
         }
         if let mapView = mapView {
             let region = MKCoordinateRegion(
