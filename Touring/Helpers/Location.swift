@@ -6,6 +6,8 @@ class Location: NSObject {
     /// The last location data.
     private(set) var last: CLLocation?
 
+    private var lastLoggedData: CLLocation?
+
     let manager = CLLocationManager()
     weak var delegate: LocationDelegate?
     lazy var logger = LocationLogger(manager: manager)
@@ -55,8 +57,8 @@ extension Location: CLLocationManagerDelegate {
             return true
         }
 
-        // Now look at the speed to make sure the speedometer shows
-        // zero when the user stops.
+        // Now look at the speed to make sure zero speed will be logged
+        // when the user stops.
 
         // Reject if the speed is invalid. The current speed check has
         // priority over the last speed one.
@@ -74,20 +76,14 @@ extension Location: CLLocationManagerDelegate {
             return true
         }
 
-        // Accept if the displayed speed in the speedometer changes
-        // from nonzero to zero. 0.01 mps is less than both 0.05 km/h
-        // and 0.05 mph.
-        if lastSpeed >= 0.01 && speed < 0.01 {
-            return true
-        }
-
         // Anything else is unnecessary.
         return false
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         var finalLocations: [CLLocation] = []
-        var lastLocation = last
+        var lastLocation = lastLoggedData
+        var lastUpdated = false
 
         for location in locations {
             // Ignore if it contains no valid data.
@@ -96,6 +92,9 @@ extension Location: CLLocationManagerDelegate {
                 continue
             }
 
+            last = location
+            lastUpdated = true
+
             if shouldAccept(location, last: lastLocation) {
                 finalLocations += [location]
                 lastLocation = location
@@ -103,8 +102,11 @@ extension Location: CLLocationManagerDelegate {
         }
 
         finalLocations.last.map {
-            last = $0
+            lastLoggedData = $0
             logger.save(finalLocations)
+        }
+
+        if lastUpdated {
             delegate?.locationDidUpdate(self)
         }
     }

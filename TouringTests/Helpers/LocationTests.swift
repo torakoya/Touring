@@ -53,10 +53,4 @@ class LocationTests: XCTestCase {
         let last = locationWith(latitude: 45, longitude: 90, speed: 123)
         XCTAssertTrue(Location().shouldAccept(location, last: last))
     }
-
-    func testShouldAcceptWithAlmostStopping() throws {
-        let location = locationWith(latitude: 45, longitude: 90, speed: 0.005)
-        let last = locationWith(latitude: 45, longitude: 90, speed: 0.02)
-        XCTAssertTrue(Location().shouldAccept(location, last: last))
-    }
 }
