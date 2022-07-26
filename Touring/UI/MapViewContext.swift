@@ -9,31 +9,42 @@ class MapViewContext: ObservableObject {
 
     @Published var selectedDestination: Int = -1
 
+    private func refreshOnMapMode() {
+        if refreshingOnMapMode, let mapView = mapView {
+            mapView.setUserTrackingMode(mapMode == .origin && following ? .follow : .none, animated: true)
+
+            if mapMode != .origin && following {
+                setRegionWithDestination()
+            }
+        }
+    }
+    /// Whether refresh the map when the map mode has been changed.
+    @Published var refreshingOnMapMode = true {
+        didSet {
+            refreshOnMapMode()
+        }
+    }
     @Published var following = false {
         didSet {
-            if let mapView = mapView {
-                if originOnly {
-                    mapView.setUserTrackingMode(following ? .follow : .none, animated: true)
-                } else if following {
-                    setRegionWithDestination()
-                }
-            }
+            refreshOnMapMode()
         }
     }
     @Published var originOnly = true {
         didSet {
-            if let mapView = mapView {
-                if originOnly && following {
-                    mapView.setUserTrackingMode(.follow, animated: true)
-                } else {
-                    mapView.setUserTrackingMode(.none, animated: true)
-
-                    if !originOnly && following {
-                        setRegionWithDestination()
-                    }
-                }
-            }
+            refreshOnMapMode()
         }
+    }
+    @Published var overall = false {
+        didSet {
+            refreshOnMapMode()
+        }
+    }
+
+    enum MapMode {
+        case origin, target, overall
+    }
+    var mapMode: MapMode {
+        overall ? .overall : originOnly ? .origin : .target
     }
 
     @Published var routes: Route.Result? {
@@ -81,6 +92,7 @@ class MapViewContext: ObservableObject {
 
                 if $0.isEmpty {
                     originOnly = true
+                    overall = false
                     showingRoutes = false
                 } else {
                     refreshAnnotations()
@@ -91,7 +103,7 @@ class MapViewContext: ObservableObject {
             current.targetIndexPublisher.sink { [self] _ in
                 objectWillChange.send()
 
-                if !originOnly && following {
+                if mapMode != .origin && following {
                     setRegionWithDestination()
                 }
 
@@ -127,7 +139,7 @@ class MapViewContext: ObservableObject {
         // mapView(didUpdate: MKUserLocation). The former should turn
         // off following but the latter shouldn't, so here turn off
         // following manually.
-        if !originOnly && following {
+        if mapMode != .origin && following {
             following = false
         }
 
@@ -147,17 +159,22 @@ class MapViewContext: ObservableObject {
             let mincov = 100.0
             let mincamdist = (mincov / 2) / tan(15.0 * .pi / 180)
 
-            let center = CLLocationCoordinate2D(
-                latitude: (user.coordinate.latitude + target.coordinate.latitude) / 2,
-                longitude: (user.coordinate.longitude + target.coordinate.longitude) / 2)
+            let coords = [user.coordinate] +
+                (overall ? DestinationSet.current.destinations.map { $0.coordinate } : [target.coordinate])
 
             // Temporarily convert the coordinates to CGPoint, since
             // MKMapView#convert(_:toPointTo:) considers the map
             // orientation.
-            let point1 = mapView.convert(user.coordinate, toPointTo: mapView)
-            let point2 = mapView.convert(target.coordinate, toPointTo: mapView)
-            let width = abs(point1.x - point2.x) * (1.0 + padding * 2)
-            let height = abs(point1.y - point2.y) * (1.0 + padding * 2)
+            var rect = CGRect.null
+            for coord in coords {
+                let point = mapView.convert(coord, toPointTo: mapView)
+                rect = rect.union(CGRect(x: point.x, y: point.y, width: 0, height: 0))
+            }
+
+            let center = mapView.convert(CGPoint(x: rect.midX, y: rect.midY), toCoordinateFrom: mapView)
+
+            let width = rect.width * (1.0 + padding * 2)
+            let height = rect.height * (1.0 + padding * 2)
             let xzoom = width / mapView.bounds.width
             let yzoom = height / mapView.bounds.height
             let camdist = max(mincamdist, mapView.camera.centerCoordinateDistance * max(xzoom, yzoom))

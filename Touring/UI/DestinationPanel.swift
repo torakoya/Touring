@@ -14,9 +14,14 @@ struct DestinationPanel: View {
     }
 
     var mapModeImageName: String {
-        map.originOnly ?
-            (map.following ? "location.square.fill" : "location.square") :
-            (map.following ? "mappin.square.fill" : "mappin.square")
+        switch map.mapMode {
+        case .origin:
+            return map.following ? "location.square.fill" : "location.square"
+        case .target:
+            return map.following ? "mappin.square.fill" : "mappin.square"
+        case .overall:
+            return map.following ? "map.fill" : "map"
+        }
     }
 
     var targetDistance: CLLocationDistance? {
@@ -56,20 +61,35 @@ struct DestinationPanel: View {
             .padding(.trailing, 10)
 
             Button {
-                if map.following {
-                    if DestinationSet.current.destinations.isEmpty {
-                        map.originOnly = true
-                    } else {
-                        map.originOnly.toggle()
-                    }
-                } else {
-                    map.following.toggle()
-                }
             } label: {
                 Image(systemName: mapModeImageName)
                     .font(.largeTitle)
                     .padding(15)
             }
+            .simultaneousGesture(TapGesture().onEnded {
+                if map.following {
+                    if DestinationSet.current.destinations.isEmpty {
+                        map.originOnly = true
+                        map.overall = false
+                    } else {
+                        if map.overall {
+                            map.overall = false
+                        } else {
+                            map.originOnly.toggle()
+                        }
+                    }
+                } else {
+                    map.following.toggle()
+                }
+            })
+            .simultaneousGesture(LongPressGesture().onEnded { _ in
+                if !DestinationSet.current.destinations.isEmpty {
+                    map.refreshingOnMapMode = false
+                    map.overall.toggle()
+                    map.following = true
+                    map.refreshingOnMapMode = true
+                }
+            })
             .padding(-15)
 
             if let dist = targetDistance {

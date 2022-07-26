@@ -81,7 +81,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
         }
         if shouldSetRegion {
             DispatchQueue.main.async { [self] in
-                if !view.map.originOnly && view.map.following {
+                if view.map.mapMode != .origin && view.map.following {
                     view.map.setRegionWithDestination(animated: true)
                 }
             }
@@ -148,13 +148,13 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, didChange mode: MKUserTrackingMode, animated: Bool) {
-        if self.view.map.originOnly {
+        if self.view.map.mapMode == .origin {
             self.view.map.following = (mode != .none)
         }
     }
 
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        if !view.map.originOnly && view.map.following {
+        if view.map.mapMode != .origin && view.map.following {
             view.map.setRegionWithDestination(animated: false)
         }
 
@@ -174,7 +174,7 @@ extension MapViewCoordinator: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        if !view.map.originOnly && gestured(mapView) {
+        if view.map.mapMode != .origin && gestured(mapView) {
             view.map.following = false
         }
     }

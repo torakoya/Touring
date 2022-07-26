@@ -128,6 +128,19 @@ class TouringUITests: BaseUITestCase {
 
         app.buttons["mappin.square.fill"].tap()
         XCTAssert(app.buttons["location.square.fill"].exists)
+
+        app.buttons["location.square.fill"].press(forDuration: 2)
+        XCTAssert(app.buttons["Show Map"].exists)
+
+        app.buttons["Show Map"].tap()
+        XCTAssert(app.buttons["location.square.fill"].exists)
+
+        app.buttons["location.square.fill"].tap()
+        app.buttons["mappin.square.fill"].press(forDuration: 2)
+        XCTAssert(app.buttons["Show Map"].exists)
+
+        app.buttons["Show Map"].tap()
+        XCTAssert(app.buttons["mappin.square.fill"].exists)
     }
 
     func testChangeTarget() throws {
