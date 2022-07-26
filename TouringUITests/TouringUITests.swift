@@ -121,26 +121,53 @@ class TouringUITests: BaseUITestCase {
     }
 
     func testSwitchMapMode() throws {
+        // overallOnButton and overallOffButton have the same name, so
+        // we can't test them completely.
+        let originOnButton = app.buttons["location.square.fill"]
+        let originOffButton = app.buttons["location.square"]
+        let targetOnButton = app.buttons["mappin.square.fill"]
+        let targetOffButton = app.buttons["mappin.square"]
+        let overallOnButton = app.buttons["Show Map"]
+        let overallOffButton = app.buttons["Show Map"]
+
         putDestination()
 
-        app.buttons["location.square.fill"].tap()
-        XCTAssert(app.buttons["mappin.square.fill"].exists)
+        app.swipeDown()
+        XCTAssert(originOffButton.exists)
 
-        app.buttons["mappin.square.fill"].tap()
-        XCTAssert(app.buttons["location.square.fill"].exists)
+        originOffButton.tap()
+        XCTAssert(originOnButton.exists)
 
-        app.buttons["location.square.fill"].press(forDuration: 2)
-        XCTAssert(app.buttons["Show Map"].exists)
+        originOnButton.tap()
+        XCTAssert(targetOnButton.exists)
 
-        app.buttons["Show Map"].tap()
-        XCTAssert(app.buttons["location.square.fill"].exists)
+        app.swipeDown()
+        XCTAssert(targetOffButton.exists)
 
-        app.buttons["location.square.fill"].tap()
-        app.buttons["mappin.square.fill"].press(forDuration: 2)
-        XCTAssert(app.buttons["Show Map"].exists)
+        targetOffButton.tap()
+        XCTAssert(targetOnButton.exists)
 
-        app.buttons["Show Map"].tap()
-        XCTAssert(app.buttons["mappin.square.fill"].exists)
+        targetOnButton.tap()
+        XCTAssert(originOnButton.exists)
+
+        originOnButton.press(forDuration: 2)
+        XCTAssert(overallOnButton.exists)
+
+        app.swipeDown()
+        XCTAssert(overallOffButton.exists)
+
+        overallOffButton.tap()
+        XCTAssert(overallOnButton.exists)
+
+        overallOnButton.tap()
+        XCTAssert(originOnButton.exists)
+
+        originOnButton.tap()
+        targetOnButton.press(forDuration: 2)
+        XCTAssert(overallOnButton.exists)
+
+        overallOnButton.tap()
+        XCTAssert(targetOnButton.exists)
     }
 
     func testChangeTarget() throws {
