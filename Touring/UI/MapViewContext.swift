@@ -322,6 +322,10 @@ class MapViewContext: ObservableObject {
         if let savedFollowing = savedFollowing {
             following = savedFollowing
             self.savedFollowing = nil
+
+            if following && mapMode != .origin {
+                savedCamera = nil
+            }
         }
         if let savedCamera = savedCamera {
             mapView?.camera = savedCamera
