@@ -25,7 +25,7 @@ class PlaceSearchUITests: BaseUITestCase {
 
         let row = app.staticTexts["Apple Park"]
         XCTAssert(row.waitForExistence(timeout: 3))
-        row.tap()
+        row.firstMatch.tap()
         XCTAssert(app.buttons["Close"].waitForNonexistence(timeout: 3))
     }
 
