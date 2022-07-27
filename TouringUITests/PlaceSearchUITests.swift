@@ -39,6 +39,6 @@ class PlaceSearchUITests: BaseUITestCase {
         XCTAssert(row.waitForExistence(timeout: 3))
         app.buttons["Map Pin"].firstMatch.tap()
         XCTAssert(app.buttons["Close"].waitForNonexistence(timeout: 3))
-        XCTAssert(app.otherElements["Apple Park"].exists)
+        XCTAssert(app.otherElements["Apple Park"].waitForExistence(timeout: 5))
     }
 }
