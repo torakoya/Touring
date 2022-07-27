@@ -105,9 +105,13 @@ extension MapViewCoordinator: MKMapViewDelegate {
     private func drawScope(_ mapView: MKMapView, image: UIImageView, at coordinate: CLLocationCoordinate2D?) {
         image.isHidden = true
         if let coordinate = coordinate, let window = UIApplication.shared.keyWindow {
+            // Use the window coordinate system to compare with objects
+            // out of the map view.
             let cgpoint = mapView.convert(coordinate, toPointTo: nil)
             if window.bounds.contains(cgpoint) {
-                image.center = cgpoint
+                // Convert the point to a map coordinate in case the map
+                // view is transformed.
+                image.center = mapView.convert(cgpoint, from: nil)
                 image.isHidden = mapView.upperViews.filter {
                     // Ignore large views, as they are probably dialogs.
                     $0.frame.height < window.bounds.height / 2 &&
