@@ -81,15 +81,14 @@ struct DestinationPanel: View {
                 } else {
                     map.following.toggle()
                 }
-            })
-            .simultaneousGesture(LongPressGesture().onEnded { _ in
+            }.exclusively(before: LongPressGesture().onEnded { _ in
                 if !DestinationSet.current.destinations.isEmpty {
                     map.refreshingOnMapMode = false
                     map.overall.toggle()
                     map.following = true
                     map.refreshingOnMapMode = true
                 }
-            })
+            }))
             .padding(-15)
 
             if let dist = targetDistance {
