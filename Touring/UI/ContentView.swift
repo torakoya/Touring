@@ -6,7 +6,12 @@ struct ContentView: View {
     @State private var showingBookmarked = false
     @State var destinationDetail: DestinationDetail?
     @State var showingDestinationDetail = false
+    @State var showingStatus = false
     @Environment(\.scenePhase) private var scenePhase
+
+    private var isStatusBarHidden: Bool {
+        UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.isStatusBarHidden ?? false
+    }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -15,6 +20,18 @@ struct ContentView: View {
                 .onChange(of: map.heading) { _ in
                     vm.updateCourse()
                 }
+
+            GeometryReader { geom in
+                HStack {
+                    if showingStatus {
+                        Spacer()
+                        StatusPanel()
+                    }
+                }
+                .onChange(of: geom.safeAreaInsets) { _ in
+                    showingStatus = isStatusBarHidden
+                }
+            }
 
             VStack(alignment: .leading) {
                 if !(vm.map?.movingDestination ?? false) {
@@ -145,6 +162,7 @@ struct ContentView: View {
 
         .onAppear {
             if vm.map == nil { vm.map = map }
+            showingStatus = isStatusBarHidden
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
