@@ -4,7 +4,7 @@ struct HelpView: View {
     @Environment(\.dismiss) private var dismiss
     private let items: [(title: String, file: String)] = [
         ("Plan a Route", "1"),
-        ("Run", "2"),
+        ("Go Touring", "2"),
         ("See the Records", "3"),
         ("Transfer Your Data to Another Device", "4")
     ]
