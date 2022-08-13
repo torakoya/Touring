@@ -23,10 +23,14 @@ struct DestinationDetail: Identifiable {
 }
 
 struct DestinationDetailView: View {
-    @State var dest: DestinationDetail
+    @State private var dest: DestinationDetail
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focused: Bool
     @State private var removeButtonTapped = false
+
+    init(dest: DestinationDetail) {
+        _dest = State(initialValue: dest)
+    }
 
     var body: some View {
         VStack(alignment: .leading) {

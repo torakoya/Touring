@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct RouteButton: View {
-    @EnvironmentObject var vm: ContentViewModel
-    @EnvironmentObject var map: MapViewContext
+    @EnvironmentObject private var vm: ContentViewModel
+    @EnvironmentObject private var map: MapViewContext
 
-    var isRouteButtonDisabled: Bool {
+    private var isRouteButtonDisabled: Bool {
         map.mapView?.userLocation.location == nil || DestinationSet.current.target == nil
     }
 
-    var isRouteButtonExpanded: Bool {
+    private var isRouteButtonExpanded: Bool {
         map.showingRoutes &&
         (routeDistanceString != nil || routeTimeString != nil)
     }
 
-    var routeDistanceString: [String]? {
+    private var routeDistanceString: [String]? {
         if map.showingRoutes, let routes = map.routes {
             return MeasureUtil.distanceString(meters: routes.distance, prefersMile: vm.prefersMile)
         } else {
@@ -21,7 +21,7 @@ struct RouteButton: View {
         }
     }
 
-    var routeTimeString: [String]? {
+    private var routeTimeString: [String]? {
         if map.showingRoutes, let routes = map.routes {
             return [String(Int(routes.time / 60 / 60)), String(Int(routes.time / 60) % 60)]
         } else {

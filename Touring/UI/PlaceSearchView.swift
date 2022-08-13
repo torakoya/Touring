@@ -11,12 +11,13 @@ struct PlaceSearchResult: Equatable {
 }
 
 struct PlaceSearchView: View {
-    @StateObject var vm = PlaceSearchViewModel()
-    @State var searchWord: String = ""
-    @Environment(\.dismiss) private var dismiss
-    @FocusState private var focused: Bool
     @Binding var result: PlaceSearchResult?
     var region: MKCoordinateRegion?
+
+    @StateObject private var vm = PlaceSearchViewModel()
+    @State private var searchWord: String = ""
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var focused: Bool
     @State private var searchesInMap = true
 
     var body: some View {
@@ -91,7 +92,7 @@ struct PlaceSearchView: View {
 }
 
 class PlaceSearchViewModel: NSObject, ObservableObject, MKLocalSearchCompleterDelegate {
-    let comp = MKLocalSearchCompleter()
+    private let comp = MKLocalSearchCompleter()
     @Published var results: [MKLocalSearchCompletion] = []
 
     override init() {

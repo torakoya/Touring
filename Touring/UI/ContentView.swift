@@ -4,9 +4,9 @@ struct ContentView: View {
     @EnvironmentObject private var vm: ContentViewModel
     @EnvironmentObject private var map: MapViewContext
     @State private var showingBookmarked = false
-    @State var destinationDetail: DestinationDetail?
-    @State var showingDestinationDetail = false
-    @State var showingStatus = false
+    @State private var destinationDetail: DestinationDetail?
+    @State private var showingDestinationDetail = false
+    @State private var showingStatus = false
     @Environment(\.scenePhase) private var scenePhase
 
     private var isStatusBarHidden: Bool {

@@ -4,7 +4,7 @@ struct AddressPanel: View {
     @EnvironmentObject private var vm: ContentViewModel
     @EnvironmentObject private var map: MapViewContext
 
-    var addressText: Text? {
+    private var addressText: Text? {
         guard let address = map.address else { return nil }
 
         var ss = address.map { $0.map { Text($0) } }
@@ -16,7 +16,7 @@ struct AddressPanel: View {
         return joinedText(ss, separator: Text(Locale.current.languageCode == "ja" ? " " : ", "))
     }
 
-    func joinedText(_ texts: [Text?], separator: Text = Text("")) -> Text {
+    private func joinedText(_ texts: [Text?], separator: Text = Text("")) -> Text {
         texts.compactMap { $0 }.flatMap { [separator, $0] }.dropFirst().reduce(Text(""), +)
     }
 

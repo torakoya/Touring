@@ -5,7 +5,7 @@ struct DestinationPanel: View {
     @EnvironmentObject private var vm: ContentViewModel
     @EnvironmentObject private var map: MapViewContext
 
-    var targetImageName: String {
+    private var targetImageName: String {
         if let targetIndex = DestinationSet.current.targetIndex, targetIndex < 50 {
             return "\(targetIndex + 1).circle"
         } else {
@@ -13,7 +13,7 @@ struct DestinationPanel: View {
         }
     }
 
-    var mapModeImageName: String {
+    private var mapModeImageName: String {
         switch map.mapMode {
         case .origin:
             return map.following ? "location.square.fill" : "location.square"
@@ -24,7 +24,7 @@ struct DestinationPanel: View {
         }
     }
 
-    var targetDistance: CLLocationDistance? {
+    private var targetDistance: CLLocationDistance? {
         if let user = vm.location.last,
             let target = DestinationSet.current.target {
             let dest = CLLocation(

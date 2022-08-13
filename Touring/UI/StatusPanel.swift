@@ -7,6 +7,7 @@ struct StatusPanel: View {
         @Published var batteryPlugged = false
         @Published var batteryIcon = ""
         @Published var batteryColor = Color.primary
+
         private var cancellables = Set<AnyCancellable>()
 
         init() {
@@ -43,26 +44,26 @@ struct StatusPanel: View {
             cancellables.removeAll()
         }
 
-        func updateClock() {
+        private func updateClock() {
             clock = DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .short)
         }
 
-        func updateBatteryLevel() {
+        private func updateBatteryLevel() {
             batteryIcon = batteryIcon(of: UIDevice.current.batteryLevel)
             batteryColor = UIDevice.current.batteryLevel <= 0.2 ? .red : .primary
         }
 
-        func updateBatteryState() {
+        private func updateBatteryState() {
             batteryPlugged = UIDevice.current.batteryState == .charging || UIDevice.current.batteryState == .full
         }
 
-        func update() {
+        private func update() {
             updateClock()
             updateBatteryLevel()
             updateBatteryState()
         }
 
-        func batteryIcon(of level: Float) -> String {
+        private func batteryIcon(of level: Float) -> String {
             if level < 0 {
                 return ""
             } else if level < (0.0 + 0.25) / 2 {

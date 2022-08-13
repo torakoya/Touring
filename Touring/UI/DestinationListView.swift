@@ -6,6 +6,7 @@ struct DestinationListView: View {
     }
 
     @Binding var result: Result?
+
     @Environment(\.dismiss) private var dismiss
     // To avoid intermittent edit mode, give this view its own EditMode variable.
     @State private var editMode: EditMode = .inactive
