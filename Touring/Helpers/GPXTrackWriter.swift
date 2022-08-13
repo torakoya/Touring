@@ -2,6 +2,7 @@ import Foundation
 
 /// Writes a GPX file containing tracks.
 class GPXTrackWriter {
+    var creator = "GPXTrackWriter"
     var includingGpxtpx = false
     var includingCllocation = false
     var indentWidth = 2
@@ -32,6 +33,11 @@ class GPXTrackWriter {
         String(repeating: " ", count: indentWidth * level)
     }
 
+    private func xmlStringLiteral(_ str: String) -> String {
+        str.replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+    }
+
     private func writeHeader() throws {
         var ns = #"xmlns="http://www.topografix.com/GPX/1/1""#
 
@@ -44,7 +50,7 @@ class GPXTrackWriter {
 
         let header = """
             <?xml version="1.0" encoding="UTF-8"?>\(lineSeparator)\
-            <gpx version="1.1" creator="Tora Touring" \(ns)>\(lineSeparator)\
+            <gpx version="1.1" creator="\(xmlStringLiteral(creator))" \(ns)>\(lineSeparator)\
             \(i(1))<trk>\(lineSeparator)\
             \(i(2))<trkseg>
             """

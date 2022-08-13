@@ -63,7 +63,7 @@ class GPXTests: XCTestCase {
 
         try XCTAssertEqual(actual(), """
         <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="Tora Touring" xmlns="http://www.topografix.com/GPX/1/1">
+        <gpx version="1.1" creator="GPXTrackWriter" xmlns="http://www.topografix.com/GPX/1/1">
           <trk>
             <trkseg>
               <trkpt lat="1" lon="2">
@@ -73,6 +73,30 @@ class GPXTests: XCTestCase {
         </gpx>
 
         """)
+    }
+
+    func testCreator() throws {
+        let gpx = try gpx()
+        gpx.creator = "Test Creator"
+        var location = [String: String]()
+        location["latitude"] = "1"
+        location["longitude"] = "2"
+        try gpx.writeLocation(location)
+        try gpx.close(all: true)
+
+        try XCTAssert(actual().contains(#"creator="Test Creator""#))
+    }
+
+    func testCreatorEscaping() throws {
+        let gpx = try gpx()
+        gpx.creator = #"&"Test&"Creator&""#
+        var location = [String: String]()
+        location["latitude"] = "1"
+        location["longitude"] = "2"
+        try gpx.writeLocation(location)
+        try gpx.close(all: true)
+
+        try XCTAssert(actual().contains(#"creator="&amp;&quot;Test&amp;&quot;Creator&amp;&quot;""#))
     }
 
     func testIndent() throws {

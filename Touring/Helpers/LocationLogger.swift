@@ -159,6 +159,7 @@ class LocationLogger {
 
         let inurl = FileManager.default.documentURL(of: name)
         let gpxwriter = try GPXTrackWriter(FileHandle(forWritingTo: outurl))
+        gpxwriter.creator = "Tora Touring"
 
         try CSVReader.read(inurl) {
             var location = $0
